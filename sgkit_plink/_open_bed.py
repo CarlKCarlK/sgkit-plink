@@ -24,7 +24,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
         count_A1=True,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
-        self._file_pointer = None
         self.filename = filename
         self.count_A1 = count_A1
         self.skip_format_check = skip_format_check
@@ -63,8 +62,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self._assert_iid_sid_pos()
 
         if not self.skip_format_check:
-            self._open_file()
-            self.close()
+            bedfile = self._name_of_other_file(self.filename, "bed", "bed")
+            with open(bedfile, "rb") as filepointer:
+               self._check_file(filepointer)
 
     def _assert_iid_sid_pos(self):
 
@@ -137,18 +137,16 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def pos(self):  #!!!cmk what about the other metadata in bim/map and fam file?
         return self._col_property
 
-    def _open_file(self):
-        bedfile = self._name_of_other_file(self.filename, "bed", "bed")
-        self._filepointer = open(bedfile, "rb")
-        mode = self._filepointer.read(2)
+    @staticmethod
+    def _check_file(filepointer):
+        mode = filepointer.read(2)
         if mode != b"l\x1b":
             raise Exception("No valid binary BED file")
-        mode = self._filepointer.read(1)  # \x01 = SNP major \x00 = individual major
+        mode = filepointer.read(1)  # \x01 = SNP major \x00 = individual major
         if mode != b"\x01":
             raise Exception(
                 "only SNP-major is implemented"
             )  #!!!cmk should mention this
-        logging.info("bed file is open {0}".format(bedfile))
 
     def __del__(self):
         self.__exit__()
@@ -163,11 +161,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return self
 
     def __exit__(self, *_):
-        if (
-            hasattr(self, "_filepointer") and self._filepointer is not None
-        ):  # we need to test this because Python doesn't guarantee that __init__ was fully run
-            self._filepointer.close()
-            self._filepointer = None
+        pass
 
     #!!!cmk say something about support for snp-minor vs major        
     @staticmethod
@@ -302,7 +296,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         vals_for_this_byte = colx[iid_by_four : iid_by_four + 4]
                         byte = 0b00000000
                         for val_index in range(len(vals_for_this_byte)):
-                            valx = vals_for_this_byte[val_index]
+                            valx = vals_for_this_byte[val_index]#!!!cmk rename valx and the other *x
                             if valx == 0:
                                 code = zero_code
                             elif valx == 1:
@@ -314,7 +308,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             else:
                                 raise Exception(
                                     "Can't convert value '{0}' to BED format (only 0,1,2,NAN [or sometimes -127] allowed)".format(
-                                        val
+                                        valx
                                     )
                                 )
                             byte |= code << (val_index * 2)
@@ -369,7 +363,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
             if iid_count_in > 0 and sid_count_in > 0:
                 if dtype == np.float64:
                     if order == "F":
-                        wrap_plink_parser.readPlinkBedFile2doubleFAAA(
+                        wrap_plink_parser.readPlinkBedFile2doubleFAAA(#!!!cmk double check that these check the format.If they don't, be sure checkformat is called sometime
                             bed_fn.encode("ascii"),
                             iid_count_in,
                             sid_count_in,
@@ -460,48 +454,49 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 missing = -127
             else:
                 missing = np.nan
-            # An earlier version of this code had a way to read consecutive SNPs of code in one read. May want
+            # An earlier version of this code had a way to read consecutive SNPs of code in one read. May want #!!!cmk understand these messages
             # to add that ability back to the code.
             # Also, note that reading with python will often result in non-contiguous memory, so the python standardizers will automatically be used, too.
-            self._open_file()
             # logging.warn("using pure python plink parser (might be much slower!!)")
             val = np.zeros(
                 ((int(np.ceil(0.25 * iid_count_in)) * 4), sid_count_out),
                 order=order,
                 dtype=dtype,
             )  # allocate it a little big
-            for SNPsIndex, bimIndex in enumerate(sid_index):
 
-                startbit = int(np.ceil(0.25 * iid_count_in) * bimIndex + 3)
-                self._filepointer.seek(startbit)
-                nbyte = int(np.ceil(0.25 * iid_count_in))
-                bytes = np.array(bytearray(self._filepointer.read(nbyte))).reshape(
-                    (int(np.ceil(0.25 * iid_count_in)), 1), order="F"
-                )
+            bedfile = self._name_of_other_file(self.filename, "bed", "bed")
+            with open(bedfile, "rb") as filepointer:
+                for SNPsIndex, bimIndex in enumerate(sid_index):
 
-                val[3::4, SNPsIndex : SNPsIndex + 1] = byteZero
-                val[3::4, SNPsIndex : SNPsIndex + 1][bytes >= 64] = missing
-                val[3::4, SNPsIndex : SNPsIndex + 1][bytes >= 128] = 1
-                val[3::4, SNPsIndex : SNPsIndex + 1][bytes >= 192] = byteThree
-                bytes = np.mod(bytes, 64)
-                val[2::4, SNPsIndex : SNPsIndex + 1] = byteZero
-                val[2::4, SNPsIndex : SNPsIndex + 1][bytes >= 16] = missing
-                val[2::4, SNPsIndex : SNPsIndex + 1][bytes >= 32] = 1
-                val[2::4, SNPsIndex : SNPsIndex + 1][bytes >= 48] = byteThree
-                bytes = np.mod(bytes, 16)
-                val[1::4, SNPsIndex : SNPsIndex + 1] = byteZero
-                val[1::4, SNPsIndex : SNPsIndex + 1][bytes >= 4] = missing
-                val[1::4, SNPsIndex : SNPsIndex + 1][bytes >= 8] = 1
-                val[1::4, SNPsIndex : SNPsIndex + 1][bytes >= 12] = byteThree
-                bytes = np.mod(bytes, 4)
-                val[0::4, SNPsIndex : SNPsIndex + 1] = byteZero
-                val[0::4, SNPsIndex : SNPsIndex + 1][bytes >= 1] = missing
-                val[0::4, SNPsIndex : SNPsIndex + 1][bytes >= 2] = 1
-                val[0::4, SNPsIndex : SNPsIndex + 1][bytes >= 3] = byteThree
-            val = val[iid_index, :]  # reorder or trim any extra allocation
-            if not open_bed._array_properties_are_ok(val, order, dtype):
-                val = val.copy(order=order)
-            self.close()
+                    startbit = int(np.ceil(0.25 * iid_count_in) * bimIndex + 3)
+                    filepointer.seek(startbit)
+                    nbyte = int(np.ceil(0.25 * iid_count_in))
+                    bytes = np.array(bytearray(filepointer.read(nbyte))).reshape(
+                        (int(np.ceil(0.25 * iid_count_in)), 1), order="F"
+                    )
+
+                    val[3::4, SNPsIndex : SNPsIndex + 1] = byteZero
+                    val[3::4, SNPsIndex : SNPsIndex + 1][bytes >= 64] = missing
+                    val[3::4, SNPsIndex : SNPsIndex + 1][bytes >= 128] = 1
+                    val[3::4, SNPsIndex : SNPsIndex + 1][bytes >= 192] = byteThree
+                    bytes = np.mod(bytes, 64)
+                    val[2::4, SNPsIndex : SNPsIndex + 1] = byteZero
+                    val[2::4, SNPsIndex : SNPsIndex + 1][bytes >= 16] = missing
+                    val[2::4, SNPsIndex : SNPsIndex + 1][bytes >= 32] = 1
+                    val[2::4, SNPsIndex : SNPsIndex + 1][bytes >= 48] = byteThree
+                    bytes = np.mod(bytes, 16)
+                    val[1::4, SNPsIndex : SNPsIndex + 1] = byteZero
+                    val[1::4, SNPsIndex : SNPsIndex + 1][bytes >= 4] = missing
+                    val[1::4, SNPsIndex : SNPsIndex + 1][bytes >= 8] = 1
+                    val[1::4, SNPsIndex : SNPsIndex + 1][bytes >= 12] = byteThree
+                    bytes = np.mod(bytes, 4)
+                    val[0::4, SNPsIndex : SNPsIndex + 1] = byteZero
+                    val[0::4, SNPsIndex : SNPsIndex + 1][bytes >= 1] = missing
+                    val[0::4, SNPsIndex : SNPsIndex + 1][bytes >= 2] = 1
+                    val[0::4, SNPsIndex : SNPsIndex + 1][bytes >= 3] = byteThree
+                val = val[iid_index, :]  # reorder or trim any extra allocation
+                if not open_bed._array_properties_are_ok(val, order, dtype):
+                    val = val.copy(order=order)
 
         return val
 

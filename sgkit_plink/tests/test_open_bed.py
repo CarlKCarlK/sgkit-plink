@@ -27,6 +27,11 @@ def test_write():
             assert (bed.sid == bed1.sid).all()
             assert (bed.pos == bed1.pos).all()
 
+    val_float = val0.astype('float')
+    val_float[0,0]=0.5
+    with pytest.raises(Exception):
+        open_bed.write(out_file,val_float,iid=bed.iid,sid=bed.sid,pos=bed.pos,force_python_only=True) #!!!cmk test on force_python=False, too
+
 
 if __name__ == "__main__": #!!cmk is this wanted?
     pytest.main([__file__])

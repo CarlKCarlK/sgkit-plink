@@ -41,7 +41,9 @@ BIM_ARRAY_DTYPE = dict([(f[0], f[2]) for f in BIM_FIELDS])
 class BedReader(object):
     def __init__(self, path, shape, dtype=np.int8, count_A1=True):
         # n variants (sid = SNP id), n samples (iid = Individual id)
-        n_sid, n_iid = shape
+        #!!!cmk0 is there any good reason that filepoint was kept open - No, it is really only used by the force-python code
+        #!!!cmk0 get this working with the API as is (then start improving the API)
+        n_sid, n_iid = shape #!!!cmk0 can we get the shape from the Bed file efficently? No, only by counting the lines of the fam and bim files (If it does get passed in, check that it agrees.)
         # Initialize Bed with empty arrays for axis data, otherwise it will
         # load the bim/map/fam files entirely into memory (it does not do out-of-core for those)
         self.bed = Bed(
@@ -50,7 +52,7 @@ class BedReader(object):
             # Array (n_sample, 2) w/ FID and IID
             iid=np.empty((n_iid, 2), dtype="str"),
             # SNP id array (n_variants)
-            sid=np.empty((n_sid,), dtype="str"),
+            sid=np.empty((n_sid,), dtype="str"),#!!!cmk if user's don't want this info, don't give it to them.
             # Contig and positions array (n_variants, 3)
             pos=np.empty((n_sid, 3), dtype="int"),
         )
@@ -58,7 +60,7 @@ class BedReader(object):
         self.dtype = dtype
         self.ndim = 3
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx): #!!!cmk in open_bed move the dtype, etc to the construction and replace read with getitem?
         if not isinstance(idx, tuple):
             raise IndexError(  # pragma: no cover
                 f"Indexer must be tuple (received {type(idx)})"
@@ -74,7 +76,7 @@ class BedReader(object):
         arr = (
             self.bed[idx[1::-1]]
             .read(dtype=np.int8, view_ok=True, _require_float32_64=False)
-            .val.T
+            .val.T #!!!cmk may want ot use order='F' or 'C' to get this the desired way.
         )
         arr = arr.astype(self.dtype)
         # Add a ploidy dimension, so allele counts of 0, 1, 2 correspond to 00, 10, 11
