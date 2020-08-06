@@ -128,3 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /.vs
+/TestResults/junitresults_d807dd16-810e-420c-aa0f-cd9cce1df3aa.xml

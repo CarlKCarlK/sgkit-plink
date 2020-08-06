@@ -306,7 +306,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             elif (val.dtype == np.int8 and valx == -127) or np.isnan(valx): #!!!cmk find a better way to tell int types from float types
                                 code = 0b01  # backwards on purpose
                             else:
-                                raise Exception(
+                                raise ValueError(
                                     "Can't convert value '{0}' to BED format (only 0,1,2,NAN [or sometimes -127] allowed)".format(
                                         valx
                                     )
@@ -331,7 +331,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
         order,
         dtype,
         force_python_only,
-        view_ok,
     ):
 
         if order == "A":
@@ -523,13 +522,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
         dtype: Optional[Union[type, str]] = np.int8,
         order: Optional[str] = "F",
         force_python_only: bool = False,
-        view_ok: bool = False,
     ) -> np.ndarray:
 
         iid_index, sid_index = self._split_index(index)
         #!!!cmk merge read with _read
         return self._read(
-            iid_index, sid_index, order, dtype, force_python_only, view_ok
+            iid_index, sid_index, order, dtype, force_python_only,
         )
 
     @staticmethod

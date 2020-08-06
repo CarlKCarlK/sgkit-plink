@@ -46,7 +46,7 @@ class BedReader(object):
         n_sid, n_iid = shape #!!!cmk0 can we get the shape from the Bed file efficently? No, only by counting the lines of the fam and bim files (If it does get passed in, check that it agrees.)
         # Initialize Bed with empty arrays for axis data, otherwise it will
         # load the bim/map/fam files entirely into memory (it does not do out-of-core for those)
-        self.bed = Bed(
+        self.open_bed = open_bed(
             str(path),
             count_A1=count_A1,
             # Array (n_sample, 2) w/ FID and IID
@@ -74,9 +74,10 @@ class BedReader(object):
         # Missing values are represented as -127 with int8 dtype,
         # see: https://fastlmm.github.io/PySnpTools/#snpreader-bed
         arr = (
-            self.bed[idx[1::-1]]
-            .read(dtype=np.int8, view_ok=True, _require_float32_64=False)
-            .val.T #!!!cmk may want ot use order='F' or 'C' to get this the desired way.
+            self.open_bed.read(
+            index=idx[1::-1],
+            dtype=np.int8
+            ).T #!!!cmk may want ot use order='F' or 'C' to get this the desired way.
         )
         arr = arr.astype(self.dtype)
         # Add a ploidy dimension, so allele counts of 0, 1, 2 correspond to 00, 10, 11
@@ -91,7 +92,8 @@ class BedReader(object):
         # in-memory bim/map/fam data is essentially just a file pointer
         # but this will still be problematic if the an array is created
         # from the same PLINK dataset many times
-        self.bed._close_bed()  # pragma: no cover
+        #!!!cmk don't think needed anymore
+        pass
 
 
 def _to_dict(df, dtype=None):

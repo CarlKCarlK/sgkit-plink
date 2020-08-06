@@ -29,7 +29,7 @@ def test_write():
 
     val_float = val0.astype('float')
     val_float[0,0]=0.5
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         open_bed.write(out_file,val_float,iid=bed.iid,sid=bed.sid,pos=bed.pos,force_python_only=True) #!!!cmk test on force_python=False, too
 
 
