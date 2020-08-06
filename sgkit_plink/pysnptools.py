@@ -6,12 +6,12 @@ import dask.array as da
 import dask.dataframe as dd
 import numpy as np
 from dask.dataframe import DataFrame
-from pysnptools.snpreader import Bed
 from xarray import Dataset
 
 from sgkit import create_genotype_call_dataset
 from sgkit.api import DIM_SAMPLE
 from sgkit.utils import encode_array
+from sgkit-plink._open_bed import open_bed
 
 PathType = Union[str, Path]
 

@@ -107,3 +107,6 @@ def test_read_stat_alt_alleles(ds1):
         ds1["call_genotype"].clip(0, 2).sum(dim="ploidy").sum(dim="variants").values
     )
     np.testing.assert_equal(n_alt_alleles, [102, 95, 98, 94, 88, 91, 90, 98, 96, 103])
+
+if __name__ == "__main__": #!!cmk is this wanted?
+    pytest.main([__file__])
