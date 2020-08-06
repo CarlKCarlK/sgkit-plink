@@ -18,10 +18,10 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
         filename,
-        count_A1=True,
         iid=None,
         sid=None,
         pos=None,
+        count_A1=True,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
         self._file_pointer = None
@@ -169,40 +169,38 @@ class open_bed:  #!!!cmk need doc strings everywhere
             self._filepointer.close()
             self._filepointer = None
 
+    #!!!cmk say something about support for snp-minor vs major        
     @staticmethod
     def write(
-        filename, snpdata, count_A1=True, force_python_only=False,
+        filename,
+        val,
+        iid,
+        sid,
+        pos,
+        count_A1=True,
+       force_python_only=False,
     ):
-        """Writes a :class:`SnpData` to Bed format and returns the :class:`.Bed`.
+        iid = open_bed._fixup_input(
+                iid,
+                empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
+                dtype="str",
+            )
+        sid = open_bed._fixup_input(
+                sid,
+                empty_creator=lambda ignore: np.empty([0], dtype="str"),
+                dtype="str",
+            ) 
+        pos = open_bed._fixup_input(
+                pos,
+                count=len(sid),
+                empty_creator=lambda count: np.array(
+                    [[np.nan, np.nan, np.nan]] * count
+                ),
+            )
 
-        :param filename: the name of the file to create
-        :type filename: string
-        :param snpdata: The in-memory data that should be written to disk.
-        :type snpdata: :class:`SnpData`
-        :param count_A1: Tells if it should count the number of A1 alleles (the PLINK standard) or the number of A2 alleles. False is the current default, but in the future the default will change to True.
-        :type count_A1: bool
-        :rtype: :class:`.Bed`
-
-        >>> import numpy as np
-        >>> from pysnptools.snpreader import Pheno, Bed, SnpData
-        >>> import pysnptools.util as pstutil
-        >>> from pysnptools.util import example_file # Download and return local file name
-        >>> pheno_fn = example_file("pysnptools/examples/toydata.phe")
-        >>> snpdata = Pheno(pheno_fn).read()         # Read data from Pheno format
-        >>> pstutil.create_directory_if_necessary("tempdir/toydata.5chrom.bed")
-        >>> Bed.write("tempdir/toydata.5chrom.bed",snpdata,count_A1=False)   # Write data in Bed format
-        Bed('tempdir/toydata.5chrom.bed',count_A1=False)
-        >>> # Can write from an int8 array, too.
-        >>> snpdata_int = SnpData(val=np.int_(snpdata.val).astype('int8'),iid=snpdata.iid,sid=snpdata.sid,pos=snpdata.pos,_require_float32_64=False)
-        >>> snpdata_int.val.dtype
-        dtype('int8')
-        >>> Bed.write("tempdir/toydata.5chrom.bed",snpdata_int,count_A1=False,_require_float32_64=False)
-        Bed('tempdir/toydata.5chrom.bed',count_A1=False)
-        """
-
-        open_bed._write_fam(snpdata, filename, remove_suffix="bed")
+        open_bed._write_fam(iid, filename, remove_suffix="bed")
         open_bed._write_map_or_bim(
-            snpdata, filename, remove_suffix="bed", add_suffix="bim"
+            sid, pos, filename, remove_suffix="bed", add_suffix="bim"
         )
 
         bedfile = open_bed._name_of_other_file(
@@ -212,14 +210,14 @@ class open_bed:  #!!!cmk need doc strings everywhere
         if not force_python_only:
             from pysnptools.snpreader import wrap_plink_parser
 
-            if snpdata.val.flags["C_CONTIGUOUS"]:
+            if val.flags["C_CONTIGUOUS"]:
                 order = "C"
-            elif snpdata.val.flags["F_CONTIGUOUS"]:
+            elif val.flags["F_CONTIGUOUS"]:
                 order = "F"
             else:
                 raise Exception("order not known (not 'F' or 'C')")
 
-            if snpdata.val.dtype == np.float64:
+            if val.dtype == np.float64:
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2doubleFAAA(
                         bedfile.encode("ascii"),
@@ -236,7 +234,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         count_A1,
                         snpdata.val,
                     )
-            elif snpdata.val.dtype == np.float32:
+            elif val.dtype == np.float32:
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2floatFAAA(
                         bedfile.encode("ascii"),
@@ -251,16 +249,16 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         snpdata.iid_count,
                         snpdata.sid_count,
                         count_A1,
-                        snpdata.val,
+                        val,
                     )
-            elif snpdata.val.dtype == np.int8:  #!!!cmk move this up
+            elif val.dtype == np.int8:  #!!!cmk move this up
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2int8FAAA(
                         bedfile.encode("ascii"),
                         snpdata.iid_count,
                         snpdata.sid_count,
                         count_A1,
-                        snpdata.val,
+                        val,
                     )
                 else:
                     wrap_plink_parser.writePlinkBedFile2int8CAAA(
@@ -291,7 +289,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 bed_filepointer.write(bytes(bytearray([0b00011011])))  # magic numbers
                 bed_filepointer.write(bytes(bytearray([0b00000001])))  # snp major
 
-                for sid_index in range(snpdata.sid_count):
+                for sid_index in range(len(sid)):
                     if sid_index % 1 == 0:
                         logging.info(
                             "Writing snp # {0} to file '{1}'".format(
@@ -299,21 +297,19 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             )
                         )
 
-                    col = snpdata.val[:, sid_index]
-                    for iid_by_four in range(0, snpdata.iid_count, 4):
-                        vals_for_this_byte = col[iid_by_four : iid_by_four + 4]
+                    colx = val[:, sid_index]
+                    for iid_by_four in range(0, len(iid), 4):
+                        vals_for_this_byte = colx[iid_by_four : iid_by_four + 4]
                         byte = 0b00000000
                         for val_index in range(len(vals_for_this_byte)):
-                            val = vals_for_this_byte[val_index]
-                            if val == 0:
+                            valx = vals_for_this_byte[val_index]
+                            if valx == 0:
                                 code = zero_code
-                            elif val == 1:
+                            elif valx == 1:
                                 code = 0b10  # backwards on purpose
-                            elif val == 2:
+                            elif valx == 2:
                                 code = two_code
-                            elif np.isnan(val) or (
-                                snpdata.val.dtype == np.int8 and val == -127
-                            ):
+                            elif (val.dtype == np.int8 and valx == -127) or np.isnan(valx): #!!!cmk find a better way to tell int types from float types
                                 code = 0b01  # backwards on purpose
                             else:
                                 raise Exception(
@@ -324,7 +320,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             byte |= code << (val_index * 2)
                         bed_filepointer.write(bytes(bytearray([byte])))
         logging.info("Done writing " + filename)
-        return Bed(filename, count_A1=count_A1)
 
     @property
     def iid_count(self):
@@ -579,22 +574,22 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     #!!!cmk put the methods in a good order
     @staticmethod
-    def _write_fam(snpdata, basefilename, remove_suffix, add_suffix="fam"):
+    def _write_fam(iid, basefilename, remove_suffix, add_suffix="fam"):
         famfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
 
         with open(famfile, "w") as fam_filepointer:
-            for iid_row in snpdata.iid:
+            for iid_row in iid:
                 fam_filepointer.write(
                     "{0} {1} 0 0 0 0\n".format(iid_row[0], iid_row[1])
                 )
 
     @staticmethod
-    def _write_map_or_bim(snpdata, basefilename, remove_suffix, add_suffix):
+    def _write_map_or_bim(sid, pos, basefilename, remove_suffix, add_suffix):
         mapfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
 
         with open(mapfile, "w") as map_filepointer:
-            for sid_index, sid in enumerate(snpdata.sid):
-                posrow = snpdata.pos[sid_index]
+            for sid_index, sid in enumerate(sid):
+                posrow = pos[sid_index]
                 map_filepointer.write(
                     "%r\t%s\t%r\t%r\tA\tC\n" % (posrow[0], sid, posrow[1], posrow[2])
                 )
