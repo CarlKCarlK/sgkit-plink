@@ -1,5 +1,6 @@
-#!!!cmk run flake8, isort, etc
 #!!!cmk add typing info
+#!!!cmk run flake8, isort, etc
+import os
 import numpy as np
 import pandas as pd
 import logging  #!!!cmk how does sgkit do logging messages?
@@ -67,7 +68,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     def _assert_iid_sid_pos(self):
 
-        assert (
+        assert (#!!!cmk replace every assert with a message with a raised exception?
             self._row.dtype.type is np.str_
             and len(self._row.shape) == 2
             and self._row.shape[1] == 2
@@ -644,7 +645,7 @@ if __name__ == "__main__":
             filename = r"d:\deldir\rand\fakeukC{0}x{1}-{2}.bed".format(
                 iid_count, sid_index_start, sid_index_end
             )
-            if not os.path.exists(filename):
+            if not os.path.exists(filename):#!!!cmk use pathlib?
                 Bed.write(
                     filename + ".temp", snpgen[:, sid_index_start:sid_index_end].read()
                 )

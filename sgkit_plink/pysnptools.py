@@ -11,7 +11,7 @@ from xarray import Dataset
 from sgkit import create_genotype_call_dataset
 from sgkit.api import DIM_SAMPLE
 from sgkit.utils import encode_array
-from sgkit-plink._open_bed import open_bed
+from sgkit_plink._open_bed import open_bed
 
 PathType = Union[str, Path]
 
