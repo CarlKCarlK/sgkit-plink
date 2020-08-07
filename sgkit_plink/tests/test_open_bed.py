@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from sgkit_plink._open_bed import open_bed
 
@@ -32,6 +33,44 @@ def test_write():
     with pytest.raises(ValueError):
         open_bed.write(out_file,val_float,iid=bed.iid,sid=bed.sid,pos=bed.pos,force_python_only=True) #!!!cmk test on force_python=False, too
 
+#!!!cmk too slow
+def test_properties():
+    file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+    iid_count, sid_count = 10,100
+    with open_bed(file) as bed:
+        iid_list = bed.iid.tolist()
+        sid_list = bed.sid.tolist()
+        pos_list = bed.pos.tolist()
+    for iid in [None,len(iid_list),iid_list,np.array(iid_list)]:
+        for iid_before_read in [False,True]:
+            for iid_after_read in [False,True]:
+                for sid in [None,len(sid_list),sid_list,np.array(sid_list)]:
+                    for sid_before_read in [False,True]:
+                        for sid_after_read in [False,True]:
+                            for pos in [None,len(pos_list),pos_list,np.array(pos_list)]:
+                                for pos_before_read in [False,True]:
+                                    for pos_after_read in [False,True]:
+                                        with open_bed(file,iid=iid,sid=sid,pos=pos) as bed:
+                                            if iid_before_read:
+                                                assert np.array_equal(bed.iid,iid_list)
+                                            if sid_before_read:
+                                                assert np.array_equal(bed.sid,sid_list)
+                                            if pos_before_read:
+                                                assert np.array_equal(bed.pos,pos_list)
+                                            val = bed.read()
+                                            assert val.shape == (len(iid_list),len(sid_list))
+                                            if iid_after_read:
+                                                assert np.array_equal(bed.iid,iid_list)
+                                            if sid_after_read:
+                                                assert np.array_equal(bed.sid,sid_list)
+                                            if pos_after_read:
+                                                assert np.array_equal(bed.pos,pos_list)
+                                            bed._assert_iid_sid_pos()
+
+
+
+
 
 if __name__ == "__main__": #!!cmk is this wanted?
+    test_properties()#!!!cmk
     pytest.main([__file__])

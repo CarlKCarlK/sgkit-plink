@@ -2,18 +2,29 @@
 #!!!cmk run flake8, isort, etc
 import os
 import numpy as np
+import numbers
 import pandas as pd
 import logging  #!!!cmk how does sgkit do logging messages?
+from pathlib import Path
 
 # import warnings
 import math
 from typing import Any, List, Optional, Tuple, Union
 
+from itertools import (takewhile,repeat)
+
+# https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
+def rawincount(filename):
+    f = open(filename, 'rb')
+    bufgen = takewhile(lambda x: x, (f.raw.read(1024*1024) for _ in repeat(None)))
+    return sum( buf.count(b'\n') for buf in bufgen )
 
 def _default_empty_creator(count):  #!!!cmk make a static member function?
     return np.empty([count or 0, 0], dtype="str")
 
-
+#!!!cmk test that it works on files with no rows and/or cols (it did before)
+#!!!cmk giving numbers for iid and sid (not pos)
+#!!!cmk test reading values before asking for iid (or sid or pos). It should scan the file fast instead of loading it, but load it later if data is requested.
 class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
@@ -24,58 +35,54 @@ class open_bed:  #!!!cmk need doc strings everywhere
         count_A1=True,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
-        self.filename = filename
+        self.filename = str(Path(filename)) #!!!cmk is this too evil
         self.count_A1 = count_A1
         self.skip_format_check = skip_format_check
         #!!!cmk read the PLINK docs and switch to using their names for iid and sid and pos, etc
-        if iid is not None:
-            self._row = self._fixup_input(
+        self._iid = self._fixup_input(
                 iid,
                 empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
                 dtype="str",
-            )  #!!!cmk need code and coverage
-        if sid is not None:
-            self._col = self._fixup_input(
+                none_num_ok=True,
+            )
+        self._sid =  self._fixup_input(
                 sid,
                 empty_creator=lambda ignore: np.empty([0], dtype="str"),
                 dtype="str",
-            )  #!!!cmk need code and coverage
-        if pos is not None:
-            self._col_property = self._fixup_input(
+                none_num_ok=True,
+            )  
+        self._pos =  self._fixup_input(
                 pos,
-                count=len(self._col),
                 empty_creator=lambda count: np.array(
                     [[np.nan, np.nan, np.nan]] * count
                 ),
-            )  #!!!cmk need code and coverage
+                none_num_ok=True,
+            ) 
+        self._iid_range = None
+        self._sid_range = None
+        #!!!cmk fastest way to count lines in file in python: https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
+        #!!!cmk can bim/bam/fam after extra line at bottom?
 
-        if not hasattr(self, "_row"):
-            self._row = self._read_fam(self.filename, remove_suffix="bed")
-        self._iid_range = np.arange(len(self._row))
-
-        if not hasattr(self, "_col") or not hasattr(self, "_col_property"):
-            self._col, self._col_property = self._read_map_or_bim(
-                self.filename, remove_suffix="bed", add_suffix="bim"
-            )
-        self._sid_range = np.arange(len(self._col))
-
-        self._assert_iid_sid_pos()
+        #!!!cmk self._assert_iid_sid_pos()
 
         if not self.skip_format_check:
             bedfile = self._name_of_other_file(self.filename, "bed", "bed")
             with open(bedfile, "rb") as filepointer:
                self._check_file(filepointer)
 
-    def _assert_iid_sid_pos(self):
+    def _assert_iid_sid_pos(self):#!!!cmk why isn't pos getting check here?
 
         assert (#!!!cmk replace every assert with a message with a raised exception?
-            self._row.dtype.type is np.str_
-            and len(self._row.shape) == 2
-            and self._row.shape[1] == 2
+            self.iid.dtype.type is np.str_
+            and len(self.iid.shape) == 2
+            and self.iid.shape[1] == 2
         ), "iid should be dtype str, have two dimensions, and the second dimension should be size 2"
         assert (
-            self._col.dtype.type is np.str_ and len(self._col.shape) == 1
+            self.sid.dtype.type is np.str_ and len(self.sid.shape) == 1
         ), "sid should be of dtype of str and one dimensional"
+        assert (
+            self.pos.dtype.type is np.float64 and len(self.pos.shape) == 2 and self.pos.shape[1]==3
+        ), "pos should be of dtype of float, have two dimensions, and second dimenson should be size 3"
 
     @staticmethod
     def _read_map_or_bim(basefilename, remove_suffix, add_suffix):
@@ -127,15 +134,32 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @property
     def iid(self):
-        return self._row
+        if self._iid is None or isinstance(self._iid, numbers.Integral):
+            old = self._iid
+            self._iid = self._read_fam(self.filename, remove_suffix="bed")
+            if isinstance(old, numbers.Integral):
+                assert old == len(self._iid)
+        return self._iid
 
     @property
     def sid(self):
-        return self._col
+        if self._sid is None or isinstance(self._sid, numbers.Integral):
+            old = self._sid
+            self._sid, self._pos = self._read_map_or_bim(
+                self.filename, remove_suffix="bed", add_suffix="bim")
+            if isinstance(old, numbers.Integral):
+                assert old == len(self._sid)
+        return self._sid
 
     @property
     def pos(self):  #!!!cmk what about the other metadata in bim/map and fam file?
-        return self._col_property
+        if self._pos is None or isinstance(self._pos, numbers.Integral):
+            old = self._pos
+            self._sid, self._pos = self._read_map_or_bim(
+                self.filename, remove_suffix="bed", add_suffix="bim")
+            if isinstance(old, numbers.Integral):
+                assert old == len(self._pos)
+        return self._pos
 
     @staticmethod
     def _check_file(filepointer):
@@ -175,7 +199,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
        force_python_only=False,
     ):
         iid = open_bed._fixup_input(
-                iid,
+                iid,#!!!what to do with write
                 empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
                 dtype="str",
             )
@@ -317,11 +341,32 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @property
     def iid_count(self):
-        return len(self._row)
+        if self._iid is None:
+            metafile = open_bed._name_of_other_file(self.filename, "bed", "fam")
+            self._iid = rawincount(metafile)
+        if isinstance(self._iid, numbers.Integral):
+            return self._iid
+        else:
+            return len(self._iid)
 
     @property
     def sid_count(self):
-        return len(self._col)
+        if self._sid is None and self._pos is None:
+            metafile = open_bed._name_of_other_file(self.filename, "bed", "bim")
+            self._sid = rawincount(metafile)
+
+        if isinstance(self._sid, numbers.Integral):
+            if isinstance(self._pos, numbers.Integral):
+                assert self._pos == self._sid, "Expect sid and pos to agree on sid_count"
+            return self._sid
+        if isinstance(self._pos, numbers.Integral):
+            return self._pos
+        if self._sid is not None:
+            if self._pos is not None:
+                assert len(self._pos) == len(self._sid), "Expect sid and pos to agree on sid_count"
+            return len(self._sid)
+        else:
+            return len(self._pos)
 
     #!!!cmk change 'or_none' to 'or_slice'
     def _read(
@@ -347,6 +392,10 @@ class open_bed:  #!!!cmk need doc strings everywhere
         sid_count_in = self.sid_count
 
         #!!!cmk happy with _iid_range and _sid_range?
+        if self._iid_range is None:
+            self._iid_range = np.arange(self.iid_count)
+        if self._sid_range is None:
+            self._sid_range = np.arange(self.sid_count)
         iid_index = self._iid_range[iid_index_or_none]
         sid_index = self._sid_range[sid_index_or_none]
 
@@ -552,8 +601,11 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @staticmethod
     def _fixup_input(
-        input, count=None, empty_creator=_default_empty_creator, dtype=None
+        input, count=None, empty_creator=_default_empty_creator, dtype=None, none_num_ok=False
     ):
+        if none_num_ok and (input is None or isinstance(input, numbers.Integral)):
+            return input
+
         if input is None or len(input) == 0:
             input = empty_creator(count)
         elif not isinstance(input, np.ndarray):
