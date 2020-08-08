@@ -1,3 +1,10 @@
+#!!!cmk todo: Split iid into two id
+#!!!cmk todo: Offer to ignore some or all bim fields
+#!!!cmk todo: make thread safe (an option to load everything?)
+#!!!cmk todo: maybe rename iid,sid
+#!!!cmk 
+
+
 #!!!cmk add typing info
 #!!!cmk run flake8, isort, etc
 import os
@@ -295,7 +302,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         val,
         iid,
         sid,
-        pos,  #!!!cmk need to update this
+        pos,  #!!!cmk0 need to update this
         count_A1=True,
         force_python_only=False,
     ):

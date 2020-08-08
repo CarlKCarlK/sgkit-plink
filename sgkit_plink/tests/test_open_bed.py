@@ -51,7 +51,7 @@ def test_write():
             )
 
 
-#!!!cmk too slow
+#!!!cmk rather slow
 def test_properties():
     file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
     with open_bed(file) as bed:
@@ -105,10 +105,9 @@ def test_properties():
                                             # bed._assert_iid_sid_chromosome()
 
 
-#!!!cmk return
-# def test_shape():
-#    with open_bed(r'D:\OneDrive\programs\pstsgkit\tests\datasets\all_chr.maf0.001.N300.bed',iid=1000,sid=5) as bed:
-#        assert bed.shape==(1,1)
+ def test_shape():
+    with open_bed(r'D:\OneDrive\programs\pstsgkit\tests\datasets\all_chr.maf0.001.N300.bed',iid=1000,sid=5) as bed:
+        assert bed.shape==(1,1)
 
 
 if __name__ == "__main__":  #!!cmk is this wanted?

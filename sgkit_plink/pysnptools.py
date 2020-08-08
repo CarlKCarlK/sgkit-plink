@@ -41,7 +41,7 @@ BIM_ARRAY_DTYPE = dict([(f[0], f[2]) for f in BIM_FIELDS])
 class BedReader(object):
     def __init__(self, path, shape, dtype=np.int8, count_A1=True):
         # n variants (sid = SNP id), n samples (iid = Individual id)
-        n_sid, n_iid = shape #!!!cmk0 can we get the shape from the Bed file efficently? No, only by counting the lines of the fam and bim files (If it does get passed in, check that it agrees.)
+        n_sid, n_iid = shape
         # Initialize Bed with empty arrays for axis data, otherwise it will
         # load the bim/map/fam files entirely into memory (it does not do out-of-core for those)
         self.open_bed = open_bed(
