@@ -11,7 +11,8 @@ def test_read1():
         assert bed.shape == (10,100)
         val = bed.read(force_python_only=True)
         assert val.mean()==-13.142
-        assert (bed.pos[-1,:] == [1,0,100]).all()
+        assert bed.chromosome[-1] == '1'
+        assert bed.bp_position[-1] == 100
         #!!!cmk test reading into other dtypes
 
 #!!!cmk show example of reading where chrom==5
@@ -22,17 +23,20 @@ def test_write():
     out_file = r"m:/deldir/out.bed"   #!!!cmk remove absolute reference
     with open_bed(in_file) as bed:
         val0 = val=bed.read(force_python_only=True)
-        open_bed.write(out_file,val0,iid=bed.iid,sid=bed.sid,pos=bed.pos,force_python_only=True)
+        pos = np.array([bed.chromosome.astype('int'),bed.cm_position,bed.bp_position]).T
+        open_bed.write(out_file,val0,iid=bed.iid,sid=bed.sid,pos=pos,force_python_only=True)
         with open_bed(out_file) as bed1:
             assert (val0 == bed1.read()).all() #!!!cmk use array_equal
             assert (bed.iid == bed1.iid).all()
             assert (bed.sid == bed1.sid).all()
-            assert (bed.pos == bed1.pos).all()
+            assert (bed.chromosome.astype('float') == bed1.chromosome.astype('float')).all() #!!!cmk remove the 'astype('float')'
+            assert (bed.cm_position == bed1.cm_position).all()
+            assert (bed.bp_position == bed1.bp_position).all()
 
     val_float = val0.astype('float')
     val_float[0,0]=0.5
     with pytest.raises(ValueError):
-        open_bed.write(out_file,val_float,iid=bed.iid,sid=bed.sid,pos=bed.pos,force_python_only=True) #!!!cmk test on force_python=False, too
+        open_bed.write(out_file,val_float,iid=bed.iid,sid=bed.sid,pos=pos,force_python_only=True) #!!!cmk test on force_python=False, too
 
 #!!!cmk too slow
 def test_properties():
@@ -79,5 +83,5 @@ def test_properties():
 
 
 if __name__ == "__main__": #!!cmk is this wanted?
-    test_properties()#!!!cmk
+    test_read1() #!!!cmk
     pytest.main([__file__])

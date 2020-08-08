@@ -205,6 +205,27 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return self._bim_property('chromosome')
 
     @property
+    def chromosome(self):
+        return self._bim_property('chromosome')
+
+    @property
+    def cm_position(self):
+        return self._bim_property('cm_position')
+
+    @property
+    def bp_position(self):
+        return self._bim_property('bp_position')
+
+    @property
+    def allele_1(self):
+        return self._bim_property('allele_1')
+
+    @property
+    def allele_2(self):
+        return self._bim_property('allele_2')
+
+
+    @property
     def iid_count(self):
         if self._iid is None:
             metafile = open_bed._name_of_other_file(self.filename, "bed", "fam")
