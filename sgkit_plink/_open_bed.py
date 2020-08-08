@@ -11,16 +11,18 @@ from pathlib import Path
 import math
 from typing import Any, List, Optional, Tuple, Union
 
-from itertools import (takewhile,repeat)
+from itertools import takewhile, repeat
 
 # https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
 def rawincount(filename):
-    f = open(filename, 'rb')
-    bufgen = takewhile(lambda x: x, (f.raw.read(1024*1024) for _ in repeat(None)))
-    return sum( buf.count(b'\n') for buf in bufgen )
+    f = open(filename, "rb")
+    bufgen = takewhile(lambda x: x, (f.raw.read(1024 * 1024) for _ in repeat(None)))
+    return sum(buf.count(b"\n") for buf in bufgen)
+
 
 def _default_empty_creator(count):  #!!!cmk make a static member function?
     return np.empty([count or 0, 0], dtype="str")
+
 
 #!!!cmk test that it works on files with no rows and/or cols (it did before)
 class open_bed:  #!!!cmk need doc strings everywhere
@@ -29,47 +31,49 @@ class open_bed:  #!!!cmk need doc strings everywhere
         filename,
         iid=None,
         sid=None,
-        chromosome = None,
-        cm_position = None,
-        bp_position = None,
-        allele_1 = None, #!!!cmk an option to ignore some of these
-        allele_2 = None,
+        chromosome=None,
+        cm_position=None,
+        bp_position=None,
+        allele_1=None,  #!!!cmk an option to ignore some of these
+        allele_2=None,
         count_A1=True,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
-        self.filename = str(Path(filename)) #!!!cmk is this too evil?
+        self.filename = str(Path(filename))  #!!!cmk is this too evil?
         self.count_A1 = count_A1
         self.skip_format_check = skip_format_check
         #!!!cmk read the PLINK docs and switch to using their names for iid and sid and pos, etc
         self._iid = self._fixup_input(
-                iid,
-                empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
-                dtype="str",
-                none_num_ok=True,
-            )
-        self._fixup_bim((sid,chromosome,cm_position,bp_position,allele_1,allele_2))
+            iid,
+            empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
+            dtype="str",
+            none_num_ok=True,
+        )
+        self._fixup_bim((sid, chromosome, cm_position, bp_position, allele_1, allele_2))
         self._iid_range = None
         self._sid_range = None
 
         if not self.skip_format_check:
             bedfile = self._name_of_other_file(self.filename, "bed", "bed")
             with open(bedfile, "rb") as filepointer:
-               self._check_file(filepointer)
+                self._check_file(filepointer)
 
-    # As of Python 3.7+, these will key their order
-    _bim_meta = {'sid' : (1,np.str_),
-             'chromosome' : (0, np.str_),
-             'cm_position'   : (2, 'float32'),
-             'bp_position'  : (3, 'int32'),
-             'allele_1'    : (4, np.str_),
-             'allele_2'    : (5, np.str_)}
+    # As of Python 3.7+, these will keep their order
+    _bim_meta = {
+        "sid": (1, np.str_),
+        "chromosome": (0, np.str_),
+        "cm_position": (2, "float32"),
+        "bp_position": (3, "int32"),
+        "allele_1": (4, np.str_),
+        "allele_2": (5, np.str_),
+    }
 
     def _fixup_bim(self, bim_list):
-        assert len(bim_list)==len(self._bim_meta), "real assert"
+        assert len(bim_list) == len(self._bim_meta), "real assert"
         self._bim = {}
         self._sid_count = None
 
-        for index, (key,(column,dtype)) in enumerate(self._bim_meta.items()):
+        for index, (key, (_, dtype)) in enumerate(self._bim_meta.items()):
             input = bim_list[index]
             if input is None:
                 output = input
@@ -78,37 +82,47 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 if self._sid_count is None:
                     self._sid_count = input
                 else:
-                    assert self._sid_count == input, "Expect all inputs to agree on the sid_count"
-            elif len(input) == 0: #Test this
+                    assert (
+                        self._sid_count == input
+                    ), "Expect all inputs to agree on the sid_count"
+            elif len(input) == 0:  # Test this
                 output = np.zeros([0, 1], dtype=dtype)
-                if self._sid_count is None: #!!!cmk similar code elsewhere
+                if self._sid_count is None:  #!!!cmk similar code elsewhere
                     self._sid_count = len(output)
                 else:
-                    assert self._sid_count == len(output), "Expect all inputs to agree on the sid_count"
-            elif not isinstance(input, np.ndarray) or input.dtype is dtype: #!!!cmk get this right including shape
+                    assert self._sid_count == len(
+                        output
+                    ), "Expect all inputs to agree on the sid_count"
+            elif (
+                not isinstance(input, np.ndarray) or input.dtype is dtype
+            ):  #!!!cmk get this right including shape
                 output = np.array(input, dtype=dtype)
                 if self._sid_count is None:
                     self._sid_count = len(output)
                 else:
-                    assert self._sid_count == len(output), "Expect all inputs to agree on the sid_count"
+                    assert self._sid_count == len(
+                        output
+                    ), "Expect all inputs to agree on the sid_count"
             else:
                 output = input
                 #!!!cmk test that shape is OK
                 assert (
                     output.dtype.type is dtype and len(output.shape) == 1
-                        ), f"{key} should be of dtype of {dtype} and one dimensional"
+                ), f"{key} should be of dtype of {dtype} and one dimensional"
 
                 if self._sid_count is None:
                     self._sid_count = len(output)
                 else:
-                    assert self._sid_count == len(output), "Expect all inputs to agree on the sid_count"
+                    assert self._sid_count == len(
+                        output
+                    ), "Expect all inputs to agree on the sid_count"
             self._bim[key] = output
-        return 
+        return
 
+    # !!!cmk this isn't getting used anymore. Why not and remove it
+    def _assert_iid_sid_pos(self):  #!!!cmk why wasn't pos getting check here?
 
-    def _assert_iid_sid_pos(self):#!!!cmk why wasn't pos getting check here?
-
-        assert (#!!!cmk replace every assert with a message with a raised exception?
+        assert (  #!!!cmk replace every assert with a message with a raised exception?
             self.iid.dtype.type is np.str_
             and len(self.iid.shape) == 2
             and self.iid.shape[1] == 2
@@ -117,7 +131,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
             self.sid.dtype.type is np.str_ and len(self.sid.shape) == 1
         ), "sid should be of dtype of str and one dimensional"
         assert (
-            self.pos.dtype.type is np.float64 and len(self.pos.shape) == 2 and self.pos.shape[1]==3#!!!cmk remove
+            self.pos.dtype.type is np.float64
+            and len(self.pos.shape) == 2
+            and self.pos.shape[1] == 3  #!!!cmk remove
         ), "pos should be of dtype of float, have two dimensions, and second dimenson should be size 3"
 
     def _read_map_or_bim(self, remove_suffix, add_suffix):
@@ -127,32 +143,33 @@ class open_bed:  #!!!cmk need doc strings everywhere
         if (
             os.path.getsize(mapfile) == 0
         ):  # If the map/bim file is empty, return empty arrays
-            for index, (key,(column,dtype)) in enumerate(self._bim_meta.items()):
+            for key, (column, dtype) in self._bim_meta.items():
                 val = self._bim[key]
                 assert val is None or isinstance(val, numbers.Integral), "real assert"
-                self._bim[key] = np.zeros([0, 1], dtype=dtype) #!!!cmk get this right
+                self._bim[key] = np.zeros([0, 1], dtype=dtype)  #!!!cmk get this right
             if self._sid_count is None:
                 self._sid_count = 0
             else:
-                assert self._sid_count == 0, "Expect all inputs to agree on the sid_count"
+                assert (
+                    self._sid_count == 0
+                ), "Expect all inputs to agree on the sid_count"
         else:
             fields = pd.read_csv(
-                mapfile,
-                delimiter="\t",
-                header=None,
-                index_col=False,
-                comment=None,
+                mapfile, delimiter="\t", header=None, index_col=False, comment=None,
             )
             if self._sid_count is None:
                 self._sid_count = len(fields)
             else:
-                assert self._sid_count == len(fields), "Expect all inputs to agree on the sid_count"
+                assert self._sid_count == len(
+                    fields
+                ), "Expect all inputs to agree on the sid_count"
 
-            for index, (key,(column,dtype)) in enumerate(self._bim_meta.items()):
+            for key, (column, dtype) in self._bim_meta.items():
                 val = self._bim[key]
                 if val is None or isinstance(val, numbers.Integral):
-                    self._bim[key] = np.array(fields[column].tolist(), dtype=dtype) #!!!cmk would .values sometimes be faster or have better memory use?
-
+                    self._bim[key] = np.array(
+                        fields[column].tolist(), dtype=dtype
+                    )  #!!!cmk would .values sometimes be faster or have better memory use?
 
     @staticmethod
     def _read_fam(basefilename, remove_suffix, add_suffix="fam"):
@@ -182,12 +199,14 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def iid(self):
         if self._iid is None or isinstance(self._iid, numbers.Integral):
             old = self._iid
-            self._iid = self._read_fam(self.filename, remove_suffix="bed",add_suffix="fam")
+            self._iid = self._read_fam(
+                self.filename, remove_suffix="bed", add_suffix="fam"
+            )
             if isinstance(old, numbers.Integral):
                 assert old == len(self._iid)
         return self._iid
 
-    def _bim_property(self,key):
+    def _bim_property(self, key):
         val = self._bim[key]
         if val is None or isinstance(val, numbers.Integral):
             self._read_map_or_bim(remove_suffix="bed", add_suffix="bim")
@@ -195,35 +214,29 @@ class open_bed:  #!!!cmk need doc strings everywhere
         else:
             return val
 
-
     @property
     def sid(self):
-        return self._bim_property('sid')
+        return self._bim_property("sid")
 
     @property
     def chromosome(self):
-        return self._bim_property('chromosome')
-
-    @property
-    def chromosome(self):
-        return self._bim_property('chromosome')
+        return self._bim_property("chromosome")
 
     @property
     def cm_position(self):
-        return self._bim_property('cm_position')
+        return self._bim_property("cm_position")
 
     @property
     def bp_position(self):
-        return self._bim_property('bp_position')
+        return self._bim_property("bp_position")
 
     @property
     def allele_1(self):
-        return self._bim_property('allele_1')
+        return self._bim_property("allele_1")
 
     @property
     def allele_2(self):
-        return self._bim_property('allele_2')
-
+        return self._bim_property("allele_2")
 
     @property
     def iid_count(self):
@@ -238,10 +251,11 @@ class open_bed:  #!!!cmk need doc strings everywhere
     @property
     def sid_count(self):
         if self._sid_count is None:
-            metafile = open_bed._name_of_other_file(self.filename, "bed", "bim") #!!!cmk hey, let's just do this once
+            metafile = open_bed._name_of_other_file(
+                self.filename, "bed", "bim"
+            )  #!!!cmk hey, let's just do this once
             self._sid_count = rawincount(metafile)
         return self._sid_count
-
 
     @staticmethod
     def _check_file(filepointer):
@@ -269,34 +283,30 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def __exit__(self, *_):
         pass
 
-    #!!!cmk say something about support for snp-minor vs major        
+    #!!!cmk say something about support for snp-minor vs major
     @staticmethod
     def write(
         filename,
         val,
         iid,
         sid,
-        pos,#!!!cmk need to update this
+        pos,  #!!!cmk need to update this
         count_A1=True,
-       force_python_only=False,
+        force_python_only=False,
     ):
         iid = open_bed._fixup_input(
-                iid,#!!!what to do with write
-                empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
-                dtype="str",
-            )
+            iid,  #!!!what to do with write
+            empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
+            dtype="str",
+        )
         sid = open_bed._fixup_input(
-                sid,
-                empty_creator=lambda ignore: np.empty([0], dtype="str"),
-                dtype="str",
-            ) 
+            sid, empty_creator=lambda ignore: np.empty([0], dtype="str"), dtype="str",
+        )
         pos = open_bed._fixup_input(
-                pos,
-                count=len(sid),
-                empty_creator=lambda count: np.array(
-                    [[np.nan, np.nan, np.nan]] * count
-                ),
-            )
+            pos,
+            count=len(sid),
+            empty_creator=lambda count: np.array([[np.nan, np.nan, np.nan]] * count),
+        )
 
         open_bed._write_fam(iid, filename, remove_suffix="bed")
         open_bed._write_map_or_bim(
@@ -402,14 +412,18 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         vals_for_this_byte = colx[iid_by_four : iid_by_four + 4]
                         byte = 0b00000000
                         for val_index in range(len(vals_for_this_byte)):
-                            valx = vals_for_this_byte[val_index]#!!!cmk rename valx and the other *x
+                            valx = vals_for_this_byte[
+                                val_index
+                            ]  #!!!cmk rename valx and the other *x
                             if valx == 0:
                                 code = zero_code
                             elif valx == 1:
                                 code = 0b10  # backwards on purpose
                             elif valx == 2:
                                 code = two_code
-                            elif (val.dtype == np.int8 and valx == -127) or np.isnan(valx): #!!!cmk find a better way to tell int types from float types
+                            elif (val.dtype == np.int8 and valx == -127) or np.isnan(
+                                valx
+                            ):  #!!!cmk find a better way to tell int types from float types
                                 code = 0b01  # backwards on purpose
                             else:
                                 raise ValueError(
@@ -421,17 +435,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         bed_filepointer.write(bytes(bytearray([byte])))
         logging.info("Done writing " + filename)
 
-
-
-
     #!!!cmk change 'or_none' to 'or_slice'
     def _read(
-        self,
-        iid_index_or_none,
-        sid_index_or_none,
-        order,
-        dtype,
-        force_python_only,
+        self, iid_index_or_none, sid_index_or_none, order, dtype, force_python_only,
     ):
 
         if order == "A":
@@ -467,7 +473,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
             if iid_count_in > 0 and sid_count_in > 0:
                 if dtype == np.float64:
                     if order == "F":
-                        wrap_plink_parser.readPlinkBedFile2doubleFAAA(#!!!cmk double check that these check the format.If they don't, be sure checkformat is called sometime
+                        wrap_plink_parser.readPlinkBedFile2doubleFAAA(  #!!!cmk double check that these check the format.If they don't, be sure checkformat is called sometime
                             bed_fn.encode("ascii"),
                             iid_count_in,
                             sid_count_in,
@@ -631,9 +637,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         iid_index, sid_index = self._split_index(index)
         #!!!cmk merge read with _read
-        return self._read(
-            iid_index, sid_index, order, dtype, force_python_only,
-        )
+        return self._read(iid_index, sid_index, order, dtype, force_python_only,)
 
     @staticmethod
     def _split_index(index):
@@ -657,7 +661,11 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @staticmethod
     def _fixup_input(
-        input, count=None, empty_creator=_default_empty_creator, dtype=None, none_num_ok=False
+        input,
+        count=None,
+        empty_creator=_default_empty_creator,
+        dtype=None,
+        none_num_ok=False,
     ):
         if none_num_ok and (input is None or isinstance(input, numbers.Integral)):
             return input
@@ -741,7 +749,7 @@ if __name__ == "__main__":
             filename = r"d:\deldir\rand\fakeukC{0}x{1}-{2}.bed".format(
                 iid_count, sid_index_start, sid_index_end
             )
-            if not os.path.exists(filename):#!!!cmk use pathlib?
+            if not os.path.exists(filename):  #!!!cmk use pathlib?
                 Bed.write(
                     filename + ".temp", snpgen[:, sid_index_start:sid_index_end].read()
                 )
