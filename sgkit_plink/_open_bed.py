@@ -61,12 +61,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     # As of Python 3.7+, these will keep their order
     _bim_meta = {
-        "sid": (1, np.str_),
-        "chromosome": (0, np.str_),
-        "cm_position": (2, "float32"),
-        "bp_position": (3, "int32"),
-        "allele_1": (4, np.str_),
-        "allele_2": (5, np.str_),
+        "sid": (1, np.str_, None),
+        "chromosome": (0, np.str_, '0'),
+        "cm_position": (2, "float32", 0),
+        "bp_position": (3, "int32", 0),
+        "allele_1": (4, np.str_, None),
+        "allele_2": (5, np.str_, None),
     }
 
     def _fixup_bim(self, bim_list):
@@ -74,7 +74,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self._bim = {}
         self._sid_count = None
 
-        for index, (key, (_, dtype)) in enumerate(self._bim_meta.items()):
+        for index, (key, (_, dtype, _)) in enumerate(self._bim_meta.items()):
             input = bim_list[index]
             if input is None:
                 output = input
@@ -95,7 +95,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         output
                     ), "Expect all inputs to agree on the sid_count"
             elif (
-                not isinstance(input, np.ndarray) or input.dtype is dtype
+                not isinstance(input, np.ndarray) or input.dtype.type is not dtype
             ):  #!!!cmk get this right including shape
                 output = np.array(input, dtype=dtype)
                 if self._sid_count is None:
@@ -144,7 +144,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         if (
             os.path.getsize(mapfile) == 0
         ):  # If the map/bim file is empty, return empty arrays
-            for key, (column, dtype) in self._bim_meta.items():
+            for key, (column, dtype, missing) in self._bim_meta.items():
                 val = self._bim[key]
                 assert val is None or isinstance(val, numbers.Integral), "real assert"
                 self._bim[key] = np.zeros([0, 1], dtype=dtype)  #!!!cmk get this right
@@ -165,12 +165,16 @@ class open_bed:  #!!!cmk need doc strings everywhere
                     fields
                 ), "Expect all inputs to agree on the sid_count"
 
-            for key, (column, dtype) in self._bim_meta.items():
+            for key, (column, dtype, missing) in self._bim_meta.items():
                 val = self._bim[key]
                 if val is None or isinstance(val, numbers.Integral):
-                    self._bim[key] = np.array(
-                        fields[column].tolist(), dtype=dtype
-                    )  #!!!cmk would .values sometimes be faster or have better memory use?
+                    if missing is None:
+                        self._bim[key] = np.array(fields[column],dtype=dtype)
+                    else:
+                        self._bim[key] = np.array(fields[column].fillna(missing),dtype=dtype)
+                    #self._bim[key] = np.array(
+                    #    fields[column].tolist(), dtype=dtype
+                    #)  #!!!cmk would .values sometimes be faster or have better memory use?
 
     @staticmethod
     def _read_fam(basefilename, remove_suffix, add_suffix="fam"):
