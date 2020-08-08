@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from sgkit_plink._open_bed import open_bed
+import logging  #!!!cmk how does sgkit do logging messages?
 
 def test_read1():
     file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
@@ -40,34 +41,40 @@ def test_properties():
     with open_bed(file) as bed:
         iid_list = bed.iid.tolist()
         sid_list = bed.sid.tolist()
-        pos_list = bed.pos.tolist()
+        chromosome_list = bed.chromosome.tolist()
+    test_count = 0
     for iid in [None,len(iid_list),iid_list,np.array(iid_list)]:
         for iid_before_read in [False,True]:
             for iid_after_read in [False,True]:
                 for sid in [None,len(sid_list),sid_list,np.array(sid_list)]:
                     for sid_before_read in [False,True]:
                         for sid_after_read in [False,True]:
-                            for pos in [None,len(pos_list),pos_list,np.array(pos_list)]:
-                                for pos_before_read in [False,True]:
-                                    for pos_after_read in [False,True]:
-                                        with open_bed(file,iid=iid,sid=sid,pos=pos) as bed:
+                            for chromosome in [None,len(chromosome_list),chromosome_list,np.array(chromosome_list)]:
+                                for chromosome_before_read in [False,True]:
+                                    for chromosome_after_read in [False,True]:
+                                        with open_bed(file,iid=iid,sid=sid,chromosome=chromosome) as bed:
+                                            logging.info(f"Test {test_count}")
+                                            test_count += 1
                                             if iid_before_read:
                                                 assert np.array_equal(bed.iid,iid_list)
                                             if sid_before_read:
                                                 assert np.array_equal(bed.sid,sid_list)
-                                            if pos_before_read:
-                                                assert np.array_equal(bed.pos,pos_list)
+                                            if chromosome_before_read:
+                                                assert np.array_equal(bed.chromosome,chromosome_list)
                                             val = bed.read()
                                             assert val.shape == (len(iid_list),len(sid_list))
                                             if iid_after_read:
                                                 assert np.array_equal(bed.iid,iid_list)
                                             if sid_after_read:
                                                 assert np.array_equal(bed.sid,sid_list)
-                                            if pos_after_read:
-                                                assert np.array_equal(bed.pos,pos_list)
-                                            bed._assert_iid_sid_pos()
+                                            if chromosome_after_read:
+                                                assert np.array_equal(bed.chromosome,chromosome_list)
+                                            #bed._assert_iid_sid_chromosome()
 
-
+#!!!cmk return
+#def test_shape():
+#    with open_bed(r'D:\OneDrive\programs\pstsgkit\tests\datasets\all_chr.maf0.001.N300.bed',iid=1000,sid=5) as bed:
+#        assert bed.shape==(1,1)
 
 
 
