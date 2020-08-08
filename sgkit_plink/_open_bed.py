@@ -23,13 +23,14 @@ def rawincount(filename):
 def _default_empty_creator(count):  #!!!cmk make a static member function?
     return np.empty([count or 0, 0], dtype="str")
 
+#!!!cmk tell (and test of possible) under what conditions is thread-safe
 
 #!!!cmk test that it works on files with no rows and/or cols (it did before)
 class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
         filename,
-        iid=None,
+        iid=None, #!!!cmk why not support everything in fam file with fam_id and iid split?
         sid=None,
         chromosome=None,
         cm_position=None,
@@ -318,7 +319,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         )
 
         if not force_python_only:
-            from pysnptools.snpreader import wrap_plink_parser
+            from sgkit_plink import wrap_plink_parser
 
             if val.flags["C_CONTIGUOUS"]:
                 order = "C"
@@ -327,37 +328,38 @@ class open_bed:  #!!!cmk need doc strings everywhere
             else:
                 raise Exception("order not known (not 'F' or 'C')")
 
+            iid_count, sid_count = val.shape
             if val.dtype == np.float64:
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2doubleFAAA(
                         bedfile.encode("ascii"),
-                        snpdata.iid_count,
-                        snpdata.sid_count,
+                        iid_count,
+                        sid_count,
                         count_A1,
-                        snpdata.val,
+                        val,
                     )
                 else:
                     wrap_plink_parser.writePlinkBedFile2doubleCAAA(
                         bedfile.encode("ascii"),
-                        snpdata.iid_count,
-                        snpdata.sid_count,
+                        iid_count,
+                        sid_count,
                         count_A1,
-                        snpdata.val,
+                        val,
                     )
             elif val.dtype == np.float32:
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2floatFAAA(
                         bedfile.encode("ascii"),
-                        snpdata.iid_count,
-                        snpdata.sid_count,
+                        iid_count,
+                        sid_count,
                         count_A1,
-                        snpdata.val,
+                        val,
                     )
                 else:
                     wrap_plink_parser.writePlinkBedFile2floatCAAA(
                         bedfile.encode("ascii"),
-                        snpdata.iid_count,
-                        snpdata.sid_count,
+                        iid_count,
+                        sid_count,
                         count_A1,
                         val,
                     )
@@ -365,23 +367,23 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2int8FAAA(
                         bedfile.encode("ascii"),
-                        snpdata.iid_count,
-                        snpdata.sid_count,
+                        iid_count,
+                        sid_count,
                         count_A1,
                         val,
                     )
                 else:
                     wrap_plink_parser.writePlinkBedFile2int8CAAA(
                         bedfile.encode("ascii"),
-                        snpdata.iid_count,
-                        snpdata.sid_count,
+                        iid_count,
+                        sid_count,
                         count_A1,
-                        snpdata.val,
+                        val,
                     )
             else:
                 raise Exception(
                     "dtype '{0}' not known, only float64 and float32 (and sometimes int8)".format(
-                        snpdata.val.dtype
+                        val.dtype
                     )
                 )
 
@@ -465,7 +467,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         sid_count_out = len(sid_index)
 
         if not force_python_only:
-            from pysnptools.snpreader import wrap_plink_parser
+            from sgkit_plink import wrap_plink_parser
 
             val = np.zeros((iid_count_out, sid_count_out), order=order, dtype=dtype)
             bed_fn = open_bed._name_of_other_file(self.filename, "bed", "bed")
@@ -713,7 +715,7 @@ if __name__ == "__main__":
         with open_bed(file) as bed:
             print(bed.iid)
             print(bed.shape)
-            val = bed.read(force_python_only=True)
+            val = bed.read()
             print(val)
 
     if False:
@@ -732,7 +734,7 @@ if __name__ == "__main__":
         snpdata3.val.dtype
 
     if False:
-        from pysnptools.snpreader import Bed, SnpGen
+        from sgkit_plink import Bed, SnpGen
 
         iid_count = 487409
         sid_count = 5000
@@ -756,7 +758,7 @@ if __name__ == "__main__":
                 os.rename(filename + ".temp", filename)
 
     if False:
-        from pysnptools.snpreader import Pheno, Bed
+        from sgkit_plink import Pheno, Bed
 
         filename = r"m:\deldir\New folder (4)\all_chr.maf0.001.N300.bed"
         iid_count = 300
@@ -770,7 +772,7 @@ if __name__ == "__main__":
         pheno_fn = example_file("pysnptools/examples/toydata.phe")
 
     if False:
-        from pysnptools.snpreader import Pheno, Bed
+        from sgkit_plink import Pheno, Bed
 
         print(os.getcwd())
         snpdata = Pheno("../examples/toydata.phe").read()  # Read data from Pheno format

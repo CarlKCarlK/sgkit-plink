@@ -10,27 +10,22 @@ def test_read1():
         assert bed.iid_count == 10
         assert (bed.iid[-1, :] == ["0", "9"]).all()
         assert bed.shape == (10, 100)
-        val = bed.read(force_python_only=True)
-        assert val.mean() == -13.142
+        val = bed.read()
+        assert val.mean() == -13.142 # really shouldn't do mean on data where -127 represents missing
         assert bed.chromosome[-1] == "1"
         assert bed.bp_position[-1] == 100
         #!!!cmk test reading into other dtypes
-
-
-#!!!cmk show example of reading where chrom==5
-#!!!cmk could subsetting for iid, etc be introduced without need to create snpdata like object? Does the Bed file offer fast access to metadata that would make this worthwhile?
-
 
 def test_write():
     in_file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
     out_file = r"m:/deldir/out.bed"  #!!!cmk remove absolute reference
     with open_bed(in_file) as bed:
-        val0 = bed.read(force_python_only=True)
+        val0 = bed.read()
         pos = np.array(
             [bed.chromosome.astype("int"), bed.cm_position, bed.bp_position]
         ).T
         open_bed.write(
-            out_file, val0, iid=bed.iid, sid=bed.sid, pos=pos, force_python_only=True
+            out_file, val0, iid=bed.iid, sid=bed.sid, pos=pos,
         )
         with open_bed(out_file) as bed1:
             assert (val0 == bed1.read()).all()  #!!!cmk use array_equal
@@ -44,15 +39,16 @@ def test_write():
 
     val_float = val0.astype("float")
     val_float[0, 0] = 0.5
-    with pytest.raises(ValueError):
-        open_bed.write(
-            out_file,
-            val_float,
-            iid=bed.iid,
-            sid=bed.sid,
-            pos=pos,
-            force_python_only=True,
-        )  #!!!cmk test on force_python=False, too
+    for force_python_only in [True]: #!!!cmk It is a bug that the C++ version doesn't catch e.g. .5 as input
+        with pytest.raises(ValueError):
+            open_bed.write(
+                out_file,
+                val_float,
+                iid=bed.iid,
+                sid=bed.sid,
+                pos=pos,
+                force_python_only=force_python_only,
+            )
 
 
 #!!!cmk too slow
@@ -116,5 +112,7 @@ def test_properties():
 
 
 if __name__ == "__main__":  #!!cmk is this wanted?
-    test_read1()  #!!!cmk
+    logging.basicConfig(level=logging.INFO)
+
+    test_write()  #!!!cmk
     pytest.main([__file__])

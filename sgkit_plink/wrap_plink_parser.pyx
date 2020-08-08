@@ -23,7 +23,98 @@ cdef extern from "./CPlinkBedFile.h":
 	void _writePlinkBedFileint8CAAA "writePlinkBedFileint8CAAA"(string bed_fn, int input_num_ind, int input_num_snps, bool count_A1, signed char* inx)
 
 
- 
+	void _ImputeAndZeroMeanSNPsfloatFAAA "ImputeAndZeroMeanSNPsfloatFAAA"( 
+		float *SNPs,
+		size_t nIndividuals,
+		size_t nSNPs,
+		const bool betaNotUnitVariance,
+		const float betaA,
+		const float betaB,
+		const bool apply_in_place,
+		const bool use_stats,
+		float *stats
+		)
+	void _ImputeAndZeroMeanSNPsdoubleFAAA "ImputeAndZeroMeanSNPsdoubleFAAA"( 
+		double *SNPs,
+		size_t nIndividuals,
+		size_t nSNPs,
+		const bool betaNotUnitVariance,
+		const double betaA,
+		const double betaB,
+		const bool apply_in_place,
+		const bool use_stats,
+		double *stats
+		)
+	void _ImputeAndZeroMeanSNPsfloatCAAA "ImputeAndZeroMeanSNPsfloatCAAA"( 
+		float *SNPs,
+		size_t nIndividuals,
+		size_t nSNPs,
+		bool betaNotUnitVariance,
+		float betaA,
+		float betaB,
+		const bool apply_in_place,
+		const bool use_stats,
+		float *stats
+		)
+
+	void _ImputeAndZeroMeanSNPsdoubleCAAA "ImputeAndZeroMeanSNPsdoubleCAAA"( 
+		double *SNPs,
+		size_t nIndividuals,
+		size_t nSNPs,
+		const bool betaNotUnitVariance,
+		const double betaA,
+		const double betaB,
+		const bool apply_in_place,
+		const bool use_stats,
+		double *stats
+		)
+
+
+def standardizefloatFAAA(np.ndarray[np.float32_t, ndim=2] out, bool betaNotUnitVariance, float betaA, float betaB, bool apply_in_place, bool use_stats, np.ndarray[np.float32_t, ndim=2] stats):
+	
+	num_ind = out.shape[0]
+	num_snps = out.shape[1]
+
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+	_ImputeAndZeroMeanSNPsfloatFAAA(<float*> out.data, num_ind, num_snps, betaNotUnitVariance, betaA, betaB, apply_in_place, use_stats, <float *> stats.data)
+
+	return out, stats
+
+
+
+def standardizedoubleFAAA(np.ndarray[np.float64_t, ndim=2] out, bool betaNotUnitVariance, double betaA, double betaB, bool apply_in_place, bool use_stats, np.ndarray[np.float64_t, ndim=2] stats):
+	
+	num_ind = out.shape[0]
+	num_snps = out.shape[1]
+
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+	_ImputeAndZeroMeanSNPsdoubleFAAA(<double*> out.data, num_ind, num_snps, betaNotUnitVariance, betaA, betaB, apply_in_place, use_stats, <double *> stats.data)
+
+	return out, stats
+
+
+
+def standardizefloatCAAA(np.ndarray[np.float32_t, ndim=2] out, bool betaNotUnitVariance, float betaA, float betaB, bool apply_in_place, bool use_stats, np.ndarray[np.float32_t, ndim=2] stats):
+	
+	num_ind = out.shape[0]
+	num_snps = out.shape[1]
+
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+	_ImputeAndZeroMeanSNPsfloatCAAA(<float*> out.data, num_ind, num_snps, betaNotUnitVariance, betaA, betaB, apply_in_place, use_stats, <float *> stats.data)
+
+	return out, stats
+
+def standardizedoubleCAAA(np.ndarray[np.float64_t, ndim=2] out, bool betaNotUnitVariance, double betaA, double betaB,  bool apply_in_place, bool use_stats, np.ndarray[np.float64_t, ndim=2] stats):
+	
+	num_ind = out.shape[0]
+	num_snps = out.shape[1]
+
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+	_ImputeAndZeroMeanSNPsdoubleCAAA(<double*> out.data, num_ind, num_snps, betaNotUnitVariance, betaA, betaB, apply_in_place, use_stats, <double *> stats.data)
+
+	return out, stats
+
+#New 
 def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
 	
 	cdef vector[size_t] iid_idx_list = iidIdxList
@@ -97,3 +188,57 @@ def writePlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, 
 def writePlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, np.ndarray[np.int8_t, ndim=2] inx):
 	_writePlinkBedFileint8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <signed char*> inx.data)
 
+#Old
+def readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
+	count_A1 = False
+	cdef vector[size_t] iid_idx_list = iidIdxList
+	cdef vector[int] sid_idx_list = snpIdxList
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+
+	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)
+	return out
+
+def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
+	count_A1 = False
+	cdef vector[size_t] iid_idx_list = iidIdxList
+	cdef vector[int] sid_idx_list = snpIdxList
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+
+	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)
+	return out
+
+
+def readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
+	count_A1 = False
+	cdef vector[size_t] iid_idx_list = iidIdxList
+	cdef vector[int] sid_idx_list = snpIdxList
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+
+	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)
+	return out
+
+def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
+	count_A1 = False
+	cdef vector[size_t] iid_idx_list = iidIdxList
+	cdef vector[int] sid_idx_list = snpIdxList
+	#http://wiki.cython.org/tutorials/NumpyPointerToC
+
+	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)
+	return out
+
+
+def writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):
+	count_A1 = False
+	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
+
+def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):
+	count_A1 = False
+	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
+
+def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
+	count_A1 = False
+	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
+
+def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
+	count_A1 = False
+	_writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)

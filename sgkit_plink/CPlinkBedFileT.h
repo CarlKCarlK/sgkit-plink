@@ -123,6 +123,19 @@ private:
 
    };
 
+
+void SUFFIX(ImputeAndZeroMeanSNPs)( 
+	REAL *SNPs, 
+	const size_t nIndividuals, 
+	const size_t nSNPs, 
+	const bool betaNotUnitVariance,
+	const REAL betaA,
+	const REAL betaB,
+	const bool apply_in_place,
+	const bool use_stats,
+	REAL *stats
+   );
+
 // to be used by cython wrapper
 void SUFFIX(readPlinkBedFile)(std::string bed_fn, int inputNumIndividuals, int inputNumSNPs, bool count_A1, std::vector<size_t> individuals_idx, std::vector<int> snpIdxList, REAL* out);
 void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count, bool count_A1, REAL* in);
