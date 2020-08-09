@@ -42,8 +42,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
         iid_count = None,
         sid_count = None,
         iid=None, #!!!cmk why not support everything in fam file with fam_id and iid split?
-        sid=None,
         chromosome=None,
+        sid=None,
         cm_position=None,
         bp_position=None,
         allele_1=None,  #!!!cmk an option to ignore some of these
@@ -64,7 +64,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self._iid_count = iid_count
         self._sid_count = sid_count
 
-        self._fixup_bim((sid, chromosome, cm_position, bp_position, allele_1, allele_2))
+        self._fixup_bim((chromosome, sid, cm_position, bp_position, allele_1, allele_2))
         self._iid_range = None
         self._sid_range = None
 
@@ -75,8 +75,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     # As of Python 3.7+, these will keep their order
     _bim_meta = {
-        "sid": (1, np.str_, None),
         "chromosome": (0, np.str_, '0'),
+        "sid": (1, np.str_, None),
         "cm_position": (2, "float32", 0),
         "bp_position": (3, "int32", 0),
         "allele_1": (4, np.str_, None),
@@ -223,12 +223,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
             return val
 
     @property
-    def sid(self):
-        return self._bim_property("sid")
-
-    @property
     def chromosome(self):
         return self._bim_property("chromosome")
+
+    @property
+    def sid(self):
+        return self._bim_property("sid")
 
     @property
     def cm_position(self):
