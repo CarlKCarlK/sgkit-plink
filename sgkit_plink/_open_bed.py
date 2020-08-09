@@ -1,4 +1,6 @@
-#!!!cmk todo: Split iid into two id
+#!!!cmk todo: Split iid into two id, FID and IID
+#!!!cmk todo support all the fam file fields
+#!!!cmk don't allow numbers on input fields, instead just have iid_count and sid_count as optional inputs, then can change the order
 #!!!cmk todo: Offer to ignore some or all bim fields
 #!!!cmk todo: make thread safe (an option to load everything?)
 #!!!cmk todo: maybe rename iid,sid

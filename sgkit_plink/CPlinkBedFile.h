@@ -1,3 +1,5 @@
+#define CONSTSTUFF
+
 #define REAL double
 #define ORDERC
 #undef ORDERF

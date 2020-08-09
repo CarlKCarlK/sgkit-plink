@@ -45,31 +45,6 @@
 #define isinf(x) (!isfinite(x))
 #endif
 
-#ifdef MISSING_VALUE
-REAL SUFFIX(unknownOrMissing) = MISSING_VALUE;
-#else
-REAL SUFFIX(unknownOrMissing) = std::numeric_limits<REAL>::quiet_NaN();  // now used by SnpInfo
-#endif
-
-
-REAL SUFFIX(homozygousPrimaryAllele) = 0;                // Major Allele
-REAL SUFFIX(heterozygousAllele) = 1;                     
-REAL SUFFIX(homozygousSecondaryAllele) = 2;              // Minor Allele ()
-
-REAL SUFFIX(mapBedGenotypeToRealAlleleCountA1)[4] = { 
-	SUFFIX(homozygousSecondaryAllele),       // look-up 0
-	SUFFIX(unknownOrMissing),                // look-up 1
-	SUFFIX(heterozygousAllele),              // look-up 2
-	SUFFIX(homozygousPrimaryAllele),         // look-up 3
-};
-
-REAL SUFFIX(mapBedGenotypeToRealAlleleNoCountA1)[4] = {
-	SUFFIX(homozygousPrimaryAllele),         // look-up 0
-	SUFFIX(unknownOrMissing),                // look-up 1
-	SUFFIX(heterozygousAllele),              // look-up 2
-	SUFFIX(homozygousSecondaryAllele),       // look-up 3
-};
-
 SUFFIX(CBedFile)::SUFFIX(CBedFile)()
 {
 	layout = LayoutUnknown;    // layout describes the matrix layout on disk

@@ -73,12 +73,32 @@ enum BedGenotype     // integer representation of genotype values in Plink's bin
 
 #endif
 
-extern REAL SUFFIX(unknownOrMissing);  // now used by SnpInfo
-extern REAL SUFFIX(homozygousPrimaryAllele);
-extern REAL SUFFIX(heterozygousAllele);
-extern REAL SUFFIX(homozygousSecondaryAllele);
-extern REAL SUFFIX(mapBedGenotypeToRealAlleleCountA1)[4];
-extern REAL SUFFIX(mapBedGenotypeToRealAlleleNoCountA1)[4];
+#ifndef CONSTSTUFF
+#ifdef MISSING_VALUE
+//!!!cmk constexpr may be slowing things down, especially on Windows
+extern constexpr REAL SUFFIX(unknownOrMissing) = MISSING_VALUE;
+#else
+extern constexpr REAL SUFFIX(unknownOrMissing) = std::numeric_limits<REAL>::quiet_NaN();  // now used by SnpInfo
+#endif
+
+extern constexpr REAL SUFFIX(homozygousPrimaryAllele) = 0;                // Major Allele
+extern constexpr REAL SUFFIX(heterozygousAllele) = 1;                     
+extern constexpr REAL SUFFIX(homozygousSecondaryAllele) = 2;              // Minor Allele ()
+
+extern constexpr REAL SUFFIX(mapBedGenotypeToRealAlleleCountA1)[4] = { 
+	SUFFIX(homozygousSecondaryAllele),       // look-up 0
+	SUFFIX(unknownOrMissing),                // look-up 1
+	SUFFIX(heterozygousAllele),              // look-up 2
+	SUFFIX(homozygousPrimaryAllele),         // look-up 3
+};
+
+extern constexpr REAL SUFFIX(mapBedGenotypeToRealAlleleNoCountA1)[4] = {
+	SUFFIX(homozygousPrimaryAllele),         // look-up 0
+	SUFFIX(unknownOrMissing),                // look-up 1
+	SUFFIX(heterozygousAllele),              // look-up 2
+	SUFFIX(homozygousSecondaryAllele),       // look-up 3
+};
+#endif
 
 class SUFFIX(CBedFile)
    {
