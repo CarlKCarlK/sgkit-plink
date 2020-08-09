@@ -1,10 +1,8 @@
 #!!!cmk todo: Split iid into two id, FID and IID
 #!!!cmk todo support all the fam file fields
-#!!!cmk don't allow numbers on input fields, instead just have iid_count and sid_count as optional inputs, then can change the order
 #!!!cmk todo: Offer to ignore some or all bim fields
 #!!!cmk todo: make thread safe (an option to load everything?)
-#!!!cmk todo: maybe rename iid,sid
-#!!!cmk 
+#!!!cmk todo: fix up write
 
 
 #!!!cmk add typing info
@@ -41,7 +39,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
         filename,
         iid_count = None,
         sid_count = None,
-        iid=None, #!!!cmk why not support everything in fam file with fam_id and iid split?
+        fid=None,
+        iid=None,
+        father=None,
+        mother=None,
+        sex = None,
+        pheno = None,
         chromosome=None,
         sid=None,
         cm_position=None,
@@ -55,16 +58,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self.count_A1 = count_A1
         self.skip_format_check = skip_format_check
         #!!!cmk read the PLINK docs and switch to using their names for iid and sid and pos, etc
-        self._iid = self._fixup_input(
-            iid,
-            empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
-            dtype="str",
-            none_num_ok=True,
-        )
-        self._iid_count = iid_count
-        self._sid_count = sid_count
 
-        self._fixup_bim((chromosome, sid, cm_position, bp_position, allele_1, allele_2))
+        self._fam, self._iid_count = self._fixup_fam_bim((fid, iid, father, mother, sex, pheno),self._fam_meta,iid_count)
+        self._bim, self._sid_count = self._fixup_fam_bim((chromosome, sid, cm_position, bp_position, allele_1, allele_2),self._bim_meta,sid_count)
         self._iid_range = None
         self._sid_range = None
 
@@ -74,6 +70,15 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 self._check_file(filepointer)
 
     # As of Python 3.7+, these will keep their order
+    _fam_meta = {
+        "fid": (0, np.str_, '0'),
+        "iid": (1, np.str_, None),
+        "father": (2, np.str_, '0'),
+        "mother": (3, np.str_, '0'),
+        "sex": (4, "int32", 0),
+        "pheno": (5, np.str_, '0'),
+    }
+
     _bim_meta = {
         "chromosome": (0, np.str_, '0'),
         "sid": (1, np.str_, None),
@@ -83,31 +88,31 @@ class open_bed:  #!!!cmk need doc strings everywhere
         "allele_2": (5, np.str_, None),
     }
 
-    def _fixup_bim(self, bim_list):
-        assert len(bim_list) == len(self._bim_meta), "real assert"
-        self._bim = {}
-        self._sid_count = None
+    @staticmethod
+    def _fixup_fam_bim(input_list, meta, count):
+        assert len(input_list) == len(meta), "real assert"
+        result = {}
 
-        for index, (key, (_, dtype, _)) in enumerate(self._bim_meta.items()):
-            input = bim_list[index]
+        for index, (key, (_, dtype, _)) in enumerate(meta.items()):
+            input = input_list[index]
             if input is None:
                 output = input
             elif len(input) == 0:  # Test this
                 output = np.zeros([0, 1], dtype=dtype)
-                if self._sid_count is None:  #!!!cmk similar code elsewhere
-                    self._sid_count = len(output)
+                if count is None:  #!!!cmk similar code elsewhere
+                    count = len(output)
                 else:
-                    assert self._sid_count == len(
+                    assert count == len(
                         output
                     ), "Expect all inputs to agree on the sid_count"
             elif (
                 not isinstance(input, np.ndarray) or input.dtype.type is not dtype
             ):  #!!!cmk get this right including shape
                 output = np.array(input, dtype=dtype)
-                if self._sid_count is None:
-                    self._sid_count = len(output)
+                if count is None:
+                    count = len(output)
                 else:
-                    assert self._sid_count == len(
+                    assert count == len(
                         output
                     ), "Expect all inputs to agree on the sid_count"
             else:
@@ -117,85 +122,88 @@ class open_bed:  #!!!cmk need doc strings everywhere
                     output.dtype.type is dtype and len(output.shape) == 1
                 ), f"{key} should be of dtype of {dtype} and one dimensional"
 
-                if self._sid_count is None:
-                    self._sid_count = len(output)
+                if count is None:
+                    count = len(output)
                 else:
-                    assert self._sid_count == len(
+                    assert count == len(
                         output
                     ), "Expect all inputs to agree on the sid_count"
-            self._bim[key] = output
-        return
+            result[key] = output
+        return result, count
 
     # !!!cmk this isn't getting used anymore. Why not and remove it
-    def _assert_iid_sid_pos(self):  #!!!cmk why wasn't pos getting check here?
+    #def _assert_iid_sid_pos(self):  #!!!cmk why wasn't pos getting check here?
 
-        assert (  #!!!cmk replace every assert with a message with a raised exception?
-            self.iid.dtype.type is np.str_
-            and len(self.iid.shape) == 2
-            and self.iid.shape[1] == 2
-        ), "iid should be dtype str, have two dimensions, and the second dimension should be size 2"
-        assert (
-            self.sid.dtype.type is np.str_ and len(self.sid.shape) == 1
-        ), "sid should be of dtype of str and one dimensional"
-        assert (
-            self.pos.dtype.type is np.float64
-            and len(self.pos.shape) == 2
-            and self.pos.shape[1] == 3  #!!!cmk remove
-        ), "pos should be of dtype of float, have two dimensions, and second dimenson should be size 3"
+    #    assert (  #!!!cmk replace every assert with a message with a raised exception?
+    #        self.iid.dtype.type is np.str_
+    #        and len(self.iid.shape) == 2
+    #        and self.iid.shape[1] == 2
+    #    ), "iid should be dtype str, have two dimensions, and the second dimension should be size 2"
+    #    assert (
+    #        self.sid.dtype.type is np.str_ and len(self.sid.shape) == 1
+    #    ), "sid should be of dtype of str and one dimensional"
+    #    assert (
+    #        self.pos.dtype.type is np.float64
+    #        and len(self.pos.shape) == 2
+    #        and self.pos.shape[1] == 3  #!!!cmk remove
+    #    ), "pos should be of dtype of float, have two dimensions, and second dimenson should be size 3"
 
-    def _read_map_or_bim(self, remove_suffix, add_suffix):
-        mapfile = open_bed._name_of_other_file(self.filename, remove_suffix, add_suffix)
+    @staticmethod
+    def _read_fam_or_bim(filename, remove_suffix, add_suffix, meta, fambim, count, delimiter):
+        metafile = open_bed._name_of_other_file(filename, remove_suffix, add_suffix)
 
-        logging.info("Loading {0} file {1}".format(add_suffix, mapfile))
+        logging.info("Loading {0} file {1}".format(add_suffix, metafile))
         if (
-            os.path.getsize(mapfile) == 0
-        ):  # If the map/bim file is empty, return empty arrays
-            for key, (column, dtype, missing) in self._bim_meta.items():
-                val = self._bim[key]
+            os.path.getsize(metafile) == 0
+        ):  # If the file is empty, return empty arrays
+            for key, (column, dtype, missing) in meta.items():
+                val = fambim[key]
                 assert val is None, "real assert"
-                self._bim[key] = np.zeros([0, 1], dtype=dtype)  #!!!cmk get this right
-            if self._sid_count is None:
-                self._sid_count = 0
+                fambim[key] = np.zeros([0, 1], dtype=dtype)  #!!!cmk get this right
+            if count is None:
+                count = 0
             else:
                 assert (
-                    self._sid_count == 0
-                ), "Expect all inputs to agree on the sid_count"
+                    count == 0
+                ), "Expect all inputs to agree on the count"
         else:
             fields = pd.read_csv(
-                mapfile, delimiter="\t", header=None, index_col=False, comment=None,
+                metafile, delimiter=delimiter, header=None, index_col=False, comment=None,
             )
-            if self._sid_count is None:
-                self._sid_count = len(fields)
+            if count is None:
+               count = len(fields)
             else:
-                assert self._sid_count == len(
+                assert count == len(
                     fields
                 ), "Expect all inputs to agree on the sid_count"
 
-            for key, (column, dtype, missing) in self._bim_meta.items():
-                val = self._bim[key]
+            for key, (column, dtype, missing) in meta.items():
+                val = fambim[key]
                 if val is None:
                     if missing is None:
-                        self._bim[key] = np.array(fields[column],dtype=dtype)
+                        fambim[key] = np.array(fields[column],dtype=dtype)
                     else:
-                        self._bim[key] = np.array(fields[column].fillna(missing),dtype=dtype)
+                        fambim[key] = np.array(fields[column].fillna(missing),dtype=dtype)
                     #self._bim[key] = np.array(
                     #    fields[column].tolist(), dtype=dtype
                     #)  #!!!cmk would .values sometimes be faster or have better memory use?
+        return fambim, count
 
-    @staticmethod
-    def _read_fam(basefilename, remove_suffix, add_suffix="fam"):
-        famfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
+    #remove
+    #@staticmethod
+    #def _read_fam(basefilename, remove_suffix, add_suffix="fam"):
+    #    famfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
 
-        logging.info("Loading {0} file {1}".format(add_suffix, famfile))
-        if os.path.getsize(famfile) > 0:
-            iid = np.loadtxt(famfile, dtype="str", usecols=(0, 1), comments=None)
-        else:
-            iid = np.empty((0, 2), dtype="str")
-        if (
-            len(iid.shape) == 1
-        ):  # When empty or just one item, make sure the result is (x,2)
-            iid = iid.reshape((len(iid) // 2, 2))
-        return iid
+    #    logging.info("Loading {0} file {1}".format(add_suffix, famfile))
+    #    if os.path.getsize(famfile) > 0:
+    #        iid = np.loadtxt(famfile, dtype="str", usecols=(0, 1), comments=None)
+    #    else:
+    #        iid = np.empty((0, 2), dtype="str")
+    #    if (
+    #        len(iid.shape) == 1
+    #    ):  # When empty or just one item, make sure the result is (x,2)
+    #        iid = iid.reshape((len(iid) // 2, 2))
+    #    return iid
 
     @staticmethod
     def _name_of_other_file(filename, remove_suffix, add_suffix):
@@ -207,17 +215,42 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return "{0}()".format(self.__class__.__name__)
 
     @property
+    def fid(self):
+        return self._fam_property("fid")
+
+    @property
     def iid(self):
-        if self._iid is None:
-            self._iid = self._read_fam(
-                self.filename, remove_suffix="bed", add_suffix="fam"
-            )
-        return self._iid
+        return self._fam_property("iid")
+
+    @property
+    def father(self):
+        return self._fam_property("father")
+
+
+    @property
+    def mother(self):
+        return self._fam_property("mother")
+
+    @property
+    def sex(self):
+        return self._fam_property("sex")
+
+    @property
+    def pheno(self):
+        return self._fam_property("pheno")
+
+    def _fam_property(self, key):
+        val = self._fam[key]
+        if val is None:
+            self._fam, self._iid_count = self._read_fam_or_bim(self.filename, remove_suffix="bed", add_suffix="fam", meta=self._fam_meta, fambim=self._fam, count=self._iid_count, delimiter ='\s')
+            return self._fam[key]
+        else:
+            return val
 
     def _bim_property(self, key):
         val = self._bim[key]
         if val is None:
-            self._read_map_or_bim(remove_suffix="bed", add_suffix="bim")
+            self._bim, self._sid_count = self._read_fam_or_bim(self.filename, remove_suffix="bed", add_suffix="bim", meta=self._bim_meta, fambim=self._bim, count=self._sid_count, delimiter='\t')
             return self._bim[key]
         else:
             return val

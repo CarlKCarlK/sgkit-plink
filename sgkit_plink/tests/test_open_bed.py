@@ -8,7 +8,8 @@ def test_read1():
     file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
     with open_bed(file) as bed:
         assert bed.iid_count == 10
-        assert (bed.iid[-1, :] == ["0", "9"]).all()
+        assert bed.fid[-1] == "0"
+        assert bed.iid[-1] == "9"
         assert bed.shape == (10, 100)
         val = bed.read()
         assert val.mean() == -13.142 # really shouldn't do mean on data where -127 represents missing
@@ -21,11 +22,14 @@ def test_write():
     out_file = r"m:/deldir/out.bed"  #!!!cmk remove absolute reference
     with open_bed(in_file) as bed:
         val0 = bed.read()
+        old_iid = np.array(
+            [bed.fid, bed.iid]
+        ).T
         pos = np.array(
             [bed.chromosome.astype("int"), bed.cm_position, bed.bp_position]
         ).T
         open_bed.write(
-            out_file, val0, iid=bed.iid, sid=bed.sid, pos=pos,
+            out_file, val0, iid=old_iid, sid=bed.sid, pos=pos,
         )
         with open_bed(out_file) as bed1:
             assert (val0 == bed1.read()).all()  #!!!cmk use array_equal
@@ -44,7 +48,7 @@ def test_write():
             open_bed.write(
                 out_file,
                 val_float,
-                iid=bed.iid,
+                iid=old_iid,
                 sid=bed.sid,
                 pos=pos,
                 force_python_only=force_python_only,
@@ -116,5 +120,5 @@ def test_shape():
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_open_bed()  #!!!cmk
+    test_properties()  #!!!cmk
     pytest.main([__file__])
