@@ -59,59 +59,62 @@ def test_properties():
         sid_list = bed.sid.tolist()
         chromosome_list = bed.chromosome.tolist()
     test_count = 0
-    for iid in [None, len(iid_list), iid_list, np.array(iid_list)]:
-        for iid_before_read in [False, True]:
-            for iid_after_read in [False, True]:
-                for sid in [None, len(sid_list), sid_list, np.array(sid_list)]:
-                    for sid_before_read in [False, True]:
-                        for sid_after_read in [False, True]:
-                            for chromosome in [
-                                None,
-                                len(chromosome_list),
-                                chromosome_list,
-                                np.array(chromosome_list),
-                            ]:
-                                for chromosome_before_read in [False, True]:
-                                    for chromosome_after_read in [False, True]:
-                                        with open_bed(
-                                            file,
-                                            iid=iid,
-                                            sid=sid,
-                                            chromosome=chromosome,
-                                        ) as bed:
-                                            logging.info(f"Test {test_count}")
-                                            test_count += 1
-                                            if iid_before_read:
-                                                assert np.array_equal(bed.iid, iid_list)
-                                            if sid_before_read:
-                                                assert np.array_equal(bed.sid, sid_list)
-                                            if chromosome_before_read:
-                                                assert np.array_equal(
-                                                    bed.chromosome, chromosome_list
-                                                )
-                                            val = bed.read()
-                                            assert val.shape == (
-                                                len(iid_list),
-                                                len(sid_list),
-                                            )
-                                            if iid_after_read:
-                                                assert np.array_equal(bed.iid, iid_list)
-                                            if sid_after_read:
-                                                assert np.array_equal(bed.sid, sid_list)
-                                            if chromosome_after_read:
-                                                assert np.array_equal(
-                                                    bed.chromosome, chromosome_list
-                                                )
-                                            # bed._assert_iid_sid_chromosome()
+    for iid in [None, iid_list, np.array(iid_list)]:
+        for iid_count in [None, len(iid_list)]:
+            for iid_before_read in [False, True]:
+                for iid_after_read in [False, True]:
+                    for sid in [None, sid_list, np.array(sid_list)]:
+                        for sid_count in [None, len(sid_list)]:
+                            for sid_before_read in [False, True]:
+                                for sid_after_read in [False, True]:
+                                    for chromosome in [
+                                        None,
+                                        chromosome_list,
+                                        np.array(chromosome_list),
+                                    ]:
+                                        for chromosome_before_read in [False, True]:
+                                            for chromosome_after_read in [False, True]:
+                                                with open_bed(
+                                                    file,
+                                                    iid_count=iid_count,
+                                                    sid_count=sid_count,
+                                                    iid=iid,
+                                                    sid=sid,
+                                                    chromosome=chromosome,
+                                                ) as bed:
+                                                    logging.info(f"Test {test_count}")
+                                                    test_count += 1
+                                                    if iid_before_read:
+                                                        assert np.array_equal(bed.iid, iid_list)
+                                                    if sid_before_read:
+                                                        assert np.array_equal(bed.sid, sid_list)
+                                                    if chromosome_before_read:
+                                                        assert np.array_equal(
+                                                            bed.chromosome, chromosome_list
+                                                        )
+                                                    val = bed.read()
+                                                    assert val.shape == (
+                                                        len(iid_list),
+                                                        len(sid_list),
+                                                    )
+                                                    if iid_after_read:
+                                                        assert np.array_equal(bed.iid, iid_list)
+                                                    if sid_after_read:
+                                                        assert np.array_equal(bed.sid, sid_list)
+                                                    if chromosome_after_read:
+                                                        assert np.array_equal(
+                                                            bed.chromosome, chromosome_list
+                                                        )
+                                                    # bed._assert_iid_sid_chromosome()
 
 
- def test_shape():
-    with open_bed(r'D:\OneDrive\programs\pstsgkit\tests\datasets\all_chr.maf0.001.N300.bed',iid=1000,sid=5) as bed:
-        assert bed.shape==(1,1)
+def test_shape():
+    with open_bed(r'D:\OneDrive\programs\pstsgkit\tests\datasets\all_chr.maf0.001.N300.bed') as bed:
+        assert bed.shape==(300,1015)
 
 
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_write()  #!!!cmk
+    test_open_bed()  #!!!cmk
     pytest.main([__file__])

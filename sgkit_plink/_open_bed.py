@@ -39,6 +39,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
         filename,
+        iid_count = None,
+        sid_count = None,
         iid=None, #!!!cmk why not support everything in fam file with fam_id and iid split?
         sid=None,
         chromosome=None,
@@ -59,6 +61,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
             dtype="str",
             none_num_ok=True,
         )
+        self._iid_count = iid_count
+        self._sid_count = sid_count
+
         self._fixup_bim((sid, chromosome, cm_position, bp_position, allele_1, allele_2))
         self._iid_range = None
         self._sid_range = None
@@ -87,14 +92,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
             input = bim_list[index]
             if input is None:
                 output = input
-            elif isinstance(input, numbers.Integral):
-                output = input
-                if self._sid_count is None:
-                    self._sid_count = input
-                else:
-                    assert (
-                        self._sid_count == input
-                    ), "Expect all inputs to agree on the sid_count"
             elif len(input) == 0:  # Test this
                 output = np.zeros([0, 1], dtype=dtype)
                 if self._sid_count is None:  #!!!cmk similar code elsewhere
@@ -155,7 +152,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         ):  # If the map/bim file is empty, return empty arrays
             for key, (column, dtype, missing) in self._bim_meta.items():
                 val = self._bim[key]
-                assert val is None or isinstance(val, numbers.Integral), "real assert"
+                assert val is None, "real assert"
                 self._bim[key] = np.zeros([0, 1], dtype=dtype)  #!!!cmk get this right
             if self._sid_count is None:
                 self._sid_count = 0
@@ -176,7 +173,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
             for key, (column, dtype, missing) in self._bim_meta.items():
                 val = self._bim[key]
-                if val is None or isinstance(val, numbers.Integral):
+                if val is None:
                     if missing is None:
                         self._bim[key] = np.array(fields[column],dtype=dtype)
                     else:
@@ -211,18 +208,15 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @property
     def iid(self):
-        if self._iid is None or isinstance(self._iid, numbers.Integral):
-            old = self._iid
+        if self._iid is None:
             self._iid = self._read_fam(
                 self.filename, remove_suffix="bed", add_suffix="fam"
             )
-            if isinstance(old, numbers.Integral):
-                assert old == len(self._iid)
         return self._iid
 
     def _bim_property(self, key):
         val = self._bim[key]
-        if val is None or isinstance(val, numbers.Integral):
+        if val is None:
             self._read_map_or_bim(remove_suffix="bed", add_suffix="bim")
             return self._bim[key]
         else:
@@ -254,13 +248,10 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @property
     def iid_count(self):
-        if self._iid is None:
+        if self._iid_count is None:
             metafile = open_bed._name_of_other_file(self.filename, "bed", "fam")
-            self._iid = rawincount(metafile)
-        if isinstance(self._iid, numbers.Integral):
-            return self._iid
-        else:
-            return len(self._iid)
+            self._iid_count = rawincount(metafile)
+        return self._iid_count
 
     @property
     def sid_count(self):
@@ -682,7 +673,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         dtype=None,
         none_num_ok=False,
     ):
-        if none_num_ok and (input is None or isinstance(input, numbers.Integral)):
+        if none_num_ok and input is None:
             return input
 
         if input is None or len(input) == 0:
