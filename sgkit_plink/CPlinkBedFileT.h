@@ -73,33 +73,6 @@ enum BedGenotype     // integer representation of genotype values in Plink's bin
 
 #endif
 
-#ifndef CONSTSTUFF
-#ifdef MISSING_VALUE
-//!!!cmk constexpr may be slowing things down, especially on Windows
-extern constexpr REAL SUFFIX(unknownOrMissing) = MISSING_VALUE;
-#else
-extern constexpr REAL SUFFIX(unknownOrMissing) = std::numeric_limits<REAL>::quiet_NaN();  // now used by SnpInfo
-#endif
-
-extern constexpr REAL SUFFIX(homozygousPrimaryAllele) = 0;                // Major Allele
-extern constexpr REAL SUFFIX(heterozygousAllele) = 1;                     
-extern constexpr REAL SUFFIX(homozygousSecondaryAllele) = 2;              // Minor Allele ()
-
-extern constexpr REAL SUFFIX(mapBedGenotypeToRealAlleleCountA1)[4] = { 
-	SUFFIX(homozygousSecondaryAllele),       // look-up 0
-	SUFFIX(unknownOrMissing),                // look-up 1
-	SUFFIX(heterozygousAllele),              // look-up 2
-	SUFFIX(homozygousPrimaryAllele),         // look-up 3
-};
-
-extern constexpr REAL SUFFIX(mapBedGenotypeToRealAlleleNoCountA1)[4] = {
-	SUFFIX(homozygousPrimaryAllele),         // look-up 0
-	SUFFIX(unknownOrMissing),                // look-up 1
-	SUFFIX(heterozygousAllele),              // look-up 2
-	SUFFIX(homozygousSecondaryAllele),       // look-up 3
-};
-#endif
-
 class SUFFIX(CBedFile)
    {
 public:
@@ -141,6 +114,31 @@ private:
    size_t   cSnps;
    size_t   cbStride;
 
+
+	#ifdef MISSING_VALUE
+	//!!!cmk constexpr may be slowing things down, especially on Windows
+	const REAL SUFFIX(unknownOrMissing) = MISSING_VALUE;
+	#else
+	const REAL SUFFIX(unknownOrMissing) = std::numeric_limits<REAL>::quiet_NaN();  // now used by SnpInfo
+	#endif
+
+	const REAL SUFFIX(homozygousPrimaryAllele) = 0;                // Major Allele
+	const REAL SUFFIX(heterozygousAllele) = 1;                     
+	const REAL SUFFIX(homozygousSecondaryAllele) = 2;              // Minor Allele ()
+
+	const REAL SUFFIX(mapBedGenotypeToRealAlleleCountA1)[4] = { 
+		SUFFIX(homozygousSecondaryAllele),       // look-up 0
+		SUFFIX(unknownOrMissing),                // look-up 1
+		SUFFIX(heterozygousAllele),              // look-up 2
+		SUFFIX(homozygousPrimaryAllele),         // look-up 3
+	};
+
+	const REAL SUFFIX(mapBedGenotypeToRealAlleleNoCountA1)[4] = {
+		SUFFIX(homozygousPrimaryAllele),         // look-up 0
+		SUFFIX(unknownOrMissing),                // look-up 1
+		SUFFIX(heterozygousAllele),              // look-up 2
+		SUFFIX(homozygousSecondaryAllele),       // look-up 3
+	};
    };
 
 

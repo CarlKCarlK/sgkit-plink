@@ -1,11 +1,10 @@
-#!!!cmk change iid_count,sid_count inputs to shape.
-#!!!cmk Replace the other properties to a dictionary called "override"(?)
-#!!!cmk merge the _fam and _bim dictionaries and meta's
+#!!!cmk change shape back into iid_count,sid_count
+#!!!cmk is "overrides"(?) the best name? Internally?
 #!!!cmk todo: Offer to ignore some or all fam bim fields
 #!!!cmk todo: make thread safe (an option to load everything?)
 #!!!cmk todo: fix up write
 #!!!cmk it must be an error to give an override for a property that doesn't exist
-#!!!cmk would be nice if the count's don't match errors were more specific
+#!!!cmk would be nice if the "counts don't match" errors were more specific
 
 
 #!!!cmk add typing info
