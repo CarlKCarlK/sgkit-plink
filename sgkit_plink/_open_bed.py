@@ -153,7 +153,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 val = self._overrides[key]
                 assert val is None, "real assert"
                 self._overrides[key] = np.zeros(
-                    [0, 1], dtype=dtype
+                    [0], dtype=dtype
                 )  #!!!cmk get this right
             if count is None:
                 self._counts[suffix] = 0
