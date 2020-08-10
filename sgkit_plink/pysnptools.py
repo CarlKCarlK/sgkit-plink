@@ -47,7 +47,8 @@ class BedReader(object):
         self.open_bed = open_bed(
             path,
             count_A1=count_A1,
-            shape = (n_iid, n_sid)
+            iid_count=n_iid,
+            sid_count=n_sid,
         )
         self.shape = (n_sid, n_iid, 2)
         self.dtype = dtype

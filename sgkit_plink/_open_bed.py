@@ -41,7 +41,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
         filename,
-        shape=None,
+        iid_count = None,
+        sid_count = None,
         overrides=None,
         count_A1=True,
         num_threads = None,
@@ -55,7 +56,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self.skip_format_check = skip_format_check
         #!!!cmk read the PLINK docs and switch to using their names for iid and sid and pos, etc
 
-        self._fixup_fam_bim(overrides, shape)
+        self._fixup_fam_bim(overrides, iid_count, sid_count)
         self._iid_range = None
         self._sid_range = None
 
@@ -81,15 +82,13 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     _delimiters = {"fam": r"\s+", "bim": "\t"}
 
-    def _fixup_fam_bim(self, overrides, shape):
+    def _fixup_fam_bim(self, overrides, iid_count, sid_count):
         self._overrides = {}
-        self._counts = {}
-        if shape is not None:
-            self._counts["fam"], self._counts["bim"] = shape
+        self._counts = {"fam":iid_count,"bim":sid_count}
 
         for key, (suffix, _, dtype, _) in self._meta.items():
             input = self._overrides.get(key)
-            count = self._counts.get(suffix)
+            count = self._counts[suffix]
 
             if input is None:
                 output = input
@@ -145,7 +144,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     def _read_fam_or_bim(self, suffix):
         metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
-        count = self._counts.get(suffix)
+        count = self._counts[suffix]
 
         logging.info("Loading {0} file {1}".format(suffix, metafile))
         if os.path.getsize(metafile) == 0:  # If the file is empty, return empty arrays
@@ -287,7 +286,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return self._count("bim")
 
     def _count(self, suffix):
-        count = self._counts.get(suffix)
+        count = self._counts[suffix]
         if count is None:
             metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
             count = rawincount(metafile)
