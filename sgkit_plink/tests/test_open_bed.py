@@ -80,11 +80,8 @@ def test_properties():
                                             for chromosome_after_read in [False, True]:
                                                 with open_bed(
                                                     file,
-                                                    iid_count=iid_count,
-                                                    sid_count=sid_count,
-                                                    iid=iid,
-                                                    sid=sid,
-                                                    chromosome=chromosome,
+                                                    shape=(iid_count,sid_count),
+                                                    overrides={'iid':iid,'sid':sid,'chromosome':chromosome},
                                                 ) as bed:
                                                     logging.info(f"Test {test_count}")
                                                     test_count += 1

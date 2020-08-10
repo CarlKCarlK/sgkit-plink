@@ -1,8 +1,11 @@
-#!!!cmk todo: Split iid into two id, FID and IID
-#!!!cmk todo support all the fam file fields
-#!!!cmk todo: Offer to ignore some or all bim fields
+#!!!cmk change iid_count,sid_count inputs to shape.
+#!!!cmk Replace the other properties to a dictionary called "override"(?)
+#!!!cmk merge the _fam and _bim dictionaries and meta's
+#!!!cmk todo: Offer to ignore some or all fam bim fields
 #!!!cmk todo: make thread safe (an option to load everything?)
 #!!!cmk todo: fix up write
+#!!!cmk it must be an error to give an override for a property that doesn't exist
+#!!!cmk would be nice if the count's don't match errors were more specific
 
 
 #!!!cmk add typing info
@@ -30,6 +33,7 @@ def rawincount(filename):
 def _default_empty_creator(count):  #!!!cmk make a static member function?
     return np.empty([count or 0, 0], dtype="str")
 
+
 #!!!cmk tell (and test of possible) under what conditions is thread-safe
 
 #!!!cmk test that it works on files with no rows and/or cols (it did before)
@@ -37,30 +41,19 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
         filename,
-        iid_count = None,
-        sid_count = None,
-        fid=None,
-        iid=None,
-        father=None,
-        mother=None,
-        sex = None,
-        pheno = None,
-        chromosome=None,
-        sid=None,
-        cm_position=None,
-        bp_position=None,
-        allele_1=None,  #!!!cmk an option to ignore some of these
-        allele_2=None,
+        shape=None,
+        overrides=None,
         count_A1=True,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
-        self.filename = str(Path(filename))  #!!!cmk is this too evil?
+        self.filename = str(
+            Path(filename)
+        )  #!!!cmk make it path on the inside, but path or string on the outside
         self.count_A1 = count_A1
         self.skip_format_check = skip_format_check
         #!!!cmk read the PLINK docs and switch to using their names for iid and sid and pos, etc
 
-        self._fam, self._iid_count = self._fixup_fam_bim((fid, iid, father, mother, sex, pheno),self._fam_meta,iid_count)
-        self._bim, self._sid_count = self._fixup_fam_bim((chromosome, sid, cm_position, bp_position, allele_1, allele_2),self._bim_meta,sid_count)
+        self._fixup_fam_bim(overrides, shape)
         self._iid_range = None
         self._sid_range = None
 
@@ -69,52 +62,53 @@ class open_bed:  #!!!cmk need doc strings everywhere
             with open(bedfile, "rb") as filepointer:
                 self._check_file(filepointer)
 
-    # As of Python 3.7+, these will keep their order
-    _fam_meta = {
-        "fid": (0, np.str_, '0'),
-        "iid": (1, np.str_, None),
-        "father": (2, np.str_, '0'),
-        "mother": (3, np.str_, '0'),
-        "sex": (4, "int32", 0),
-        "pheno": (5, np.str_, '0'),
+    _meta = {
+        "fid": ("fam", 0, np.str_, "0"),
+        "iid": ("fam", 1, np.str_, None),
+        "father": ("fam", 2, np.str_, "0"),
+        "mother": ("fam", 3, np.str_, "0"),
+        "sex": ("fam", 4, "int32", 0),
+        "pheno": ("fam", 5, np.str_, "0"),
+        "chromosome": ("bim", 0, np.str_, "0"),
+        "sid": ("bim", 1, np.str_, None),
+        "cm_position": ("bim", 2, "float32", 0),
+        "bp_position": ("bim", 3, "int32", 0),
+        "allele_1": ("bim", 4, np.str_, None),
+        "allele_2": ("bim", 5, np.str_, None),
     }
 
-    _bim_meta = {
-        "chromosome": (0, np.str_, '0'),
-        "sid": (1, np.str_, None),
-        "cm_position": (2, "float32", 0),
-        "bp_position": (3, "int32", 0),
-        "allele_1": (4, np.str_, None),
-        "allele_2": (5, np.str_, None),
-    }
+    _delimiters = {"fam": r"\s+", "bim": "\t"}
 
-    @staticmethod
-    def _fixup_fam_bim(input_list, meta, count):
-        assert len(input_list) == len(meta), "real assert"
-        result = {}
+    def _fixup_fam_bim(self, overrides, shape):
+        self._overrides = {}
+        self._counts = {}
+        if shape is not None:
+            self._counts["fam"], self._counts["bim"] = shape
 
-        for index, (key, (_, dtype, _)) in enumerate(meta.items()):
-            input = input_list[index]
+        for key, (suffix, _, dtype, _) in self._meta.items():
+            input = self._overrides.get(key)
+            count = self._counts.get(suffix)
+
             if input is None:
                 output = input
             elif len(input) == 0:  # Test this
                 output = np.zeros([0, 1], dtype=dtype)
                 if count is None:  #!!!cmk similar code elsewhere
-                    count = len(output)
+                    self._counts[suffix] = len(output)
                 else:
                     assert count == len(
                         output
-                    ), "Expect all inputs to agree on the sid_count"
+                    ), "Expect all overrides to agree on the count"
             elif (
                 not isinstance(input, np.ndarray) or input.dtype.type is not dtype
             ):  #!!!cmk get this right including shape
                 output = np.array(input, dtype=dtype)
                 if count is None:
-                    count = len(output)
+                    self._counts[suffix] = len(output)
                 else:
                     assert count == len(
                         output
-                    ), "Expect all inputs to agree on the sid_count"
+                    ), "Expect all inputs to agree on the count"
             else:
                 output = input
                 #!!!cmk test that shape is OK
@@ -123,16 +117,15 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 ), f"{key} should be of dtype of {dtype} and one dimensional"
 
                 if count is None:
-                    count = len(output)
+                    self._counts[suffix] = len(output)
                 else:
                     assert count == len(
                         output
-                    ), "Expect all inputs to agree on the sid_count"
-            result[key] = output
-        return result, count
+                    ), "Expect all inputs to agree on the count"
+            self._overrides[key] = output
 
     # !!!cmk this isn't getting used anymore. Why not and remove it
-    #def _assert_iid_sid_pos(self):  #!!!cmk why wasn't pos getting check here?
+    # def _assert_iid_sid_pos(self):  #!!!cmk why wasn't pos getting check here?
 
     #    assert (  #!!!cmk replace every assert with a message with a raised exception?
     #        self.iid.dtype.type is np.str_
@@ -148,50 +141,62 @@ class open_bed:  #!!!cmk need doc strings everywhere
     #        and self.pos.shape[1] == 3  #!!!cmk remove
     #    ), "pos should be of dtype of float, have two dimensions, and second dimenson should be size 3"
 
-    @staticmethod
-    def _read_fam_or_bim(filename, remove_suffix, add_suffix, meta, fambim, count, delimiter):
-        metafile = open_bed._name_of_other_file(filename, remove_suffix, add_suffix)
+    def _read_fam_or_bim(self, suffix):
+        metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
+        count = self._counts.get(suffix)
 
-        logging.info("Loading {0} file {1}".format(add_suffix, metafile))
-        if (
-            os.path.getsize(metafile) == 0
-        ):  # If the file is empty, return empty arrays
-            for key, (column, dtype, missing) in meta.items():
-                val = fambim[key]
+        logging.info("Loading {0} file {1}".format(suffix, metafile))
+        if os.path.getsize(metafile) == 0:  # If the file is empty, return empty arrays
+            for key, (suffix_x, column, dtype, missing) in self._meta.items():
+                if suffix_x is not suffix:
+                    continue
+                val = self._overrides[key]
                 assert val is None, "real assert"
-                fambim[key] = np.zeros([0, 1], dtype=dtype)  #!!!cmk get this right
+                self._overrides[key] = np.zeros(
+                    [0, 1], dtype=dtype
+                )  #!!!cmk get this right
             if count is None:
-                count = 0
+                self._counts[suffix] = 0
             else:
-                assert (
-                    count == 0
-                ), "Expect all inputs to agree on the count"
+                assert count == 0, "Expect all inputs to agree on the count"
         else:
+            delimiter=self._delimiters[suffix]
+            if delimiter in {r'\s+'}:
+                delimiter = None
+                delim_whitespace = True
+            else:
+                delim_whitespace = False
             fields = pd.read_csv(
-                metafile, delimiter=delimiter, header=None, index_col=False, comment=None,
+                metafile,
+                delimiter=delimiter,
+                delim_whitespace = delim_whitespace,
+                header=None,
+                index_col=False,
+                comment=None,
             )
             if count is None:
-               count = len(fields)
+                self._counts[suffix] = len(fields)
             else:
-                assert count == len(
-                    fields
-                ), "Expect all inputs to agree on the sid_count"
+                assert count == len(fields), "Expect all inputs to agree on the count"
 
-            for key, (column, dtype, missing) in meta.items():
-                val = fambim[key]
+            for key, (suffix_x, column, dtype, missing) in self._meta.items():
+                if suffix_x is not suffix:
+                    continue
+                val = self._overrides[key]
                 if val is None:
                     if missing is None:
-                        fambim[key] = np.array(fields[column],dtype=dtype)
+                        self._overrides[key] = np.array(fields[column], dtype=dtype)
                     else:
-                        fambim[key] = np.array(fields[column].fillna(missing),dtype=dtype)
-                    #self._bim[key] = np.array(
+                        self._overrides[key] = np.array(
+                            fields[column].fillna(missing), dtype=dtype
+                        )
+                    # self._bim[key] = np.array(
                     #    fields[column].tolist(), dtype=dtype
-                    #)  #!!!cmk would .values sometimes be faster or have better memory use?
-        return fambim, count
+                    # )  #!!!cmk would .values sometimes be faster or have better memory use?
 
-    #remove
-    #@staticmethod
-    #def _read_fam(basefilename, remove_suffix, add_suffix="fam"):
+    # remove
+    # @staticmethod
+    # def _read_fam(basefilename, remove_suffix, add_suffix="fam"):
     #    famfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
 
     #    logging.info("Loading {0} file {1}".format(add_suffix, famfile))
@@ -216,84 +221,76 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @property
     def fid(self):
-        return self._fam_property("fid")
+        return self._property("fid")
 
     @property
     def iid(self):
-        return self._fam_property("iid")
+        return self._property("iid")
 
     @property
     def father(self):
-        return self._fam_property("father")
-
+        return self._property("father")
 
     @property
     def mother(self):
-        return self._fam_property("mother")
+        return self._property("mother")
 
     @property
     def sex(self):
-        return self._fam_property("sex")
+        return self._property("sex")
 
     @property
     def pheno(self):
-        return self._fam_property("pheno")
+        return self._property("pheno")
 
-    def _fam_property(self, key):
-        val = self._fam[key]
+    def _property(self, key):
+        val = self._overrides.get(key)  #!!!cmk overrides is a bad name
         if val is None:
-            self._fam, self._iid_count = self._read_fam_or_bim(self.filename, remove_suffix="bed", add_suffix="fam", meta=self._fam_meta, fambim=self._fam, count=self._iid_count, delimiter ='\s')
-            return self._fam[key]
-        else:
-            return val
-
-    def _bim_property(self, key):
-        val = self._bim[key]
-        if val is None:
-            self._bim, self._sid_count = self._read_fam_or_bim(self.filename, remove_suffix="bed", add_suffix="bim", meta=self._bim_meta, fambim=self._bim, count=self._sid_count, delimiter='\t')
-            return self._bim[key]
+            suffix, _, _, _ = self._meta[key]
+            self._read_fam_or_bim(suffix=suffix)
+            return self._overrides[key]
         else:
             return val
 
     @property
     def chromosome(self):
-        return self._bim_property("chromosome")
+        return self._property("chromosome")
 
     @property
     def sid(self):
-        return self._bim_property("sid")
+        return self._property("sid")
 
     @property
     def cm_position(self):
-        return self._bim_property("cm_position")
+        return self._property("cm_position")
 
     @property
     def bp_position(self):
-        return self._bim_property("bp_position")
+        return self._property("bp_position")
 
     @property
     def allele_1(self):
-        return self._bim_property("allele_1")
+        return self._property("allele_1")
 
     @property
     def allele_2(self):
-        return self._bim_property("allele_2")
+        return self._property("allele_2")
 
     @property
     def iid_count(self):
-        if self._iid_count is None:
-            metafile = open_bed._name_of_other_file(self.filename, "bed", "fam")
-            self._iid_count = rawincount(metafile)
-        return self._iid_count
+        return self._count("fam")
 
     @property
     def sid_count(self):
-        if self._sid_count is None:
-            metafile = open_bed._name_of_other_file(
-                self.filename, "bed", "bim"
-            )  #!!!cmk hey, let's just do this once
-            self._sid_count = rawincount(metafile)
-        return self._sid_count
+        return self._count("bim")
+
+    def _count(self, suffix):
+        count = self._counts.get(suffix)
+        if count is None:
+            metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
+            count = rawincount(metafile)
+            self._counts[suffix] = count
+        return count
 
     @staticmethod
     def _check_file(filepointer):
@@ -369,53 +366,29 @@ class open_bed:  #!!!cmk need doc strings everywhere
             if val.dtype == np.float64:
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2doubleFAAA(
-                        bedfile.encode("ascii"),
-                        iid_count,
-                        sid_count,
-                        count_A1,
-                        val,
+                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
                     )
                 else:
                     wrap_plink_parser.writePlinkBedFile2doubleCAAA(
-                        bedfile.encode("ascii"),
-                        iid_count,
-                        sid_count,
-                        count_A1,
-                        val,
+                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
                     )
             elif val.dtype == np.float32:
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2floatFAAA(
-                        bedfile.encode("ascii"),
-                        iid_count,
-                        sid_count,
-                        count_A1,
-                        val,
+                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
                     )
                 else:
                     wrap_plink_parser.writePlinkBedFile2floatCAAA(
-                        bedfile.encode("ascii"),
-                        iid_count,
-                        sid_count,
-                        count_A1,
-                        val,
+                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
                     )
             elif val.dtype == np.int8:  #!!!cmk move this up
                 if order == "F":
                     wrap_plink_parser.writePlinkBedFile2int8FAAA(
-                        bedfile.encode("ascii"),
-                        iid_count,
-                        sid_count,
-                        count_A1,
-                        val,
+                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
                     )
                 else:
                     wrap_plink_parser.writePlinkBedFile2int8CAAA(
-                        bedfile.encode("ascii"),
-                        iid_count,
-                        sid_count,
-                        count_A1,
-                        val,
+                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
                     )
             else:
                 raise Exception(
@@ -813,7 +786,7 @@ if __name__ == "__main__":
 
         print(os.getcwd())
         snpdata = Pheno("../examples/toydata.phe").read()  # Read data from Pheno format
-        pstutil.create_directory_if_necessary("tempdir/toydata.5chrom.bed")
+        # pstutil.create_directory_if_necessary("tempdir/toydata.5chrom.bed")
         Bed.write(
             "tempdir/toydata.5chrom.bed", snpdata, count_A1=False
         )  # Write data in Bed format
