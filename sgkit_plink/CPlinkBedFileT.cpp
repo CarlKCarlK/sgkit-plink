@@ -1,33 +1,15 @@
 /*
-*******************************************************************
-*
-*    Copyright (c) Microsoft. All rights reserved.
-*
-*    THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
-*    ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
-*    IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
-*    PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
-*
-******************************************************************
-*/
-
-/*
 * CPlinkBedFile - {PLINK BED File Access Class}
 *
 *         File Name:   CPlinkBedFile.cpp
-*           Version:   2.00
-*            Author:   
 *     Creation Date:   18 Nov 2010
-*     Revision Date:   14 Aug 2013
 *
-*    Module Purpose:   This file implements the CPlinkBedFile 
-*  
-*                      A .BED file contains compressed binary genotype 
-*                         values for individuals by SNPs.  
+*    Module Purpose:   This file implements the CPlinkBedFile
+*
+*                      A .BED file contains compressed binary genotype
+*                         values for individuals by SNPs.
 *
 *    Change History:   Version 2.00: Reworked to be wrapped in python version by Chris Widmer  (chris@shogun-toolbox.org)
-*
-* Test Files: 
 */
 
 /*
@@ -38,6 +20,7 @@
 #include <stdio.h>
 #include <math.h> 
 #include <stdlib.h>
+#include <omp.h>
 
 #ifdef _WIN32
 #define isinf(x) (!_finite(x))
@@ -51,107 +34,107 @@ SUFFIX(CBedFile)::SUFFIX(CBedFile)()
 	// 0=RowMajor(all snps per individual together);
 	// 1=ColumnMajor(all individuals per SNP together in memory)
 	cIndividuals = 0;
-	cSnps        = 0;
-	cbStride     = 0;
+	cSnps = 0;
+	cbStride = 0;
 
 }
 
 SUFFIX(CBedFile)::SUFFIX(~CBedFile)()
 {
-	if ( pFile )
+	if (pFile)
 	{
-		fclose( pFile );
+		fclose(pFile);
 		pFile = NULL;
 	}
 }
 
 
-void SUFFIX(CBedFile)::Open( const string& filename_, size_t cIndividuals_, size_t cSnps_ )
+void SUFFIX(CBedFile)::Open(const string& filename_, size_t cIndividuals_, size_t cSnps_)
 {
-	if ( filename_.empty() )
+	if (filename_.empty())
 	{
-		printf( "Could not create BedFile Reader.  Parameter 'filename' is zero length string" );
+		printf("Could not create BedFile Reader.  Parameter 'filename' is zero length string");
 	}
 
 	filename = filename_;         // TODO: removed FullPath
 	cIndividuals = cIndividuals_;
 	cSnps = cSnps_;
 
-	pFile = fopen( filename.c_str(), "rb" );  // read in binary to ensure ftell works right
-	if ( !pFile )
+	pFile = fopen(filename.c_str(), "rb");  // read in binary to ensure ftell works right
+	if (!pFile)
 	{
-		printf( "Cannot open input file [%s].\n", filename.c_str()); //TODO: removed errorNO
+		printf("Cannot open input file [%s].\n", filename.c_str()); //TODO: removed errorNO
 	}
 
 	//  Verify 'magic' number
 	unsigned char rd1 = NextChar();
 	unsigned char rd2 = NextChar();
-	if ( (bedFileMagic1 != rd1) || (bedFileMagic2 != rd2))
+	if ((bedFileMagic1 != rd1) || (bedFileMagic2 != rd2))
 	{
-		printf( "Ill-formed BED file [%s]."
+		printf("Ill-formed BED file [%s]."
 			"\n  BED file header is incorrect."
-			"\n  Expected magic number of 0x%02x 0x%02x, found 0x%02x 0x%02x", 
-			filename.c_str(), bedFileMagic1, bedFileMagic2, rd1, rd2 );
+			"\n  Expected magic number of 0x%02x 0x%02x, found 0x%02x 0x%02x",
+			filename.c_str(), bedFileMagic1, bedFileMagic2, rd1, rd2);
 	}
 
 	// Verify 'mode' is valid
 	unsigned char rd3 = NextChar();
-	switch( rd3 )
+	switch (rd3)
 	{
 	case 0:  // mode = 'IndividualMajor' or RowMajor
 		layout = LayoutGroupGenotypesByIndividual;   // all SNPs per individual are sequential in memory
-		cbStride = (cSnps + 3)/4;                    // 4 genotypes per byte so round up
+		cbStride = (cSnps + 3) / 4;                    // 4 genotypes per byte so round up
 		break;
 	case 1:  // mode = 'SnpMajor' or ColumnMajor
 		layout = LayoutGroupGenotypesBySnp;          // all individuals per SNP are sequential in memory
-		cbStride = (cIndividuals + 3)/4;             // 4 genotypes per byte so round up
+		cbStride = (cIndividuals + 3) / 4;             // 4 genotypes per byte so round up
 		break;
 	default:
-		printf( "Ill-formed BED file [%s].  BED file header is incorrect.  Expected mode to be 0 or 1, found %d", filename.c_str(), rd3 );
+		printf("Ill-formed BED file [%s].  BED file header is incorrect.  Expected mode to be 0 or 1, found %d", filename.c_str(), rd3);
 		break;
 	}
 
 	// allocate the read buffer for a SNP
-	rgBytes.resize( cbStride );
-	rgBedGenotypes.resize( cIndividuals, bedMissingGenotype );
+	rgBytes.resize(cbStride);
+	rgBedGenotypes.resize(cIndividuals, bedMissingGenotype);
 }
 
 LayoutMode  SUFFIX(CBedFile)::GetLayoutMode()
 {
-	return( layout );
+	return(layout);
 }
 
 int SUFFIX(CBedFile)::NextChar()
 {
-	int value = fgetc( pFile );
-	if ( value == EOF )
+	int value = fgetc(pFile);
+	if (value == EOF)
 	{
-		printf( "Ill-formed BED file [%s]. Encountered EOF before expected.", filename.c_str() );
+		printf("Ill-formed BED file [%s]. Encountered EOF before expected.", filename.c_str());
 	}
-	return( (unsigned char)value );
+	return((unsigned char)value);
 }
 
-size_t SUFFIX(CBedFile)::Read( BYTE *pb, size_t cbToRead )
+size_t SUFFIX(CBedFile)::Read(BYTE* pb, size_t cbToRead)
 {
-	size_t cbRead = fread( pb, 1, cbToRead, pFile );
-	if ( cbRead != cbToRead )
+	size_t cbRead = fread(pb, 1, cbToRead, pFile);
+	if (cbRead != cbToRead)
 	{
-		if ( feof( pFile ) )
+		if (feof(pFile))
 		{
-			printf( "Encountered EOF before expected in BED file. Ill-formed BED file [%s]", filename.c_str() );
+			printf("Encountered EOF before expected in BED file. Ill-formed BED file [%s]", filename.c_str());
 		}
-		int err = ferror( pFile );
-		if ( err )
+		int err = ferror(pFile);
+		if (err)
 		{
-			printf( "Encountered a file error %d in BED file [%s]", err, filename.c_str() );
+			printf("Encountered a file error %d in BED file [%s]", err, filename.c_str());
 		}
 	}
-	return( cbRead );
+	return(cbRead);
 }
 
-size_t SUFFIX(CBedFile)::ReadLine(BYTE *pb, size_t idx)
+size_t SUFFIX(CBedFile)::ReadLine(BYTE* pb, size_t idx)
 {
-	long long fpos = cbHeader + (idx*cbStride);
+	long long fpos = cbHeader + (idx * cbStride);
 #ifdef _WIN32
 	long long fposCur = _ftelli64(pFile);
 #elif __APPLE__
@@ -181,22 +164,22 @@ size_t SUFFIX(CBedFile)::ReadLine(BYTE *pb, size_t idx)
 void SUFFIX(CBedFile)::ReadGenotypes(size_t iSnp, bool count_A1, const vector< size_t >& idxIndividualList, REAL* pvOut, uint64_t_ startpos, uint64_t_  outputNumSNPs)
 {
 	//fprintf(stdout,"reading iSnp=%d w/ cIndividuals=%d and startpos=%d\n",iSnp,cIndividuals,startpos);
-	ReadLine( &rgBytes[0], iSnp );
+	ReadLine(&rgBytes[0], iSnp);
 	// 'decompress' the genotype information
 	size_t iIndividual = 0;
-	for ( size_t ib = 0; ib < cbStride; ++ib )
+	for (size_t ib = 0; ib < cbStride; ++ib)
 	{
-		BYTE genotypeByte = rgBytes[ ib ];
+		BYTE genotypeByte = rgBytes[ib];
 
 		// manually unrolled loop to decompress this byte
-		if ( iIndividual < cIndividuals ) rgBedGenotypes[ iIndividual++ ] = (BedGenotype)( genotypeByte       & 0x03);
-		if ( iIndividual < cIndividuals ) rgBedGenotypes[ iIndividual++ ] = (BedGenotype)((genotypeByte >> 2) & 0x03);
-		if ( iIndividual < cIndividuals ) rgBedGenotypes[ iIndividual++ ] = (BedGenotype)((genotypeByte >> 4) & 0x03);
-		if ( iIndividual < cIndividuals ) rgBedGenotypes[ iIndividual++ ] = (BedGenotype)((genotypeByte >> 6) & 0x03);
+		if (iIndividual < cIndividuals) rgBedGenotypes[iIndividual++] = (BedGenotype)(genotypeByte & 0x03);
+		if (iIndividual < cIndividuals) rgBedGenotypes[iIndividual++] = (BedGenotype)((genotypeByte >> 2) & 0x03);
+		if (iIndividual < cIndividuals) rgBedGenotypes[iIndividual++] = (BedGenotype)((genotypeByte >> 4) & 0x03);
+		if (iIndividual < cIndividuals) rgBedGenotypes[iIndividual++] = (BedGenotype)((genotypeByte >> 6) & 0x03);
 	}
-	for ( size_t i=0; i<idxIndividualList.size(); ++i )
+	for (size_t i = 0; i < idxIndividualList.size(); ++i)
 	{
-		size_t idx = idxIndividualList[ i ];
+		size_t idx = idxIndividualList[i];
 		//fprintf(stdout,"iSnp=%d, iIID=%d\n",iSnp,idx);
 #ifdef ORDERF
 		uint64_t_ out_idx = startpos + i;
@@ -215,22 +198,30 @@ void SUFFIX(CBedFile)::ReadGenotypes(size_t iSnp, bool count_A1, const vector< s
 }
 
 // wrapper to be used from cython
-void SUFFIX(readPlinkBedFile)(std::string bed_fn, int inputNumIndividuals, int inputNumSNPs, bool count_A1, std::vector<size_t> individuals_idx, std::vector<int> snpIdxList, REAL* out)
+void SUFFIX(readPlinkBedFile)(std::string bed_fn, int inputNumIndividuals, int inputNumSNPs,
+	bool count_A1, std::vector<size_t> individuals_idx, std::vector<int> snpIdxList, REAL* out, int num_threads)
+	//!!!cmk int num_threads)
 {
+	omp_set_num_threads(num_threads);
+
+	uint64_t_ outputNumInd = individuals_idx.size();
 	uint64_t_ outputNumSNPs = snpIdxList.size();
 
-	SUFFIX(CBedFile) bedFile = SUFFIX(CBedFile)();
-	bedFile.Open(bed_fn, inputNumIndividuals, inputNumSNPs);
+	#pragma omp parallel default(none) shared(bed_fn, inputNumIndividuals, inputNumSNPs, count_A1, individuals_idx, snpIdxList, out, outputNumInd, outputNumSNPs)
+	{
+		SUFFIX(CBedFile) bedFile = SUFFIX(CBedFile)();
+		bedFile.Open(bed_fn, inputNumIndividuals, inputNumSNPs);
 
-	for (size_t i = 0; i != snpIdxList.size(); i++) {
-		int idx = snpIdxList[i];
-
+		#pragma omp for schedule(static)
+		for (long i = 0; i < outputNumSNPs; i++) {
+			int idx = snpIdxList[i];
 #ifdef ORDERF
-		uint64_t_ startpos = ((uint64_t_)i) * individuals_idx.size();
+			uint64_t_ startpos = ((uint64_t_)i) * outputNumInd;
 #else
-		uint64_t_ startpos = ((uint64_t_)i);
+			uint64_t_ startpos = ((uint64_t_)i);
 #endif
-		bedFile.ReadGenotypes(idx, count_A1, individuals_idx, out, startpos, outputNumSNPs);
+			bedFile.ReadGenotypes(idx, count_A1, individuals_idx, out, startpos, outputNumSNPs);
+		}
 	}
 }
 
@@ -245,7 +236,7 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 	}
 
 	unsigned char zeroCode = (count_A1 ? 3 : 0);
-	unsigned char twoCode  = (count_A1 ? 0 : 3);
+	unsigned char twoCode = (count_A1 ? 0 : 3);
 
 	putc(bedFileMagic1, bed_filepointer);
 	putc(bedFileMagic2, bed_filepointer);
@@ -258,7 +249,7 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 	long long int sid_increment = (long long int)0;
 	long long int iid_increment = (long long int)1;
 #else
-	long long int sid_increment = (long long int)1 - (long long int) iid_count*(long long int)sid_count;
+	long long int sid_increment = (long long int)1 - (long long int) iid_count * (long long int)sid_count;
 	long long int iid_increment = (long long int)sid_count;
 #endif
 
@@ -277,7 +268,7 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 			{
 				end = 4;
 			}
-				
+
 
 			for (int val_index = 0; val_index < end; ++val_index)
 			{
@@ -313,7 +304,7 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 			putc(b, bed_filepointer);
 		}
 		startpos += sid_increment;
-		}
+	}
 	fclose(bed_filepointer);
 	//printf("b \n");
 }
@@ -321,11 +312,11 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 
 #ifndef MISSING_VALUE
 
-const REAL SUFFIX(_PI) = 2.0*acos(0.0);
-const REAL SUFFIX(_halflog2pi)=(REAL)0.5*log((REAL)2.0*SUFFIX(_PI));
+const REAL SUFFIX(_PI) = 2.0 * acos(0.0);
+const REAL SUFFIX(_halflog2pi) = (REAL)0.5 * log((REAL)2.0 * SUFFIX(_PI));
 const REAL SUFFIX(coeffsForLogGamma)[] = { 12.0, -360.0, 1260.0, -1680.0, 1188.0 };
 
-const REAL SUFFIX(eps_rank)=(REAL)3E-8;
+const REAL SUFFIX(eps_rank) = (REAL)3E-8;
 
 
 // Gamma and LogGamma
@@ -337,8 +328,8 @@ const REAL SUFFIX(eps_rank)=(REAL)3E-8;
 /// <remarks>Accurate to eight digits for all x.</remarks>
 REAL SUFFIX(logGamma)(REAL x)
 {
-	if (x <= (REAL)0.0){
-		printf("LogGamma arg=%f must be > 0.",x);
+	if (x <= (REAL)0.0) {
+		printf("LogGamma arg=%f must be > 0.", x);
 		throw(1);
 	}
 
@@ -361,7 +352,7 @@ REAL SUFFIX(logGamma)(REAL x)
 	// correction terms
 	REAL xSquared = x * x;
 	REAL pow = x;
-	for (int i=0; i<5; ++i)   //the length of the coefficient array is 5.
+	for (int i = 0; i < 5; ++i)   //the length of the coefficient array is 5.
 	{
 		REAL newRes = res + (REAL)1.0 / (SUFFIX(coeffsForLogGamma)[i] * pow);
 		if (newRes == res)
@@ -379,7 +370,7 @@ REAL SUFFIX(logGamma)(REAL x)
 /// <summary>Computes the log beta function</summary>
 double SUFFIX(LogBeta)(REAL x, REAL y)
 {
-	if (x <= 0.0 || y <= 0.0){
+	if (x <= 0.0 || y <= 0.0) {
 		printf("LogBeta args must be > 0.");
 		throw(1);
 	}
@@ -390,44 +381,44 @@ double SUFFIX(LogBeta)(REAL x, REAL y)
 /// <param name="x">Value at which to compute the pdf</param>
 /// <param name="a">Shape parameter (alpha)</param>
 /// <param name="b">Shape parameter (beta)</param>
-REAL SUFFIX(BetaPdf)(REAL x, REAL a, REAL b){
-   if (a <= 0 || b <= 0){
-      printf("Beta.Pdf parameters, a and b, must be > 0");
-      throw(1);
-   }
+REAL SUFFIX(BetaPdf)(REAL x, REAL a, REAL b) {
+	if (a <= 0 || b <= 0) {
+		printf("Beta.Pdf parameters, a and b, must be > 0");
+		throw(1);
+	}
 
-   if (x > 1) return 0;
-   if (x < 0) return 0;
+	if (x > 1) return 0;
+	if (x < 0) return 0;
 
-   REAL lnb = SUFFIX(LogBeta)(a, b);
-   return exp((a - 1) * log(x) + (b - 1) * log(1 - x) - lnb);
+	REAL lnb = SUFFIX(LogBeta)(a, b);
+	return exp((a - 1) * log(x) + (b - 1) * log(1 - x) - lnb);
 }
 
 
 
 /*
-* Parameters: 
+* Parameters:
 * SNPs [nIndividuals by nSNPs]:
-*                       Matrix stored in column-major order. 
+*                       Matrix stored in column-major order.
 *                       This will hold the result.
 *                       NaNs will be set to 0.0 in the result.
 */
-void SUFFIX(ImputeAndZeroMeanSNPs)( 
-	REAL *SNPs, 
-	const size_t nIndividuals, 
-	const size_t nSNPs, 
+void SUFFIX(ImputeAndZeroMeanSNPs)(
+	REAL* SNPs,
+	const size_t nIndividuals,
+	const size_t nSNPs,
 	const bool betaNotUnitVariance,
 	const REAL betaA,
 	const REAL betaB,
 	const bool apply_in_place,
 	const bool use_stats,
-	REAL *stats
+	REAL* stats
 	)
 {
 	bool seenSNC = false; //Keep track of this so that only one warning message is reported
 #ifdef ORDERF
 
-	for ( size_t iSnp = 0; iSnp < nSNPs; ++iSnp )
+	for (size_t iSnp = 0; iSnp < nSNPs; ++iSnp)
 	{
 		REAL mean_s;
 		REAL std;
@@ -545,8 +536,8 @@ void SUFFIX(ImputeAndZeroMeanSNPs)(
 	{
 		for (size_t iSnp = 0; iSnp < nSNPs; ++iSnp)
 		{
-			mean_s[iSnp] = stats[iSnp*2];
-			std[iSnp] = stats[iSnp * 2+1];
+			mean_s[iSnp] = stats[iSnp * 2];
+			std[iSnp] = stats[iSnp * 2 + 1];
 			isSNC[iSnp] = isinf(std[iSnp]);
 		}
 	}
@@ -557,13 +548,13 @@ void SUFFIX(ImputeAndZeroMeanSNPs)(
 		std::vector<REAL> sum_s(nSNPs);      //the sum of a SNP over all observed individuals. C++ inits to 0's
 		std::vector<REAL> sum2_s(nSNPs);     //the sum of the squares of the SNP over all observed individuals.     C++ inits to 0's
 
-		for( size_t ind = 0; ind < nIndividuals; ++ind)
+		for (size_t ind = 0; ind < nIndividuals; ++ind)
 		{
 			size_t rowStart = ind * nSNPs;
-			for ( size_t iSnp = 0; iSnp < nSNPs; ++iSnp )
+			for (size_t iSnp = 0; iSnp < nSNPs; ++iSnp)
 			{
-				REAL value = SNPs[rowStart+iSnp];
-				if ( value == value )
+				REAL value = SNPs[rowStart + iSnp];
+				if (value == value)
 				{
 					sum_s[iSnp] += value;
 					sum2_s[iSnp] += value * value;
@@ -612,8 +603,8 @@ void SUFFIX(ImputeAndZeroMeanSNPs)(
 					// fprintf(stderr, "std=.%2f has illegal value for SNPs[:][%zu]\n", std[iSnp], iSnp);
 				}
 			}
-			stats[iSnp*2] = mean_s[iSnp];
-			stats[iSnp*2+1] = std[iSnp];
+			stats[iSnp * 2] = mean_s[iSnp];
+			stats[iSnp * 2 + 1] = std[iSnp];
 		}
 	}
 

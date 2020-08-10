@@ -49,10 +49,19 @@ class CleanCommand(Clean):
 # set up macro
 if platform.system() == "Darwin":
     macros = [("__APPLE__", "1")]
+    mp5lib = 'iomp5'
+    extra_compile_args = ['-fopenmp'] #!!cmk '-fpermissive'
+
 elif "win" in platform.system().lower():
     macros = [("_WIN32", "1")]
+    mp5lib = 'libiomp5md'
+    extra_compile_args = ['/EHsc', '/openmp']
+
 else:
     macros = [("_UNIX", "1")]
+    mp5lib = 'iomp5'
+    extra_compile_args = ['-fopenmp'] #!!cmk '-fpermissive'
+
 
 
 #see http://stackoverflow.com/questions/4505747/how-should-i-structure-a-python-package-that-contains-cython-code
@@ -61,6 +70,8 @@ if use_cython:
                              language="c++",
                              sources=["sgkit_plink/wrap_plink_parser.pyx", "sgkit_plink/CPlinkBedFile.cpp"],
                              include_dirs = [numpy.get_include()],
+                             libraries = [mp5lib],
+                             extra_compile_args = extra_compile_args,
                              define_macros=macros),
                    Extension(name="sgkit_plink.wrap_matrix_subset",
                             language="c++",
@@ -73,6 +84,8 @@ else:
                              language="c++",
                              sources=["sgkit_plink/wrap_plink_parser.cpp", "sgkit_plink/CPlinkBedFile.cpp"],
                              include_dirs = [numpy.get_include()],
+                             libraries = [mp5lib],
+                             extra_compile_args = extra_compile_args,
                              define_macros=macros),
                    Extension(name="sgkit_plink.wrap_matrix_subset",
                             language="c++",

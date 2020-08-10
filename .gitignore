@@ -132,3 +132,4 @@ dmypy.json
 /TestResults
 /docs/ipynb/Untitled.ipynb
 /.vscode
+/deltest.py

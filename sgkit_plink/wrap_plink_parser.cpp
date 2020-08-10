@@ -1690,6 +1690,7 @@ static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_iidIdxList[] = "iidIdxList";
 static const char __pyx_k_snpIdxList[] = "snpIdxList";
 static const char __pyx_k_ImportError[] = "ImportError";
+static const char __pyx_k_num_threads[] = "num_threads";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
 static const char __pyx_k_iid_idx_list[] = "iid_idx_list";
 static const char __pyx_k_sid_idx_list[] = "sid_idx_list";
@@ -1758,6 +1759,7 @@ static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_num_ind;
 static PyObject *__pyx_n_s_num_snps;
+static PyObject *__pyx_n_s_num_threads;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_kp_s_numpy_core_multiarray_failed_to;
 static PyObject *__pyx_kp_s_numpy_core_umath_failed_to_impor;
@@ -1799,12 +1801,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_standardizefloatFAAA
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_2standardizedoubleFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_out, bool __pyx_v_betaNotUnitVariance, double __pyx_v_betaA, double __pyx_v_betaB, bool __pyx_v_apply_in_place, bool __pyx_v_use_stats, PyArrayObject *__pyx_v_stats); /* proto */
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_4standardizefloatCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_out, bool __pyx_v_betaNotUnitVariance, float __pyx_v_betaA, float __pyx_v_betaB, bool __pyx_v_apply_in_place, bool __pyx_v_use_stats, PyArrayObject *__pyx_v_stats); /* proto */
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_6standardizedoubleCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_out, bool __pyx_v_betaNotUnitVariance, double __pyx_v_betaA, double __pyx_v_betaB, bool __pyx_v_apply_in_place, bool __pyx_v_use_stats, PyArrayObject *__pyx_v_stats); /* proto */
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2floatFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out); /* proto */
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2floatCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out); /* proto */
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2doubleFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out); /* proto */
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2doubleCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out); /* proto */
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2int8FAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out); /* proto */
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2int8CAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out); /* proto */
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2floatFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads); /* proto */
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2floatCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads); /* proto */
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2doubleFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads); /* proto */
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2doubleCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads); /* proto */
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2int8FAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads); /* proto */
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2int8CAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads); /* proto */
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_20writePlinkBedFile2floatFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyArrayObject *__pyx_v_inx); /* proto */
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_22writePlinkBedFile2floatCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyArrayObject *__pyx_v_inx); /* proto */
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_24writePlinkBedFile2doubleFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyArrayObject *__pyx_v_inx); /* proto */
@@ -2833,7 +2835,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_6standardizedoubleCA
 /* "sgkit_plink/wrap_plink_parser.pyx":118
  * 
  * #New
- * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -2849,16 +2851,19 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_9readPlinkBedFile2fl
   PyObject *__pyx_v_iidIdxList = 0;
   PyObject *__pyx_v_snpIdxList = 0;
   PyArrayObject *__pyx_v_out = 0;
+  PyObject *__pyx_v_num_threads = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readPlinkBedFile2floatFAAA (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,0};
-    PyObject* values[7] = {0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,&__pyx_n_s_num_threads,0};
+    PyObject* values[8] = {0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         CYTHON_FALLTHROUGH;
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -2885,43 +2890,49 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_9readPlinkBedFile2fl
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 7, 7, 1); __PYX_ERR(0, 118, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, 1); __PYX_ERR(0, 118, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 7, 7, 2); __PYX_ERR(0, 118, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, 2); __PYX_ERR(0, 118, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_count_A1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 7, 7, 3); __PYX_ERR(0, 118, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, 3); __PYX_ERR(0, 118, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 7, 7, 4); __PYX_ERR(0, 118, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, 4); __PYX_ERR(0, 118, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 7, 7, 5); __PYX_ERR(0, 118, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, 5); __PYX_ERR(0, 118, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 7, 7, 6); __PYX_ERR(0, 118, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, 6); __PYX_ERR(0, 118, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_num_threads)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, 7); __PYX_ERR(0, 118, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFile2floatFAAA") < 0)) __PYX_ERR(0, 118, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -2931,6 +2942,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_9readPlinkBedFile2fl
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
     }
     __pyx_v_bed_fn = values[0];
     __pyx_v_input_num_ind = values[1];
@@ -2939,17 +2951,18 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_9readPlinkBedFile2fl
     __pyx_v_iidIdxList = values[4];
     __pyx_v_snpIdxList = values[5];
     __pyx_v_out = ((PyArrayObject *)values[6]);
+    __pyx_v_num_threads = values[7];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 118, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatFAAA", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 118, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFile2floatFAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 118, __pyx_L1_error)
-  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2floatFAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
+  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2floatFAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out, __pyx_v_num_threads);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2960,7 +2973,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_9readPlinkBedFile2fl
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2floatFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2floatFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads) {
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -2973,6 +2986,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2fl
   int __pyx_t_4;
   int __pyx_t_5;
   bool __pyx_t_6;
+  int __pyx_t_7;
   __Pyx_RefNannySetupContext("readPlinkBedFile2floatFAAA", 0);
   __pyx_pybuffer_out.pybuffer.buf = NULL;
   __pyx_pybuffer_out.refcount = 0;
@@ -2985,7 +2999,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2fl
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
   /* "sgkit_plink/wrap_plink_parser.pyx":120
- * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
+ * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
@@ -3007,7 +3021,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2fl
   /* "sgkit_plink/wrap_plink_parser.pyx":124
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
@@ -3015,14 +3029,15 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2fl
   __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
   __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_count_A1); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
-  readPlinkBedFilefloatFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data));
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_num_threads); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
+  readPlinkBedFilefloatFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data), __pyx_t_7);
 
   /* "sgkit_plink/wrap_plink_parser.pyx":125
  * 
- * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)
+ * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
- * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
+ * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_out));
@@ -3032,7 +3047,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2fl
   /* "sgkit_plink/wrap_plink_parser.pyx":118
  * 
  * #New
- * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3059,7 +3074,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_8readPlinkBedFile2fl
 /* "sgkit_plink/wrap_plink_parser.pyx":127
  * 	return out
  * 
- * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3075,16 +3090,19 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_11readPlinkBedFile2f
   PyObject *__pyx_v_iidIdxList = 0;
   PyObject *__pyx_v_snpIdxList = 0;
   PyArrayObject *__pyx_v_out = 0;
+  PyObject *__pyx_v_num_threads = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readPlinkBedFile2floatCAAA (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,0};
-    PyObject* values[7] = {0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,&__pyx_n_s_num_threads,0};
+    PyObject* values[8] = {0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         CYTHON_FALLTHROUGH;
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -3111,43 +3129,49 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_11readPlinkBedFile2f
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 7, 7, 1); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, 1); __PYX_ERR(0, 127, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 7, 7, 2); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, 2); __PYX_ERR(0, 127, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_count_A1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 7, 7, 3); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, 3); __PYX_ERR(0, 127, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 7, 7, 4); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, 4); __PYX_ERR(0, 127, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 7, 7, 5); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, 5); __PYX_ERR(0, 127, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 7, 7, 6); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, 6); __PYX_ERR(0, 127, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_num_threads)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, 7); __PYX_ERR(0, 127, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFile2floatCAAA") < 0)) __PYX_ERR(0, 127, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -3157,6 +3181,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_11readPlinkBedFile2f
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
     }
     __pyx_v_bed_fn = values[0];
     __pyx_v_input_num_ind = values[1];
@@ -3165,17 +3190,18 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_11readPlinkBedFile2f
     __pyx_v_iidIdxList = values[4];
     __pyx_v_snpIdxList = values[5];
     __pyx_v_out = ((PyArrayObject *)values[6]);
+    __pyx_v_num_threads = values[7];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 127, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2floatCAAA", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 127, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFile2floatCAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 127, __pyx_L1_error)
-  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2floatCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
+  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2floatCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out, __pyx_v_num_threads);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3186,7 +3212,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_11readPlinkBedFile2f
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2floatCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2floatCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads) {
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -3199,6 +3225,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2f
   int __pyx_t_4;
   int __pyx_t_5;
   bool __pyx_t_6;
+  int __pyx_t_7;
   __Pyx_RefNannySetupContext("readPlinkBedFile2floatCAAA", 0);
   __pyx_pybuffer_out.pybuffer.buf = NULL;
   __pyx_pybuffer_out.refcount = 0;
@@ -3211,7 +3238,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2f
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
   /* "sgkit_plink/wrap_plink_parser.pyx":129
- * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
+ * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
@@ -3233,7 +3260,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2f
   /* "sgkit_plink/wrap_plink_parser.pyx":133
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
@@ -3241,11 +3268,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2f
   __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
   __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_count_A1); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
-  readPlinkBedFilefloatCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data));
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_num_threads); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
+  readPlinkBedFilefloatCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data), __pyx_t_7);
 
   /* "sgkit_plink/wrap_plink_parser.pyx":134
  * 
- * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)
+ * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
  * 
@@ -3258,7 +3286,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2f
   /* "sgkit_plink/wrap_plink_parser.pyx":127
  * 	return out
  * 
- * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3285,7 +3313,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_10readPlinkBedFile2f
 /* "sgkit_plink/wrap_plink_parser.pyx":137
  * 
  * 
- * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3301,16 +3329,19 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_13readPlinkBedFile2d
   PyObject *__pyx_v_iidIdxList = 0;
   PyObject *__pyx_v_snpIdxList = 0;
   PyArrayObject *__pyx_v_out = 0;
+  PyObject *__pyx_v_num_threads = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readPlinkBedFile2doubleFAAA (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,0};
-    PyObject* values[7] = {0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,&__pyx_n_s_num_threads,0};
+    PyObject* values[8] = {0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         CYTHON_FALLTHROUGH;
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -3337,43 +3368,49 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_13readPlinkBedFile2d
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 7, 7, 1); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, 1); __PYX_ERR(0, 137, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 7, 7, 2); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, 2); __PYX_ERR(0, 137, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_count_A1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 7, 7, 3); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, 3); __PYX_ERR(0, 137, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 7, 7, 4); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, 4); __PYX_ERR(0, 137, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 7, 7, 5); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, 5); __PYX_ERR(0, 137, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 7, 7, 6); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, 6); __PYX_ERR(0, 137, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_num_threads)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, 7); __PYX_ERR(0, 137, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFile2doubleFAAA") < 0)) __PYX_ERR(0, 137, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -3383,6 +3420,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_13readPlinkBedFile2d
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
     }
     __pyx_v_bed_fn = values[0];
     __pyx_v_input_num_ind = values[1];
@@ -3391,17 +3429,18 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_13readPlinkBedFile2d
     __pyx_v_iidIdxList = values[4];
     __pyx_v_snpIdxList = values[5];
     __pyx_v_out = ((PyArrayObject *)values[6]);
+    __pyx_v_num_threads = values[7];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 137, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleFAAA", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 137, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFile2doubleFAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 137, __pyx_L1_error)
-  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2doubleFAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
+  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2doubleFAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out, __pyx_v_num_threads);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3412,7 +3451,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_13readPlinkBedFile2d
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2doubleFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2doubleFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads) {
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -3425,6 +3464,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2d
   int __pyx_t_4;
   int __pyx_t_5;
   bool __pyx_t_6;
+  int __pyx_t_7;
   __Pyx_RefNannySetupContext("readPlinkBedFile2doubleFAAA", 0);
   __pyx_pybuffer_out.pybuffer.buf = NULL;
   __pyx_pybuffer_out.refcount = 0;
@@ -3437,7 +3477,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2d
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
   /* "sgkit_plink/wrap_plink_parser.pyx":139
- * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
+ * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
@@ -3459,7 +3499,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2d
   /* "sgkit_plink/wrap_plink_parser.pyx":143
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
@@ -3467,14 +3507,15 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2d
   __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
   __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_count_A1); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
-  readPlinkBedFiledoubleFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data));
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_num_threads); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
+  readPlinkBedFiledoubleFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data), __pyx_t_7);
 
   /* "sgkit_plink/wrap_plink_parser.pyx":144
  * 
- * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)
+ * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
- * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
+ * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_out));
@@ -3484,7 +3525,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2d
   /* "sgkit_plink/wrap_plink_parser.pyx":137
  * 
  * 
- * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3511,7 +3552,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_12readPlinkBedFile2d
 /* "sgkit_plink/wrap_plink_parser.pyx":146
  * 	return out
  * 
- * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3527,16 +3568,19 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_15readPlinkBedFile2d
   PyObject *__pyx_v_iidIdxList = 0;
   PyObject *__pyx_v_snpIdxList = 0;
   PyArrayObject *__pyx_v_out = 0;
+  PyObject *__pyx_v_num_threads = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readPlinkBedFile2doubleCAAA (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,0};
-    PyObject* values[7] = {0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,&__pyx_n_s_num_threads,0};
+    PyObject* values[8] = {0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         CYTHON_FALLTHROUGH;
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -3563,43 +3607,49 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_15readPlinkBedFile2d
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 7, 7, 1); __PYX_ERR(0, 146, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, 1); __PYX_ERR(0, 146, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 7, 7, 2); __PYX_ERR(0, 146, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, 2); __PYX_ERR(0, 146, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_count_A1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 7, 7, 3); __PYX_ERR(0, 146, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, 3); __PYX_ERR(0, 146, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 7, 7, 4); __PYX_ERR(0, 146, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, 4); __PYX_ERR(0, 146, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 7, 7, 5); __PYX_ERR(0, 146, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, 5); __PYX_ERR(0, 146, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 7, 7, 6); __PYX_ERR(0, 146, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, 6); __PYX_ERR(0, 146, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_num_threads)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, 7); __PYX_ERR(0, 146, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFile2doubleCAAA") < 0)) __PYX_ERR(0, 146, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -3609,6 +3659,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_15readPlinkBedFile2d
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
     }
     __pyx_v_bed_fn = values[0];
     __pyx_v_input_num_ind = values[1];
@@ -3617,17 +3668,18 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_15readPlinkBedFile2d
     __pyx_v_iidIdxList = values[4];
     __pyx_v_snpIdxList = values[5];
     __pyx_v_out = ((PyArrayObject *)values[6]);
+    __pyx_v_num_threads = values[7];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 146, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2doubleCAAA", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 146, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFile2doubleCAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 146, __pyx_L1_error)
-  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2doubleCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
+  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2doubleCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out, __pyx_v_num_threads);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3638,7 +3690,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_15readPlinkBedFile2d
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2doubleCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2doubleCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads) {
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -3651,6 +3703,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2d
   int __pyx_t_4;
   int __pyx_t_5;
   bool __pyx_t_6;
+  int __pyx_t_7;
   __Pyx_RefNannySetupContext("readPlinkBedFile2doubleCAAA", 0);
   __pyx_pybuffer_out.pybuffer.buf = NULL;
   __pyx_pybuffer_out.refcount = 0;
@@ -3663,7 +3716,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2d
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
   /* "sgkit_plink/wrap_plink_parser.pyx":148
- * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
+ * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
@@ -3685,7 +3738,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2d
   /* "sgkit_plink/wrap_plink_parser.pyx":152
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
@@ -3693,14 +3746,15 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2d
   __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L1_error)
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L1_error)
   __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_count_A1); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L1_error)
-  readPlinkBedFiledoubleCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data));
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_num_threads); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L1_error)
+  readPlinkBedFiledoubleCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data), __pyx_t_7);
 
   /* "sgkit_plink/wrap_plink_parser.pyx":153
  * 
- * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)
+ * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
- * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):
+ * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_out));
@@ -3710,7 +3764,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2d
   /* "sgkit_plink/wrap_plink_parser.pyx":146
  * 	return out
  * 
- * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3737,7 +3791,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_14readPlinkBedFile2d
 /* "sgkit_plink/wrap_plink_parser.pyx":155
  * 	return out
  * 
- * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3753,16 +3807,19 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_17readPlinkBedFile2i
   PyObject *__pyx_v_iidIdxList = 0;
   PyObject *__pyx_v_snpIdxList = 0;
   PyArrayObject *__pyx_v_out = 0;
+  PyObject *__pyx_v_num_threads = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readPlinkBedFile2int8FAAA (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,0};
-    PyObject* values[7] = {0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,&__pyx_n_s_num_threads,0};
+    PyObject* values[8] = {0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         CYTHON_FALLTHROUGH;
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -3789,43 +3846,49 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_17readPlinkBedFile2i
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 7, 7, 1); __PYX_ERR(0, 155, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, 1); __PYX_ERR(0, 155, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 7, 7, 2); __PYX_ERR(0, 155, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, 2); __PYX_ERR(0, 155, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_count_A1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 7, 7, 3); __PYX_ERR(0, 155, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, 3); __PYX_ERR(0, 155, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 7, 7, 4); __PYX_ERR(0, 155, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, 4); __PYX_ERR(0, 155, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 7, 7, 5); __PYX_ERR(0, 155, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, 5); __PYX_ERR(0, 155, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 7, 7, 6); __PYX_ERR(0, 155, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, 6); __PYX_ERR(0, 155, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_num_threads)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, 7); __PYX_ERR(0, 155, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFile2int8FAAA") < 0)) __PYX_ERR(0, 155, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -3835,6 +3898,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_17readPlinkBedFile2i
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
     }
     __pyx_v_bed_fn = values[0];
     __pyx_v_input_num_ind = values[1];
@@ -3843,17 +3907,18 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_17readPlinkBedFile2i
     __pyx_v_iidIdxList = values[4];
     __pyx_v_snpIdxList = values[5];
     __pyx_v_out = ((PyArrayObject *)values[6]);
+    __pyx_v_num_threads = values[7];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 155, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8FAAA", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 155, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFile2int8FAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 155, __pyx_L1_error)
-  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2int8FAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
+  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2int8FAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out, __pyx_v_num_threads);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3864,7 +3929,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_17readPlinkBedFile2i
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2int8FAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2int8FAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads) {
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -3877,6 +3942,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2i
   int __pyx_t_4;
   int __pyx_t_5;
   bool __pyx_t_6;
+  int __pyx_t_7;
   __Pyx_RefNannySetupContext("readPlinkBedFile2int8FAAA", 0);
   __pyx_pybuffer_out.pybuffer.buf = NULL;
   __pyx_pybuffer_out.refcount = 0;
@@ -3889,7 +3955,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2i
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
   /* "sgkit_plink/wrap_plink_parser.pyx":157
- * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):
+ * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
@@ -3911,7 +3977,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2i
   /* "sgkit_plink/wrap_plink_parser.pyx":161
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFileint8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFileint8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
@@ -3919,14 +3985,15 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2i
   __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_count_A1); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
-  readPlinkBedFileint8FAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((signed char *)__pyx_v_out->data));
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_num_threads); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
+  readPlinkBedFileint8FAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((signed char *)__pyx_v_out->data), __pyx_t_7);
 
   /* "sgkit_plink/wrap_plink_parser.pyx":162
  * 
- * 	_readPlinkBedFileint8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data)
+ * 	_readPlinkBedFileint8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
- * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):
+ * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_out));
@@ -3936,7 +4003,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2i
   /* "sgkit_plink/wrap_plink_parser.pyx":155
  * 	return out
  * 
- * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3963,7 +4030,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_16readPlinkBedFile2i
 /* "sgkit_plink/wrap_plink_parser.pyx":164
  * 	return out
  * 
- * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -3979,16 +4046,19 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_19readPlinkBedFile2i
   PyObject *__pyx_v_iidIdxList = 0;
   PyObject *__pyx_v_snpIdxList = 0;
   PyArrayObject *__pyx_v_out = 0;
+  PyObject *__pyx_v_num_threads = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readPlinkBedFile2int8CAAA (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,0};
-    PyObject* values[7] = {0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_bed_fn,&__pyx_n_s_input_num_ind,&__pyx_n_s_input_num_snps,&__pyx_n_s_count_A1,&__pyx_n_s_iidIdxList,&__pyx_n_s_snpIdxList,&__pyx_n_s_out,&__pyx_n_s_num_threads,0};
+    PyObject* values[8] = {0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         CYTHON_FALLTHROUGH;
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -4015,43 +4085,49 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_19readPlinkBedFile2i
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 7, 7, 1); __PYX_ERR(0, 164, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, 1); __PYX_ERR(0, 164, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 7, 7, 2); __PYX_ERR(0, 164, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, 2); __PYX_ERR(0, 164, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_count_A1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 7, 7, 3); __PYX_ERR(0, 164, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, 3); __PYX_ERR(0, 164, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 7, 7, 4); __PYX_ERR(0, 164, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, 4); __PYX_ERR(0, 164, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 7, 7, 5); __PYX_ERR(0, 164, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, 5); __PYX_ERR(0, 164, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 7, 7, 6); __PYX_ERR(0, 164, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, 6); __PYX_ERR(0, 164, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_num_threads)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, 7); __PYX_ERR(0, 164, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFile2int8CAAA") < 0)) __PYX_ERR(0, 164, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -4061,6 +4137,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_19readPlinkBedFile2i
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
       values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
     }
     __pyx_v_bed_fn = values[0];
     __pyx_v_input_num_ind = values[1];
@@ -4069,17 +4146,18 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_19readPlinkBedFile2i
     __pyx_v_iidIdxList = values[4];
     __pyx_v_snpIdxList = values[5];
     __pyx_v_out = ((PyArrayObject *)values[6]);
+    __pyx_v_num_threads = values[7];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 164, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFile2int8CAAA", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 164, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFile2int8CAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 164, __pyx_L1_error)
-  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2int8CAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
+  __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2int8CAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_count_A1, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out, __pyx_v_num_threads);
 
   /* function exit code */
   goto __pyx_L0;
@@ -4090,7 +4168,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_19readPlinkBedFile2i
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2int8CAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
+static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2int8CAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_count_A1, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out, PyObject *__pyx_v_num_threads) {
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -4103,6 +4181,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2i
   int __pyx_t_4;
   int __pyx_t_5;
   bool __pyx_t_6;
+  int __pyx_t_7;
   __Pyx_RefNannySetupContext("readPlinkBedFile2int8CAAA", 0);
   __pyx_pybuffer_out.pybuffer.buf = NULL;
   __pyx_pybuffer_out.refcount = 0;
@@ -4115,7 +4194,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2i
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
   /* "sgkit_plink/wrap_plink_parser.pyx":166
- * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):
+ * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
@@ -4137,7 +4216,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2i
   /* "sgkit_plink/wrap_plink_parser.pyx":170
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFileint8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFileint8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
@@ -4145,11 +4224,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2i
   __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
   __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_count_A1); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
-  readPlinkBedFileint8CAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((signed char *)__pyx_v_out->data));
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_num_threads); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
+  readPlinkBedFileint8CAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((signed char *)__pyx_v_out->data), __pyx_t_7);
 
   /* "sgkit_plink/wrap_plink_parser.pyx":171
  * 
- * 	_readPlinkBedFileint8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data)
+ * 	_readPlinkBedFileint8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <signed char*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
  * def writePlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, np.ndarray[np.float32_t, ndim=2] inx):
@@ -4162,7 +4242,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_18readPlinkBedFile2i
   /* "sgkit_plink/wrap_plink_parser.pyx":164
  * 	return out
  * 
- * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -5211,7 +5291,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_30writePlinkBedFile2
  * #Old
  * def readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
 /* Python wrapper */
@@ -5327,6 +5407,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_33readPlinkBedFilefl
 
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_32readPlinkBedFilefloatFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
   int __pyx_v_count_A1;
+  long __pyx_v_num_threads;
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -5353,46 +5434,55 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_32readPlinkBedFilefl
  * #Old
  * def readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
- * 	cdef vector[int] sid_idx_list = snpIdxList
  */
   __pyx_v_count_A1 = 0;
 
   /* "sgkit_plink/wrap_plink_parser.pyx":194
  * def readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
  * 	count_A1 = False
+ * 	num_threads = 1             # <<<<<<<<<<<<<<
+ * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	cdef vector[int] sid_idx_list = snpIdxList
+ */
+  __pyx_v_num_threads = 1;
+
+  /* "sgkit_plink/wrap_plink_parser.pyx":195
+ * 	count_A1 = False
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  */
-  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 195, __pyx_L1_error)
   __pyx_v_iid_idx_list = __pyx_t_1;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":195
- * 	count_A1 = False
+  /* "sgkit_plink/wrap_plink_parser.pyx":196
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  * 	cdef vector[int] sid_idx_list = snpIdxList             # <<<<<<<<<<<<<<
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
  */
-  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 195, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_v_sid_idx_list = __pyx_t_2;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":198
+  /* "sgkit_plink/wrap_plink_parser.pyx":199
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L1_error)
-  readPlinkBedFilefloatFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data));
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+  readPlinkBedFilefloatFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data), __pyx_v_num_threads);
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":199
+  /* "sgkit_plink/wrap_plink_parser.pyx":200
  * 
- * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)
+ * 	_readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
  * def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
@@ -5407,7 +5497,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_32readPlinkBedFilefl
  * #Old
  * def readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
   /* function exit code */
@@ -5429,12 +5519,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_32readPlinkBedFilefl
   return __pyx_r;
 }
 
-/* "sgkit_plink/wrap_plink_parser.pyx":201
+/* "sgkit_plink/wrap_plink_parser.pyx":202
  * 	return out
  * 
  * def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
 /* Python wrapper */
@@ -5481,35 +5571,35 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_35readPlinkBedFilefl
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 1); __PYX_ERR(0, 201, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 1); __PYX_ERR(0, 202, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 2); __PYX_ERR(0, 201, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 2); __PYX_ERR(0, 202, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 3); __PYX_ERR(0, 201, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 3); __PYX_ERR(0, 202, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 4); __PYX_ERR(0, 201, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 4); __PYX_ERR(0, 202, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 5); __PYX_ERR(0, 201, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, 5); __PYX_ERR(0, 202, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFilefloatCAAA") < 0)) __PYX_ERR(0, 201, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFilefloatCAAA") < 0)) __PYX_ERR(0, 202, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -5530,13 +5620,13 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_35readPlinkBedFilefl
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 201, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFilefloatCAAA", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 202, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFilefloatCAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 202, __pyx_L1_error)
   __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_34readPlinkBedFilefloatCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
 
   /* function exit code */
@@ -5550,6 +5640,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_35readPlinkBedFilefl
 
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_34readPlinkBedFilefloatCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
   int __pyx_v_count_A1;
+  long __pyx_v_num_threads;
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -5568,54 +5659,63 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_34readPlinkBedFilefl
   __pyx_pybuffernd_out.rcbuffer = &__pyx_pybuffer_out;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 201, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 202, __pyx_L1_error)
   }
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":202
+  /* "sgkit_plink/wrap_plink_parser.pyx":203
  * 
  * def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
- * 	cdef vector[int] sid_idx_list = snpIdxList
  */
   __pyx_v_count_A1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":203
+  /* "sgkit_plink/wrap_plink_parser.pyx":204
  * def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):
  * 	count_A1 = False
+ * 	num_threads = 1             # <<<<<<<<<<<<<<
+ * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	cdef vector[int] sid_idx_list = snpIdxList
+ */
+  __pyx_v_num_threads = 1;
+
+  /* "sgkit_plink/wrap_plink_parser.pyx":205
+ * 	count_A1 = False
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  */
-  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_v_iid_idx_list = __pyx_t_1;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":204
- * 	count_A1 = False
+  /* "sgkit_plink/wrap_plink_parser.pyx":206
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  * 	cdef vector[int] sid_idx_list = snpIdxList             # <<<<<<<<<<<<<<
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
  */
-  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_v_sid_idx_list = __pyx_t_2;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":207
+  /* "sgkit_plink/wrap_plink_parser.pyx":209
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L1_error)
-  readPlinkBedFilefloatCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data));
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L1_error)
+  readPlinkBedFilefloatCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((float *)__pyx_v_out->data), __pyx_v_num_threads);
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":208
+  /* "sgkit_plink/wrap_plink_parser.pyx":210
  * 
- * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data)
+ * 	_readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <float*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
  * 
@@ -5625,12 +5725,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_34readPlinkBedFilefl
   __pyx_r = ((PyObject *)__pyx_v_out);
   goto __pyx_L0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":201
+  /* "sgkit_plink/wrap_plink_parser.pyx":202
  * 	return out
  * 
  * def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
   /* function exit code */
@@ -5652,12 +5752,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_34readPlinkBedFilefl
   return __pyx_r;
 }
 
-/* "sgkit_plink/wrap_plink_parser.pyx":211
+/* "sgkit_plink/wrap_plink_parser.pyx":213
  * 
  * 
  * def readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
 /* Python wrapper */
@@ -5704,35 +5804,35 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_37readPlinkBedFiledo
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 1); __PYX_ERR(0, 211, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 1); __PYX_ERR(0, 213, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 2); __PYX_ERR(0, 211, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 2); __PYX_ERR(0, 213, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 3); __PYX_ERR(0, 211, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 3); __PYX_ERR(0, 213, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 4); __PYX_ERR(0, 211, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 4); __PYX_ERR(0, 213, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 5); __PYX_ERR(0, 211, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, 5); __PYX_ERR(0, 213, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFiledoubleFAAA") < 0)) __PYX_ERR(0, 211, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFiledoubleFAAA") < 0)) __PYX_ERR(0, 213, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -5753,13 +5853,13 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_37readPlinkBedFiledo
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 211, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleFAAA", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 213, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFiledoubleFAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 211, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 213, __pyx_L1_error)
   __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_36readPlinkBedFiledoubleFAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
 
   /* function exit code */
@@ -5773,6 +5873,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_37readPlinkBedFiledo
 
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_36readPlinkBedFiledoubleFAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
   int __pyx_v_count_A1;
+  long __pyx_v_num_threads;
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -5791,54 +5892,63 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_36readPlinkBedFiledo
   __pyx_pybuffernd_out.rcbuffer = &__pyx_pybuffer_out;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 211, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 213, __pyx_L1_error)
   }
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":212
+  /* "sgkit_plink/wrap_plink_parser.pyx":214
  * 
  * def readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
- * 	cdef vector[int] sid_idx_list = snpIdxList
  */
   __pyx_v_count_A1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":213
+  /* "sgkit_plink/wrap_plink_parser.pyx":215
  * def readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
  * 	count_A1 = False
+ * 	num_threads = 1             # <<<<<<<<<<<<<<
+ * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	cdef vector[int] sid_idx_list = snpIdxList
+ */
+  __pyx_v_num_threads = 1;
+
+  /* "sgkit_plink/wrap_plink_parser.pyx":216
+ * 	count_A1 = False
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  */
-  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 216, __pyx_L1_error)
   __pyx_v_iid_idx_list = __pyx_t_1;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":214
- * 	count_A1 = False
+  /* "sgkit_plink/wrap_plink_parser.pyx":217
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  * 	cdef vector[int] sid_idx_list = snpIdxList             # <<<<<<<<<<<<<<
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
  */
-  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 217, __pyx_L1_error)
   __pyx_v_sid_idx_list = __pyx_t_2;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":217
+  /* "sgkit_plink/wrap_plink_parser.pyx":220
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 217, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 217, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 217, __pyx_L1_error)
-  readPlinkBedFiledoubleFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data));
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 220, __pyx_L1_error)
+  readPlinkBedFiledoubleFAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data), __pyx_v_num_threads);
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":218
+  /* "sgkit_plink/wrap_plink_parser.pyx":221
  * 
- * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)
+ * 	_readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
  * def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
@@ -5848,12 +5958,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_36readPlinkBedFiledo
   __pyx_r = ((PyObject *)__pyx_v_out);
   goto __pyx_L0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":211
+  /* "sgkit_plink/wrap_plink_parser.pyx":213
  * 
  * 
  * def readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
   /* function exit code */
@@ -5875,12 +5985,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_36readPlinkBedFiledo
   return __pyx_r;
 }
 
-/* "sgkit_plink/wrap_plink_parser.pyx":220
+/* "sgkit_plink/wrap_plink_parser.pyx":223
  * 	return out
  * 
  * def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
 /* Python wrapper */
@@ -5927,35 +6037,35 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_39readPlinkBedFiledo
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 1); __PYX_ERR(0, 220, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 1); __PYX_ERR(0, 223, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 2); __PYX_ERR(0, 220, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 2); __PYX_ERR(0, 223, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_iidIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 3); __PYX_ERR(0, 220, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 3); __PYX_ERR(0, 223, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_snpIdxList)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 4); __PYX_ERR(0, 220, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 4); __PYX_ERR(0, 223, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_out)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 5); __PYX_ERR(0, 220, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, 5); __PYX_ERR(0, 223, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFiledoubleCAAA") < 0)) __PYX_ERR(0, 220, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "readPlinkBedFiledoubleCAAA") < 0)) __PYX_ERR(0, 223, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -5976,13 +6086,13 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_39readPlinkBedFiledo
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 220, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readPlinkBedFiledoubleCAAA", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 223, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.readPlinkBedFiledoubleCAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_out), __pyx_ptype_5numpy_ndarray, 1, "out", 0))) __PYX_ERR(0, 223, __pyx_L1_error)
   __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_38readPlinkBedFiledoubleCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_iidIdxList, __pyx_v_snpIdxList, __pyx_v_out);
 
   /* function exit code */
@@ -5996,6 +6106,7 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_39readPlinkBedFiledo
 
 static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_38readPlinkBedFiledoubleCAAA(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_bed_fn, PyObject *__pyx_v_input_num_ind, PyObject *__pyx_v_input_num_snps, PyObject *__pyx_v_iidIdxList, PyObject *__pyx_v_snpIdxList, PyArrayObject *__pyx_v_out) {
   int __pyx_v_count_A1;
+  long __pyx_v_num_threads;
   std::vector<size_t>  __pyx_v_iid_idx_list;
   std::vector<int>  __pyx_v_sid_idx_list;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_out;
@@ -6014,54 +6125,63 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_38readPlinkBedFiledo
   __pyx_pybuffernd_out.rcbuffer = &__pyx_pybuffer_out;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 220, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 223, __pyx_L1_error)
   }
   __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1];
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":221
+  /* "sgkit_plink/wrap_plink_parser.pyx":224
  * 
  * def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
- * 	cdef vector[int] sid_idx_list = snpIdxList
  */
   __pyx_v_count_A1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":222
+  /* "sgkit_plink/wrap_plink_parser.pyx":225
  * def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):
  * 	count_A1 = False
+ * 	num_threads = 1             # <<<<<<<<<<<<<<
+ * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	cdef vector[int] sid_idx_list = snpIdxList
+ */
+  __pyx_v_num_threads = 1;
+
+  /* "sgkit_plink/wrap_plink_parser.pyx":226
+ * 	count_A1 = False
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList             # <<<<<<<<<<<<<<
  * 	cdef vector[int] sid_idx_list = snpIdxList
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  */
-  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_from_py_size_t(__pyx_v_iidIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L1_error)
   __pyx_v_iid_idx_list = __pyx_t_1;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":223
- * 	count_A1 = False
+  /* "sgkit_plink/wrap_plink_parser.pyx":227
+ * 	num_threads = 1
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  * 	cdef vector[int] sid_idx_list = snpIdxList             # <<<<<<<<<<<<<<
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
  */
-  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_from_py_int(__pyx_v_snpIdxList); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 227, __pyx_L1_error)
   __pyx_v_sid_idx_list = __pyx_t_2;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":226
+  /* "sgkit_plink/wrap_plink_parser.pyx":230
  * 	#http://wiki.cython.org/tutorials/NumpyPointerToC
  * 
- * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)             # <<<<<<<<<<<<<<
+ * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)             # <<<<<<<<<<<<<<
  * 	return out
  * 
  */
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L1_error)
-  readPlinkBedFiledoubleCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data));
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
+  readPlinkBedFiledoubleCAAA(__pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_count_A1, __pyx_v_iid_idx_list, __pyx_v_sid_idx_list, ((double *)__pyx_v_out->data), __pyx_v_num_threads);
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":227
+  /* "sgkit_plink/wrap_plink_parser.pyx":231
  * 
- * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data)
+ * 	_readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iid_idx_list, sid_idx_list, <double*> out.data, num_threads)
  * 	return out             # <<<<<<<<<<<<<<
  * 
  * 
@@ -6071,12 +6191,12 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_38readPlinkBedFiledo
   __pyx_r = ((PyObject *)__pyx_v_out);
   goto __pyx_L0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":220
+  /* "sgkit_plink/wrap_plink_parser.pyx":223
  * 	return out
  * 
  * def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
 
   /* function exit code */
@@ -6098,7 +6218,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_38readPlinkBedFiledo
   return __pyx_r;
 }
 
-/* "sgkit_plink/wrap_plink_parser.pyx":230
+/* "sgkit_plink/wrap_plink_parser.pyx":234
  * 
  * 
  * def writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -6144,23 +6264,23 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_41writePlinkBedFilef
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, 1); __PYX_ERR(0, 230, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, 1); __PYX_ERR(0, 234, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, 2); __PYX_ERR(0, 230, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, 2); __PYX_ERR(0, 234, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_inx)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, 3); __PYX_ERR(0, 230, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, 3); __PYX_ERR(0, 234, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFilefloatFAAA") < 0)) __PYX_ERR(0, 230, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFilefloatFAAA") < 0)) __PYX_ERR(0, 234, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -6177,13 +6297,13 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_41writePlinkBedFilef
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 230, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatFAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 234, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.writePlinkBedFilefloatFAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 234, __pyx_L1_error)
   __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_40writePlinkBedFilefloatFAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_inx);
 
   /* function exit code */
@@ -6211,11 +6331,11 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_40writePlinkBedFilef
   __pyx_pybuffernd_inx.rcbuffer = &__pyx_pybuffer_inx;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 230, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 234, __pyx_L1_error)
   }
   __pyx_pybuffernd_inx.diminfo[0].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_inx.diminfo[0].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_inx.diminfo[1].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_inx.diminfo[1].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[1];
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":231
+  /* "sgkit_plink/wrap_plink_parser.pyx":235
  * 
  * def writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
@@ -6224,19 +6344,19 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_40writePlinkBedFilef
  */
   __pyx_v_count_A1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":232
+  /* "sgkit_plink/wrap_plink_parser.pyx":236
  * def writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):
  * 	count_A1 = False
  * 	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)             # <<<<<<<<<<<<<<
  * 
  * def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 232, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 232, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
   writePlinkBedFilefloatFAAA(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_v_count_A1, ((float *)__pyx_v_inx->data));
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":230
+  /* "sgkit_plink/wrap_plink_parser.pyx":234
  * 
  * 
  * def writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -6265,7 +6385,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_40writePlinkBedFilef
   return __pyx_r;
 }
 
-/* "sgkit_plink/wrap_plink_parser.pyx":234
+/* "sgkit_plink/wrap_plink_parser.pyx":238
  * 	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -6311,23 +6431,23 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_43writePlinkBedFilef
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, 1); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, 1); __PYX_ERR(0, 238, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, 2); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, 2); __PYX_ERR(0, 238, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_inx)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, 3); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, 3); __PYX_ERR(0, 238, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFilefloatCAAA") < 0)) __PYX_ERR(0, 234, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFilefloatCAAA") < 0)) __PYX_ERR(0, 238, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -6344,13 +6464,13 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_43writePlinkBedFilef
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 234, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("writePlinkBedFilefloatCAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 238, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.writePlinkBedFilefloatCAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 234, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
   __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_42writePlinkBedFilefloatCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_inx);
 
   /* function exit code */
@@ -6378,11 +6498,11 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_42writePlinkBedFilef
   __pyx_pybuffernd_inx.rcbuffer = &__pyx_pybuffer_inx;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 234, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
   }
   __pyx_pybuffernd_inx.diminfo[0].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_inx.diminfo[0].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_inx.diminfo[1].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_inx.diminfo[1].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[1];
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":235
+  /* "sgkit_plink/wrap_plink_parser.pyx":239
  * 
  * def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
@@ -6391,19 +6511,19 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_42writePlinkBedFilef
  */
   __pyx_v_count_A1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":236
+  /* "sgkit_plink/wrap_plink_parser.pyx":240
  * def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):
  * 	count_A1 = False
  * 	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)             # <<<<<<<<<<<<<<
  * 
  * def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
   writePlinkBedFilefloatCAAA(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_v_count_A1, ((float *)__pyx_v_inx->data));
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":234
+  /* "sgkit_plink/wrap_plink_parser.pyx":238
  * 	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -6432,7 +6552,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_42writePlinkBedFilef
   return __pyx_r;
 }
 
-/* "sgkit_plink/wrap_plink_parser.pyx":238
+/* "sgkit_plink/wrap_plink_parser.pyx":242
  * 	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -6478,23 +6598,23 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_45writePlinkBedFiled
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, 1); __PYX_ERR(0, 238, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, 1); __PYX_ERR(0, 242, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, 2); __PYX_ERR(0, 238, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, 2); __PYX_ERR(0, 242, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_inx)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, 3); __PYX_ERR(0, 238, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, 3); __PYX_ERR(0, 242, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFiledoubleFAAA") < 0)) __PYX_ERR(0, 238, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFiledoubleFAAA") < 0)) __PYX_ERR(0, 242, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -6511,13 +6631,13 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_45writePlinkBedFiled
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 238, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleFAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 242, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.writePlinkBedFiledoubleFAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 242, __pyx_L1_error)
   __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_44writePlinkBedFiledoubleFAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_inx);
 
   /* function exit code */
@@ -6545,11 +6665,11 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_44writePlinkBedFiled
   __pyx_pybuffernd_inx.rcbuffer = &__pyx_pybuffer_inx;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 238, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 242, __pyx_L1_error)
   }
   __pyx_pybuffernd_inx.diminfo[0].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_inx.diminfo[0].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_inx.diminfo[1].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_inx.diminfo[1].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[1];
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":239
+  /* "sgkit_plink/wrap_plink_parser.pyx":243
  * 
  * def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
@@ -6558,19 +6678,19 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_44writePlinkBedFiled
  */
   __pyx_v_count_A1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":240
+  /* "sgkit_plink/wrap_plink_parser.pyx":244
  * def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
  * 	count_A1 = False
  * 	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)             # <<<<<<<<<<<<<<
  * 
  * def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
   writePlinkBedFiledoubleFAAA(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_v_count_A1, ((double *)__pyx_v_inx->data));
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":238
+  /* "sgkit_plink/wrap_plink_parser.pyx":242
  * 	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -6599,7 +6719,7 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_44writePlinkBedFiled
   return __pyx_r;
 }
 
-/* "sgkit_plink/wrap_plink_parser.pyx":242
+/* "sgkit_plink/wrap_plink_parser.pyx":246
  * 	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  * 
  * def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -6645,23 +6765,23 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_47writePlinkBedFiled
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_ind)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, 1); __PYX_ERR(0, 242, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, 1); __PYX_ERR(0, 246, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_input_num_snps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, 2); __PYX_ERR(0, 242, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, 2); __PYX_ERR(0, 246, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_inx)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, 3); __PYX_ERR(0, 242, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, 3); __PYX_ERR(0, 246, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFiledoubleCAAA") < 0)) __PYX_ERR(0, 242, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePlinkBedFiledoubleCAAA") < 0)) __PYX_ERR(0, 246, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -6678,13 +6798,13 @@ static PyObject *__pyx_pw_11sgkit_plink_17wrap_plink_parser_47writePlinkBedFiled
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 242, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("writePlinkBedFiledoubleCAAA", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 246, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sgkit_plink.wrap_plink_parser.writePlinkBedFiledoubleCAAA", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 242, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inx), __pyx_ptype_5numpy_ndarray, 1, "inx", 0))) __PYX_ERR(0, 246, __pyx_L1_error)
   __pyx_r = __pyx_pf_11sgkit_plink_17wrap_plink_parser_46writePlinkBedFiledoubleCAAA(__pyx_self, __pyx_v_bed_fn, __pyx_v_input_num_ind, __pyx_v_input_num_snps, __pyx_v_inx);
 
   /* function exit code */
@@ -6712,11 +6832,11 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_46writePlinkBedFiled
   __pyx_pybuffernd_inx.rcbuffer = &__pyx_pybuffer_inx;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 242, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inx.rcbuffer->pybuffer, (PyObject*)__pyx_v_inx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 246, __pyx_L1_error)
   }
   __pyx_pybuffernd_inx.diminfo[0].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_inx.diminfo[0].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_inx.diminfo[1].strides = __pyx_pybuffernd_inx.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_inx.diminfo[1].shape = __pyx_pybuffernd_inx.rcbuffer->pybuffer.shape[1];
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":243
+  /* "sgkit_plink/wrap_plink_parser.pyx":247
  * 
  * def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
  * 	count_A1 = False             # <<<<<<<<<<<<<<
@@ -6724,17 +6844,17 @@ static PyObject *__pyx_pf_11sgkit_plink_17wrap_plink_parser_46writePlinkBedFiled
  */
   __pyx_v_count_A1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":244
+  /* "sgkit_plink/wrap_plink_parser.pyx":248
  * def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):
  * 	count_A1 = False
  * 	_writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_v_bed_fn); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_input_num_ind); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_input_num_snps); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 248, __pyx_L1_error)
   writePlinkBedFiledoubleCAAA(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_v_count_A1, ((double *)__pyx_v_inx->data));
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":242
+  /* "sgkit_plink/wrap_plink_parser.pyx":246
  * 	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  * 
  * def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
@@ -9536,6 +9656,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_num_ind, __pyx_k_num_ind, sizeof(__pyx_k_num_ind), 0, 0, 1, 1},
   {&__pyx_n_s_num_snps, __pyx_k_num_snps, sizeof(__pyx_k_num_snps), 0, 0, 1, 1},
+  {&__pyx_n_s_num_threads, __pyx_k_num_threads, sizeof(__pyx_k_num_threads), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_kp_s_numpy_core_multiarray_failed_to, __pyx_k_numpy_core_multiarray_failed_to, sizeof(__pyx_k_numpy_core_multiarray_failed_to), 0, 0, 1, 0},
   {&__pyx_kp_s_numpy_core_umath_failed_to_impor, __pyx_k_numpy_core_umath_failed_to_impor, sizeof(__pyx_k_numpy_core_umath_failed_to_impor), 0, 0, 1, 0},
@@ -9717,74 +9838,74 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "sgkit_plink/wrap_plink_parser.pyx":118
  * 
  * #New
- * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
-  __pyx_tuple__16 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(7, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2floatFAAA, 118, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(8, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2floatFAAA, 118, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 118, __pyx_L1_error)
 
   /* "sgkit_plink/wrap_plink_parser.pyx":127
  * 	return out
  * 
- * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
-  __pyx_tuple__18 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(7, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2floatCAAA, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(8, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2floatCAAA, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 127, __pyx_L1_error)
 
   /* "sgkit_plink/wrap_plink_parser.pyx":137
  * 
  * 
- * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
-  __pyx_tuple__20 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(7, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2doubleFAAA, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(8, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2doubleFAAA, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 137, __pyx_L1_error)
 
   /* "sgkit_plink/wrap_plink_parser.pyx":146
  * 	return out
  * 
- * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
-  __pyx_tuple__22 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_tuple__22 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__22);
   __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(7, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2doubleCAAA, 146, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(8, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2doubleCAAA, 146, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 146, __pyx_L1_error)
 
   /* "sgkit_plink/wrap_plink_parser.pyx":155
  * 	return out
  * 
- * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
-  __pyx_tuple__24 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__24);
   __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(7, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2int8FAAA, 155, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(8, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2int8FAAA, 155, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 155, __pyx_L1_error)
 
   /* "sgkit_plink/wrap_plink_parser.pyx":164
  * 	return out
  * 
- * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
-  __pyx_tuple__26 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_count_A1, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 164, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(7, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2int8CAAA, 164, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(8, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFile2int8CAAA, 164, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 164, __pyx_L1_error)
 
   /* "sgkit_plink/wrap_plink_parser.pyx":173
  * 	return out
@@ -9863,96 +9984,96 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * #Old
  * def readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
-  __pyx_tuple__40 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_tuple__40 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__40);
   __Pyx_GIVEREF(__pyx_tuple__40);
-  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(6, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFilefloatFAAA, 192, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(6, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFilefloatFAAA, 192, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 192, __pyx_L1_error)
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":201
+  /* "sgkit_plink/wrap_plink_parser.pyx":202
  * 	return out
  * 
  * def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
-  __pyx_tuple__42 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_tuple__42 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__42);
   __Pyx_GIVEREF(__pyx_tuple__42);
-  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(6, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFilefloatCAAA, 201, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(6, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFilefloatCAAA, 202, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 202, __pyx_L1_error)
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":211
+  /* "sgkit_plink/wrap_plink_parser.pyx":213
  * 
  * 
  * def readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
-  __pyx_tuple__44 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_tuple__44 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__44);
   __Pyx_GIVEREF(__pyx_tuple__44);
-  __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(6, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFiledoubleFAAA, 211, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(6, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFiledoubleFAAA, 213, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(0, 213, __pyx_L1_error)
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":220
+  /* "sgkit_plink/wrap_plink_parser.pyx":223
  * 	return out
  * 
  * def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
-  __pyx_tuple__46 = PyTuple_Pack(9, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_tuple__46 = PyTuple_Pack(10, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_iidIdxList, __pyx_n_s_snpIdxList, __pyx_n_s_out, __pyx_n_s_count_A1, __pyx_n_s_num_threads, __pyx_n_s_iid_idx_list, __pyx_n_s_sid_idx_list); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__46);
   __Pyx_GIVEREF(__pyx_tuple__46);
-  __pyx_codeobj__47 = (PyObject*)__Pyx_PyCode_New(6, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__46, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFiledoubleCAAA, 220, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__47)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_codeobj__47 = (PyObject*)__Pyx_PyCode_New(6, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__46, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_readPlinkBedFiledoubleCAAA, 223, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__47)) __PYX_ERR(0, 223, __pyx_L1_error)
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":230
+  /* "sgkit_plink/wrap_plink_parser.pyx":234
  * 
  * 
  * def writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  */
-  __pyx_tuple__48 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_tuple__48 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__48);
   __Pyx_GIVEREF(__pyx_tuple__48);
-  __pyx_codeobj__49 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__48, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFilefloatFAAA, 230, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__49)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_codeobj__49 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__48, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFilefloatFAAA, 234, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__49)) __PYX_ERR(0, 234, __pyx_L1_error)
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":234
+  /* "sgkit_plink/wrap_plink_parser.pyx":238
  * 	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  */
-  __pyx_tuple__50 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_tuple__50 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__50);
   __Pyx_GIVEREF(__pyx_tuple__50);
-  __pyx_codeobj__51 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__50, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFilefloatCAAA, 234, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__51)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_codeobj__51 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__50, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFilefloatCAAA, 238, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__51)) __PYX_ERR(0, 238, __pyx_L1_error)
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":238
+  /* "sgkit_plink/wrap_plink_parser.pyx":242
  * 	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  */
-  __pyx_tuple__52 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__52)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_tuple__52 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__52)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__52);
   __Pyx_GIVEREF(__pyx_tuple__52);
-  __pyx_codeobj__53 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__52, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFiledoubleFAAA, 238, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__53)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_codeobj__53 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__52, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFiledoubleFAAA, 242, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__53)) __PYX_ERR(0, 242, __pyx_L1_error)
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":242
+  /* "sgkit_plink/wrap_plink_parser.pyx":246
  * 	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  * 
  * def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  */
-  __pyx_tuple__54 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_tuple__54 = PyTuple_Pack(5, __pyx_n_s_bed_fn, __pyx_n_s_input_num_ind, __pyx_n_s_input_num_snps, __pyx_n_s_inx, __pyx_n_s_count_A1); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__54);
   __Pyx_GIVEREF(__pyx_tuple__54);
-  __pyx_codeobj__55 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__54, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFiledoubleCAAA, 242, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__55)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_codeobj__55 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__54, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sgkit_plink_wrap_plink_parser_py, __pyx_n_s_writePlinkBedFiledoubleCAAA, 246, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__55)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -10318,7 +10439,7 @@ if (!__Pyx_RefNanny) {
   /* "sgkit_plink/wrap_plink_parser.pyx":118
  * 
  * #New
- * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -10330,7 +10451,7 @@ if (!__Pyx_RefNanny) {
   /* "sgkit_plink/wrap_plink_parser.pyx":127
  * 	return out
  * 
- * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2floatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -10342,7 +10463,7 @@ if (!__Pyx_RefNanny) {
   /* "sgkit_plink/wrap_plink_parser.pyx":137
  * 
  * 
- * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -10354,7 +10475,7 @@ if (!__Pyx_RefNanny) {
   /* "sgkit_plink/wrap_plink_parser.pyx":146
  * 	return out
  * 
- * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2doubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -10366,7 +10487,7 @@ if (!__Pyx_RefNanny) {
   /* "sgkit_plink/wrap_plink_parser.pyx":155
  * 	return out
  * 
- * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8FAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -10378,7 +10499,7 @@ if (!__Pyx_RefNanny) {
   /* "sgkit_plink/wrap_plink_parser.pyx":164
  * 	return out
  * 
- * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out):             # <<<<<<<<<<<<<<
+ * def readPlinkBedFile2int8CAAA(bed_fn, input_num_ind, input_num_snps, count_A1, iidIdxList, snpIdxList, np.ndarray[np.int8_t, ndim=2] out, num_threads):             # <<<<<<<<<<<<<<
  * 
  * 	cdef vector[size_t] iid_idx_list = iidIdxList
  */
@@ -10464,95 +10585,95 @@ if (!__Pyx_RefNanny) {
  * #Old
  * def readPlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_33readPlinkBedFilefloatFAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPlinkBedFilefloatFAAA, __pyx_t_1) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":201
+  /* "sgkit_plink/wrap_plink_parser.pyx":202
  * 	return out
  * 
  * def readPlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float32_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_35readPlinkBedFilefloatCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_35readPlinkBedFilefloatCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPlinkBedFilefloatCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPlinkBedFilefloatCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":211
+  /* "sgkit_plink/wrap_plink_parser.pyx":213
  * 
  * 
  * def readPlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_37readPlinkBedFiledoubleFAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_37readPlinkBedFiledoubleFAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPlinkBedFiledoubleFAAA, __pyx_t_1) < 0) __PYX_ERR(0, 211, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPlinkBedFiledoubleFAAA, __pyx_t_1) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":220
+  /* "sgkit_plink/wrap_plink_parser.pyx":223
  * 	return out
  * 
  * def readPlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, iidIdxList, snpIdxList, np.ndarray[np.float64_t, ndim=2] out):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
- * 	cdef vector[size_t] iid_idx_list = iidIdxList
+ * 	num_threads = 1
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_39readPlinkBedFiledoubleCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_39readPlinkBedFiledoubleCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPlinkBedFiledoubleCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPlinkBedFiledoubleCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":230
+  /* "sgkit_plink/wrap_plink_parser.pyx":234
  * 
  * 
  * def writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_41writePlinkBedFilefloatFAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_41writePlinkBedFilefloatFAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFilefloatFAAA, __pyx_t_1) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFilefloatFAAA, __pyx_t_1) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":234
+  /* "sgkit_plink/wrap_plink_parser.pyx":238
  * 	_writePlinkBedFilefloatFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float32_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_43writePlinkBedFilefloatCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_43writePlinkBedFilefloatCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFilefloatCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFilefloatCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":238
+  /* "sgkit_plink/wrap_plink_parser.pyx":242
  * 	_writePlinkBedFilefloatCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <float*> inx.data)
  * 
  * def writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_45writePlinkBedFiledoubleFAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_45writePlinkBedFiledoubleFAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFiledoubleFAAA, __pyx_t_1) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFiledoubleFAAA, __pyx_t_1) < 0) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sgkit_plink/wrap_plink_parser.pyx":242
+  /* "sgkit_plink/wrap_plink_parser.pyx":246
  * 	_writePlinkBedFiledoubleFAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  * 
  * def writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, np.ndarray[np.float64_t, ndim=2] inx):             # <<<<<<<<<<<<<<
  * 	count_A1 = False
  * 	_writePlinkBedFiledoubleCAAA(bed_fn, input_num_ind, input_num_snps, count_A1, <double*> inx.data)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_47writePlinkBedFiledoubleCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11sgkit_plink_17wrap_plink_parser_47writePlinkBedFiledoubleCAAA, NULL, __pyx_n_s_sgkit_plink_wrap_plink_parser); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFiledoubleCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 242, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_writePlinkBedFiledoubleCAAA, __pyx_t_1) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "sgkit_plink/wrap_plink_parser.pyx":1

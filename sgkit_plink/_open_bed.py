@@ -5,7 +5,7 @@
 #!!!cmk todo: fix up write
 #!!!cmk it must be an error to give an override for a property that doesn't exist
 #!!!cmk would be nice if the "counts don't match" errors were more specific
-
+#!!!cmk fix C++ warnings on Ubuntu
 
 #!!!cmk add typing info
 #!!!cmk run flake8, isort, etc
@@ -15,6 +15,7 @@ import numbers
 import pandas as pd
 import logging  #!!!cmk how does sgkit do logging messages?
 from pathlib import Path
+import multiprocessing
 
 # import warnings
 import math
@@ -43,12 +44,14 @@ class open_bed:  #!!!cmk need doc strings everywhere
         shape=None,
         overrides=None,
         count_A1=True,
+        num_threads = None,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
         self.filename = str(
             Path(filename)
         )  #!!!cmk make it path on the inside, but path or string on the outside
         self.count_A1 = count_A1
+        self._num_threads = num_threads
         self.skip_format_check = skip_format_check
         #!!!cmk read the PLINK docs and switch to using their names for iid and sid and pos, etc
 
@@ -446,6 +449,14 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         bed_filepointer.write(bytes(bytearray([byte])))
         logging.info("Done writing " + filename)
 
+    def _get_num_threads(self):
+        if self._num_threads is not None:
+            return self._num_threads
+        if 'MKL_NUM_THREADS' in os.environ:
+            return int(os.environ['MKL_NUM_THREADS'])
+        return multiprocessing.cpu_count()
+
+
     #!!!cmk change 'or_none' to 'or_slice'
     def _read(
         self, iid_index_or_none, sid_index_or_none, order, dtype, force_python_only,
@@ -481,6 +492,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
             val = np.zeros((iid_count_out, sid_count_out), order=order, dtype=dtype)
             bed_fn = open_bed._name_of_other_file(self.filename, "bed", "bed")
 
+            num_threads = self._get_num_threads()
+
             if iid_count_in > 0 and sid_count_in > 0:
                 if dtype == np.float64:
                     if order == "F":
@@ -492,6 +505,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             iid_index,
                             sid_index,
                             val,
+                            num_threads,
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2doubleCAAA(
@@ -502,6 +516,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             iid_index,
                             sid_index,
                             val,
+                            num_threads,
                         )
                     else:
                         raise Exception(
@@ -517,6 +532,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             iid_index,
                             sid_index,
                             val,
+                            num_threads,
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2floatCAAA(
@@ -527,6 +543,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             iid_index,
                             sid_index,
                             val,
+                            num_threads,
                         )
                     else:
                         raise Exception(
@@ -542,6 +559,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             iid_index,
                             sid_index,
                             val,
+                            num_threads,
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2int8CAAA(
@@ -552,6 +570,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             iid_index,
                             sid_index,
                             val,
+                            num_threads,
                         )
                     else:
                         raise Exception(
