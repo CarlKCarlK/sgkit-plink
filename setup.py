@@ -121,7 +121,7 @@ else:
     ]
     cmdclass = {}
 
-install_requires = ["numpy>=1.11.3", "pandas>=0.19.0", "wheel>=0.34.2"]
+install_requires = ["numpy>=1.11.3", "wheel>=0.34.2"]
 
 
 class CleanCommand(Clean):
