@@ -37,7 +37,7 @@ class CleanCommand(Clean):
         Clean.run(self)
         if os.path.exists("build"):
             shutil.rmtree("build")
-        for dirpath, dirnames, filenames in os.walk("."):
+        for dirpath, _, filenames in os.walk("."):
             for filename in filenames:
                 if (
                     filename.endswith(".so")
