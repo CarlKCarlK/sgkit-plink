@@ -1,7 +1,4 @@
-#!!!cmk change shape back into iid_count,sid_count
-#!!!cmk is "overrides"(?) the best name? Internally?
 #!!!cmk todo: Offer to ignore some or all fam bim fields
-#!!!cmk todo: make thread safe (an option to load everything?)
 #!!!cmk todo: fix up write
 #!!!cmk it must be an error to give an override for a property that doesn't exist
 #!!!cmk would be nice if the "counts don't match" errors were more specific
@@ -41,11 +38,11 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
         filename,
-        iid_count = None,
-        sid_count = None,
+        iid_count=None,
+        sid_count=None,
         overrides=None,
         count_A1=True,
-        num_threads = None,
+        num_threads=None,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
         self.filename = str(
@@ -81,25 +78,26 @@ class open_bed:  #!!!cmk need doc strings everywhere
     }
 
     _delimiters = {"fam": r"\s+", "bim": "\t"}
+    _count_name = {"fam": "iid_count", "bim": "sid_count"}
 
     def _fixup_fam_bim(self, overrides, iid_count, sid_count):
-        self._overrides = {}
-        self._counts = {"fam":iid_count,"bim":sid_count}
+        self._property_dict = {}
+        self._counts = {"fam": iid_count, "bim": sid_count}
 
         for key, (suffix, _, dtype, _) in self._meta.items():
-            input = self._overrides.get(key)
+            input = self._property_dict.get(key)
             count = self._counts[suffix]
 
             if input is None:
                 output = input
-            elif len(input) == 0:  # Test this
-                output = np.zeros([0, 1], dtype=dtype)
+            elif len(input) == 0:  #!!!cmk Test this
+                output = np.zeros([0], dtype=dtype)
                 if count is None:  #!!!cmk similar code elsewhere
                     self._counts[suffix] = len(output)
                 else:
                     assert count == len(
                         output
-                    ), "Expect all overrides to agree on the count"
+                    ), f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
             elif (
                 not isinstance(input, np.ndarray) or input.dtype.type is not dtype
             ):  #!!!cmk get this right including shape
@@ -109,7 +107,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 else:
                     assert count == len(
                         output
-                    ), "Expect all inputs to agree on the count"
+                    ), f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
             else:
                 output = input
                 #!!!cmk test that shape is OK
@@ -122,8 +120,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 else:
                     assert count == len(
                         output
-                    ), "Expect all inputs to agree on the count"
-            self._overrides[key] = output
+                    ), f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
+            self._property_dict[key] = output
 
     # !!!cmk this isn't getting used anymore. Why not and remove it
     # def _assert_iid_sid_pos(self):  #!!!cmk why wasn't pos getting check here?
@@ -151,18 +149,20 @@ class open_bed:  #!!!cmk need doc strings everywhere
             for key, (suffix_x, column, dtype, missing) in self._meta.items():
                 if suffix_x is not suffix:
                     continue
-                val = self._overrides[key]
+                val = self._property_dict[key]
                 assert val is None, "real assert"
-                self._overrides[key] = np.zeros(
+                self._property_dict[key] = np.zeros(
                     [0], dtype=dtype
                 )  #!!!cmk get this right
             if count is None:
                 self._counts[suffix] = 0
             else:
-                assert count == 0, "Expect all inputs to agree on the count"
+                assert (
+                    count == 0
+                ), f"The number of lines in the *.{suffix} file, {0}, should not be different from the current {self._count_name[suffix]}, {count}"
         else:
-            delimiter=self._delimiters[suffix]
-            if delimiter in {r'\s+'}:
+            delimiter = self._delimiters[suffix]
+            if delimiter in {r"\s+"}:
                 delimiter = None
                 delim_whitespace = True
             else:
@@ -170,7 +170,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
             fields = pd.read_csv(
                 metafile,
                 delimiter=delimiter,
-                delim_whitespace = delim_whitespace,
+                delim_whitespace=delim_whitespace,
                 header=None,
                 index_col=False,
                 comment=None,
@@ -178,17 +178,19 @@ class open_bed:  #!!!cmk need doc strings everywhere
             if count is None:
                 self._counts[suffix] = len(fields)
             else:
-                assert count == len(fields), "Expect all inputs to agree on the count"
+                assert count == len(
+                    fields
+                ), f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {self._count_name[suffix]}, {count}"
 
             for key, (suffix_x, column, dtype, missing) in self._meta.items():
                 if suffix_x is not suffix:
                     continue
-                val = self._overrides[key]
+                val = self._property_dict[key]
                 if val is None:
                     if missing is None:
-                        self._overrides[key] = np.array(fields[column], dtype=dtype)
+                        self._property_dict[key] = np.array(fields[column], dtype=dtype)
                     else:
-                        self._overrides[key] = np.array(
+                        self._property_dict[key] = np.array(
                             fields[column].fillna(missing), dtype=dtype
                         )
                     # self._bim[key] = np.array(
@@ -245,11 +247,11 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return self._property("pheno")
 
     def _property(self, key):
-        val = self._overrides.get(key)  #!!!cmk overrides is a bad name
+        val = self._property_dict.get(key)  #!!!cmk overrides is a bad name
         if val is None:
             suffix, _, _, _ = self._meta[key]
             self._read_fam_or_bim(suffix=suffix)
-            return self._overrides[key]
+            return self._property_dict[key]
         else:
             return val
 
@@ -451,10 +453,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def _get_num_threads(self):
         if self._num_threads is not None:
             return self._num_threads
-        if 'MKL_NUM_THREADS' in os.environ:
-            return int(os.environ['MKL_NUM_THREADS'])
+        if "MKL_NUM_THREADS" in os.environ:
+            return int(os.environ["MKL_NUM_THREADS"])
         return multiprocessing.cpu_count()
-
 
     #!!!cmk change 'or_none' to 'or_slice'
     def _read(
@@ -738,6 +739,21 @@ if __name__ == "__main__":
     import os
 
     if True:
+        import numpy as np
+        from sgkit_plink._open_bed import open_bed
+
+        # Can get file from https://www.dropbox.com/sh/xluk9opjiaobteg/AABgEggLk0ZoO0KQq0I4CaTJa?dl=0
+        bigfile = r"M:\deldir\genbgen\2\merged_487400x220000.1.bed"
+        # bigfile = '/mnt/m/deldir/genbgen/2/merged_487400x220000.1.bed'
+        with open_bed(bigfile, num_threads=20) as bed:
+            sid_batch = 22 * 1000
+            for sid_start in range(0, 10 * sid_batch, sid_batch):
+                slicer = np.s_[:10000, sid_start : sid_start + sid_batch]
+                print(slicer)
+                val = bed.read(slicer)
+            print(val.shape)
+
+    if False:
         file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
         with open_bed(file) as bed:
             print(bed.iid)
@@ -810,7 +826,8 @@ if __name__ == "__main__":
 
     import doctest
 
-    doctest.testmod(
-        optionflags=doctest.ELLIPSIS
-    )  #!!!cmk how do you doctest with PyTest?
+    #!!!cmk put this back
+    # doctest.testmod(
+    #    optionflags=doctest.ELLIPSIS
+    # )  #!!!cmk how do you doctest with PyTest?
     # There is also a unit test case in 'pysnptools\test.py' that calls this doc test

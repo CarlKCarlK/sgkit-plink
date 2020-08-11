@@ -133,3 +133,5 @@ dmypy.json
 /docs/ipynb/Untitled.ipynb
 /.vscode
 /deltest.py
+delspeed.py
+sgkit_plink/test.profile
