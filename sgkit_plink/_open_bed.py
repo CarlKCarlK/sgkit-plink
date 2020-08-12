@@ -219,8 +219,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
             filename = filename[0 : -1 - len(remove_suffix)]
         return filename + "." + add_suffix
 
-    def __repr__(self):
-        return "{0}()".format(self.__class__.__name__)
+    def __str__(self):
+        return f"{self.__class__.__name__}('{self.filename}',...)"
 
     @property
     def fid(self):
@@ -457,10 +457,34 @@ class open_bed:  #!!!cmk need doc strings everywhere
             return int(os.environ["MKL_NUM_THREADS"])
         return multiprocessing.cpu_count()
 
-    #!!!cmk change 'or_none' to 'or_slice'
-    def _read(
-        self, iid_index_or_none, sid_index_or_none, order, dtype, force_python_only,
-    ):
+
+    @staticmethod
+    def _array_properties_are_ok(val, order, dtype):
+        dtype = np.dtype(dtype)
+
+        if val.dtype != dtype:
+            return False
+        if order == "F":
+            return val.flags["F_CONTIGUOUS"]
+        elif order == "C":
+            return val.flags["C_CONTIGUOUS"]
+
+        return True
+
+    @property
+    def shape(self):
+        return (len(self.iid), len(self.sid))
+
+    def read(
+        self,
+        index: Optional[Any] = None,
+        dtype: Optional[Union[type, str]] = np.int8,
+        order: Optional[str] = "F",
+        force_python_only: bool = False,
+    ) -> np.ndarray:
+
+        iid_index_or_none, sid_index_or_none = self._split_index(index)
+
 
         if order == "A":
             order = "F"
@@ -640,34 +664,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         return val
 
-    @staticmethod
-    def _array_properties_are_ok(val, order, dtype):
-        dtype = np.dtype(dtype)
-
-        if val.dtype != dtype:
-            return False
-        if order == "F":
-            return val.flags["F_CONTIGUOUS"]
-        elif order == "C":
-            return val.flags["C_CONTIGUOUS"]
-
-        return True
-
-    @property
-    def shape(self):
-        return (len(self.iid), len(self.sid))
-
-    def read(
-        self,
-        index: Optional[Any] = None,
-        dtype: Optional[Union[type, str]] = np.int8,
-        order: Optional[str] = "F",
-        force_python_only: bool = False,
-    ) -> np.ndarray:
-
-        iid_index, sid_index = self._split_index(index)
-        #!!!cmk merge read with _read
-        return self._read(iid_index, sid_index, order, dtype, force_python_only,)
 
     @staticmethod
     def _split_index(index):
