@@ -54,7 +54,7 @@ if platform.system() == "Darwin":
     macros = [("__APPLE__", "1")]
     intel_root = os.path.join(os.path.dirname(__file__),"external/intel/linux")
     mp5lib = 'iomp5'
-    extra_compile_args = ["-fopenmp"]  #!!cmk '-fpermissive'
+    extra_compile_args = ["-fopenmp","-std=c++11"]
 
 elif "win" in platform.system().lower():
     macros = [("_WIN32", "1"),("_CRT_SECURE_NO_WARNINGS","1")]
@@ -65,7 +65,7 @@ else:
     macros = [("_UNIX", "1")]
     intel_root = os.path.join(os.path.dirname(__file__),"external/intel/linux")
     mp5lib = 'iomp5'
-    extra_compile_args = ["-fopenmp"]  #!!cmk '-fpermissive'
+    extra_compile_args = ["-fopenmp","-std=c++11"]
 
 library_list = [intel_root+"/compiler/lib/intel64"]
 runtime_library_dirs = None if "win" in platform.system().lower() else library_list

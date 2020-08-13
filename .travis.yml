@@ -53,7 +53,7 @@ install:
 
 script:
 - export PYTHONPATH=$TRAVIS_BUILD_DIR
-- pytest python tests/test.py
+- pytest
 
 deploy:
   provider: s3
