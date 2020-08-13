@@ -1,12 +1,18 @@
 language: python
 matrix:
   include:
-  - name: linux_py3
+  - name: linux_py37
     python: 3.7
     os: linux
     before_install:
     - pip install -r requirements.txt
     
+  - name: linux_py38
+    python: 3.8
+    os: linux
+    before_install:
+    - pip install -r requirements.txt
+
   - name: macosx_py3
     os: osx
     osx_image: xcode11.3
@@ -47,7 +53,7 @@ install:
 
 script:
 - export PYTHONPATH=$TRAVIS_BUILD_DIR
-- #!!!cmk pytest python tests/test.py
+- pytest python tests/test.py
 
 deploy:
   provider: s3
