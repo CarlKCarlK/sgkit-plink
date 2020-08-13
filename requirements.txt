@@ -1,4 +1,5 @@
 numpy
 xarray
 dask
+tlz
 git+https://github.com/pystatgen/sgkit
