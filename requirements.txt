@@ -1,5 +1,4 @@
 numpy
 xarray
-dask
-tlz
+dask[dataframe]
 git+https://github.com/pystatgen/sgkit
