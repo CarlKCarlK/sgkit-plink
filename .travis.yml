@@ -53,6 +53,7 @@ install:
 
 script:
 - export PYTHONPATH=$TRAVIS_BUILD_DIR
+- pip install -r requirements-dev.txt
 - pytest
 
 deploy:

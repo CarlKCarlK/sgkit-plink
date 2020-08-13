@@ -22,10 +22,12 @@
 #include <stdlib.h>
 #include <omp.h>
 
+#if ndef isinf
 #ifdef _WIN32
 #define isinf(x) (!_finite(x))
 #else
 #define isinf(x) (!isfinite(x))
+#endif
 #endif
 
 SUFFIX(CBedFile)::SUFFIX(CBedFile)()
