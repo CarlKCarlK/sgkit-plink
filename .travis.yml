@@ -55,7 +55,7 @@ script:
 - export PYTHONPATH=$TRAVIS_BUILD_DIR
 - pip install -r requirements-dev.txt
 #testing dask API fails so just testing core
-- pytest tests/test_open_bed.py
+- pytest sgkit_plink/tests/test_open_bed.py
 
 deploy:
   provider: s3
