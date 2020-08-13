@@ -1,4 +1,4 @@
 numpy
 xarray
-bgen-reader>=4.0.5
+dask
 git+https://github.com/pystatgen/sgkit
