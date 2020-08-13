@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <omp.h>
 
-#if ndef isinf
+#ifndef isinf
 #ifdef _WIN32
 #define isinf(x) (!_finite(x))
 #else
