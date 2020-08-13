@@ -29,7 +29,25 @@ else:
 
 # use_cython=False
 
+class CleanCommand(Clean):
+    description = "Remove build directories, and compiled files (including .pyc)"
 
+    def run(self):
+        Clean.run(self)
+        if os.path.exists("build"):
+            shutil.rmtree("build")
+        for dirpath, _, filenames in os.walk("."):
+            for filename in filenames:
+                if (
+                    filename.endswith(".so")
+                    or filename.endswith(".pyd")
+                    # or filename.find("wrap_plink_parser.cpp") != -1 # remove automatically generated source file
+                    # or filename.find("wrap_matrix_subset.cpp") != -1 # remove automatically generated source file
+                    or filename.endswith(".pyc")
+                ):
+                    tmp_fn = os.path.join(dirpath, filename)
+                    print("removing", tmp_fn)
+                    os.unlink(tmp_fn)
 
 # set up macro
 if platform.system() == "Darwin":
@@ -39,7 +57,7 @@ if platform.system() == "Darwin":
     extra_compile_args = ["-fopenmp"]  #!!cmk '-fpermissive'
 
 elif "win" in platform.system().lower():
-    macros = [("_WIN32", "1")]
+    macros = [("_WIN32", "1"),("_CRT_SECURE_NO_WARNINGS","1")]
     intel_root = os.path.join(os.path.dirname(__file__),"external/intel/windows")
     mp5lib = 'libiomp5md'
     extra_compile_args = ["/EHsc", "/openmp"]
@@ -112,30 +130,6 @@ else:
     cmdclass = {}
 
 install_requires = ["numpy>=1.11.3", "wheel>=0.34.2"]
-
-
-class CleanCommand(Clean):
-    description = "Remove build directories, and compiled files (including .pyc)"
-
-    def run(self):
-        Clean.run(self)
-        if os.path.exists("build"):
-            shutil.rmtree("build")
-        for dirpath, _, filenames in os.walk("."):
-            for filename in filenames:
-                if (
-                    filename.endswith(".so")
-                    or filename.endswith(".pyd")
-                    # or filename.find("wrap_plink_parser.cpp") != -1 # remove automatically generated source file
-                    # or filename.find("wrap_matrix_subset.cpp") != -1 # remove automatically generated source file
-                    or filename.endswith(".pyc")
-                ):
-                    tmp_fn = os.path.join(dirpath, filename)
-                    print("removing", tmp_fn)
-                    os.unlink(tmp_fn)
-
-
-
 
 # !!!cmk see FIXUP's
 setup(

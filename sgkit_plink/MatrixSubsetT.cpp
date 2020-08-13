@@ -15,7 +15,7 @@ void SUFFIX(matrixSubset)(REALIN* in_, int in_iid_count, int in_sid_count, int v
 #ifdef ORDERFIN
 
 	//f-order in "most rapidly changing variable first"
-	for (size_t val_index = 0; val_index != val_shape; val_index++) {
+	for (size_t val_index = 0; val_index != (size_t) val_shape; val_index++) {
 		for (size_t sid_index_out = 0; sid_index_out != out_sid_count; sid_index_out++) {
 			int sid_index_in = sid_index[sid_index_out];
 			REALIN* in2 = in_ + in_iid_count * (uint64_t_)sid_index_in + in_iid_count * in_sid_count * (uint64_t_)val_index;
@@ -54,7 +54,7 @@ void SUFFIX(matrixSubset)(REALIN* in_, int in_iid_count, int in_sid_count, int v
 		for (size_t sid_index_out = 0; sid_index_out != out_sid_count; sid_index_out++) {
 			int sid_index_in = sid_index[sid_index_out];
 			REALIN* in3 = in2 + val_shape * (uint64_t_)sid_index_in;
-			for (size_t val_index = 0; val_index != val_shape; val_index++) {
+			for (size_t val_index = 0; val_index != (size_t) val_shape; val_index++) {
 #ifdef ORDERFOUT //cin,fout
 				out2[out_iid_count * (uint64_t_)sid_index_out + out_iid_count * out_sid_count * val_index] = (REALOUT)in3[val_index];
 #else            //cin,cout

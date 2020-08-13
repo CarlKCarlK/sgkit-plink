@@ -1,7 +1,3 @@
-/*#if !defined( CPlinkBedFileT_h )
-#define CPlinkBedFileT_h
-
-
 /*
  * CPlinkBedFile - {PLINK Bed File Access Class}
  *

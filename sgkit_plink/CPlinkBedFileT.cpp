@@ -206,17 +206,18 @@ void SUFFIX(readPlinkBedFile)(std::string bed_fn, int inputNumIndividuals, int i
 {
 	omp_set_num_threads(num_threads);
 
-	uint64_t_ outputNumInd = individuals_idx.size();
-	uint64_t_ outputNumSNPs = snpIdxList.size();
-
-#pragma omp parallel default(none) shared(bed_fn, inputNumIndividuals, inputNumSNPs, count_A1, individuals_idx, snpIdxList, out, outputNumInd, outputNumSNPs)
+#pragma omp parallel default(none) shared(bed_fn, inputNumIndividuals, inputNumSNPs, count_A1, individuals_idx, snpIdxList, out)
 	{
+#ifdef ORDERF
+		uint64_t_ outputNumInd = individuals_idx.size();
+#endif
+		uint64_t_ outputNumSNPs = snpIdxList.size();
 		SUFFIX(CBedFile)
 		bedFile = SUFFIX(CBedFile)();
 		bedFile.Open(bed_fn, inputNumIndividuals, inputNumSNPs);
 
 #pragma omp for schedule(guided)
-		for (long i = 0; i < outputNumSNPs; i++)
+		for (long i = 0; i < (long) outputNumSNPs; i++)
 		{
 			int idx = snpIdxList[i];
 #ifdef ORDERF
@@ -314,7 +315,7 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 
 #ifndef MISSING_VALUE
 
-const REAL SUFFIX(_PI) = 2.0 * acos(0.0);
+const REAL SUFFIX(_PI) = (REAL) 2.0 * (REAL) acos(0.0);
 const REAL SUFFIX(_halflog2pi) = (REAL)0.5 * log((REAL)2.0 * SUFFIX(_PI));
 const REAL SUFFIX(coeffsForLogGamma)[] = {12.0, -360.0, 1260.0, -1680.0, 1188.0};
 
@@ -397,7 +398,7 @@ REAL SUFFIX(BetaPdf)(REAL x, REAL a, REAL b)
 	if (x < 0)
 		return 0;
 
-	REAL lnb = SUFFIX(LogBeta)(a, b);
+	REAL lnb = (REAL) SUFFIX(LogBeta)(a, b);
 	return exp((a - 1) * log(x) + (b - 1) * log(1 - x) - lnb);
 }
 
@@ -508,10 +509,10 @@ void SUFFIX(ImputeAndZeroMeanSNPs)(
 					SNPs[ind] -= mean_s;	 //subtract the mean from the data
 					if (betaNotUnitVariance) //compute snp-freq as in the Visscher Height paper (Nat Gen, Yang et al 2010).
 					{
-						REAL freq = mean_s / 2.0;
+						REAL freq = (REAL) mean_s / (REAL) 2.0;
 						if (freq > .5)
 						{
-							freq = 1.0 - freq;
+							freq = ((REAL)1.0) - freq;
 						}
 						REAL rT = SUFFIX(BetaPdf)(freq, betaA, betaB);
 						//fprintf(stderr, "BetaPdf(%f,%f,%f)=%f\n",  freq, betaA, betaB, rT);
@@ -626,10 +627,10 @@ void SUFFIX(ImputeAndZeroMeanSNPs)(
 					if (betaNotUnitVariance)
 					{
 						//compute snp-freq as in the Visscher Height paper (Nat Gen, Yang et al 2010).
-						REAL freq = mean_s[iSnp] / 2.0;
+						REAL freq = (REAL) mean_s[iSnp] / (REAL) 2.0;
 						if (freq > .5)
 						{
-							freq = 1.0 - freq;
+							freq = ((REAL)1.0) - freq;
 						}
 
 						REAL rT = SUFFIX(BetaPdf)(freq, betaA, betaB);
