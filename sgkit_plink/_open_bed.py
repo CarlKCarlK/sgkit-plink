@@ -25,6 +25,7 @@ def rawincount(filename):
     bufgen = takewhile(lambda x: x, (f.raw.read(1024 * 1024) for _ in repeat(None)))
     return sum(buf.count(b"\n") for buf in bufgen)
 
+
 #!!!cmk test that it works on files with no rows and/or cols (it did before)
 class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
@@ -76,7 +77,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     def _fixup_overrides(self, overrides, iid_count, sid_count):
 
-        self._property_dict = {key:None for key in self._meta}
+        self._property_dict = {key: None for key in self._meta}
         self._counts = {"fam": iid_count, "bim": sid_count}
 
         for key, input in overrides.items():
@@ -100,36 +101,28 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 self._counts[suffix] = len(output)
             else:
                 if count != len(output):
-                    raise ValueError(f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}")
+                    raise ValueError(
+                        f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
+                    )
 
             self._property_dict[key] = output
 
     def _read_fam_or_bim(self, suffix):
         metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
+        logging.info("Loading {0} file {1}".format(suffix, metafile))
+
         count = self._counts[suffix]
 
-        logging.info("Loading {0} file {1}".format(suffix, metafile))
-        if os.path.getsize(metafile) == 0:  # If the file is empty, return empty arrays
-            for key, (suffix_x, column, dtype, missing) in self._meta.items():
-                if suffix_x is not suffix:
-                    continue
-                val = self._property_dict[key]
-                assert val is None, "real assert"
-                self._property_dict[key] = np.zeros(
-                    [0], dtype=dtype
-                )  #!!!cmk get this right
-            if count is None:
-                self._counts[suffix] = 0
-            else:
-                if count != 0:
-                    raise ValueError(f"The number of lines in the *.{suffix} file, {0}, should not be different from the current {self._count_name[suffix]}, {count}")
+        delimiter = self._delimiters[suffix]
+        if delimiter in {r"\s+"}:
+            delimiter = None
+            delim_whitespace = True
         else:
-            delimiter = self._delimiters[suffix]
-            if delimiter in {r"\s+"}:
-                delimiter = None
-                delim_whitespace = True
-            else:
-                delim_whitespace = False
+            delim_whitespace = False
+
+        if os.path.getsize(metafile) == 0:
+            fields = []
+        else:
             fields = pd.read_csv(
                 metafile,
                 delimiter=delimiter,
@@ -138,24 +131,27 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 index_col=False,
                 comment=None,
             )
-            if count is None:
-                self._counts[suffix] = len(fields)
-            else:
-                if count != len(fields):
-                    raise ValueError(f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {self._count_name[suffix]}, {count}")
 
-            for key, (suffix_x, column, dtype, missing) in self._meta.items():
-                if suffix_x is not suffix:
-                    continue
-                val = self._property_dict[key]
-                if val is None:
-                    if missing is None:
-                        self._property_dict[key] = np.array(fields[column], dtype=dtype)
-                    else:
-                        self._property_dict[key] = np.array(
-                            fields[column].fillna(missing), dtype=dtype
-                        )
-
+        if count is None:
+            self._counts[suffix] = len(fields)
+        else:
+            if count != len(fields):
+                raise ValueError(
+                    f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {self._count_name[suffix]}, {count}"
+                )
+        #!!!cmk rename suffix_x and other *x variables
+        for key, (suffix_x, column, dtype, missing) in self._meta.items():
+            if suffix_x is not suffix:
+                continue
+            val = self._property_dict[key]
+            if val is None:
+                if len(fields) == 0:
+                    output = np.array([], dtype=dtype)
+                if missing is None:
+                    output = np.array(fields[column], dtype=dtype)
+                else:
+                    output = np.array(fields[column].fillna(missing), dtype=dtype)
+                self._property_dict[key] = output
 
     @staticmethod
     def _name_of_other_file(filename, remove_suffix, add_suffix):
@@ -243,10 +239,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def _check_file(filepointer):
         mode = filepointer.read(2)
         if mode != b"l\x1b":
-            raise Exception("No valid binary BED file") #!!!cmk make all and any "Exception" more specific
+            raise ValueError(
+                "No valid binary BED file"
+            )  #!!!cmk make all and any "Exception" more specific
         mode = filepointer.read(1)  # \x01 = SNP major \x00 = individual major
         if mode != b"\x01":
-            raise Exception(
+            raise ValueError(
                 "only SNP-major is implemented"
             )  #!!!cmk should mention this
 
@@ -401,7 +399,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
             return int(os.environ["MKL_NUM_THREADS"])
         return multiprocessing.cpu_count()
 
-
     @staticmethod
     def _array_properties_are_ok(val, order, dtype):
         dtype = np.dtype(dtype)
@@ -428,7 +425,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
     ) -> np.ndarray:
 
         iid_index_or_none, sid_index_or_none = self._split_index(index)
-
 
         if order == "A":
             order = "F"
@@ -463,7 +459,34 @@ class open_bed:  #!!!cmk need doc strings everywhere
             num_threads = self._get_num_threads()
 
             if iid_count_in > 0 and sid_count_in > 0:
-                if dtype == np.float64:
+                if dtype == np.int8:
+                    if order == "F":
+                        wrap_plink_parser.readPlinkBedFile2int8FAAA(
+                            bed_fn.encode("ascii"),
+                            iid_count_in,
+                            sid_count_in,
+                            self.count_A1,
+                            iid_index,
+                            sid_index,
+                            val,
+                            num_threads,
+                        )
+                    elif order == "C":
+                        wrap_plink_parser.readPlinkBedFile2int8CAAA(
+                            bed_fn.encode("ascii"),
+                            iid_count_in,
+                            sid_count_in,
+                            self.count_A1,
+                            iid_index,
+                            sid_index,
+                            val,
+                            num_threads,
+                        )
+                    else:
+                        raise Exception(
+                            "order '{0}' not known, only 'F' and 'C'".format(order)
+                        )
+                elif dtype == np.float64:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2doubleFAAA(  #!!!cmk double check that these check the format.If they don't, be sure checkformat is called sometime
                             bed_fn.encode("ascii"),
@@ -488,7 +511,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     else:
                         raise Exception(
-                            "order '{0}' not known, only 'F' and 'C'".format(order) #!!!cmk or A
+                            "order '{0}' not known, only 'F' and 'C'".format(
+                                order
+                            )  #!!!cmk or A
                         )
                 elif dtype == np.float32:
                     if order == "F":
@@ -504,33 +529,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2floatCAAA(
-                            bed_fn.encode("ascii"),
-                            iid_count_in,
-                            sid_count_in,
-                            self.count_A1,
-                            iid_index,
-                            sid_index,
-                            val,
-                            num_threads,
-                        )
-                    else:
-                        raise Exception(
-                            "order '{0}' not known, only 'F' and 'C'".format(order)
-                        )
-                elif dtype == np.int8:
-                    if order == "F":
-                        wrap_plink_parser.readPlinkBedFile2int8FAAA(
-                            bed_fn.encode("ascii"),
-                            iid_count_in,
-                            sid_count_in,
-                            self.count_A1,
-                            iid_index,
-                            sid_index,
-                            val,
-                            num_threads,
-                        )
-                    elif order == "C":
-                        wrap_plink_parser.readPlinkBedFile2int8CAAA(
                             bed_fn.encode("ascii"),
                             iid_count_in,
                             sid_count_in,
@@ -608,7 +606,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         return val
 
-
     @staticmethod
     def _split_index(index):
         if not isinstance(index, tuple):
@@ -630,14 +627,14 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return index
 
     #!!!cmk kill
-    #@staticmethod
-    #def _fixup_input(
+    # @staticmethod
+    # def _fixup_input(
     #    input,
     #    count=None,
     #    empty_creator=_default_empty_creator,
     #    dtype=None,
     #    none_num_ok=False,
-    #):
+    # ):
     #    if none_num_ok and input is None:
     #        return input
 

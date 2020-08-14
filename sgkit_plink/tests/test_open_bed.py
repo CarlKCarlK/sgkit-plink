@@ -20,8 +20,9 @@ def test_read1():
         assert bed.bp_position[-1] == 100
         #!!!cmk test reading into other dtypes
 
+
 #!!!cmk write test
-#def test_write():
+# def test_write():
 #    in_file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
 #    out_file = r"m:/deldir/out.bed"  #!!!cmk remove absolute reference
 #    with open_bed(in_file) as bed:
@@ -58,6 +59,7 @@ def test_read1():
 #                force_python_only=force_python_only,
 #            )
 
+
 def test_overrides():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
@@ -75,41 +77,80 @@ def test_overrides():
         allele_2 = bed.allele_2
     # lock in the expected results: np.savez(base / "data/distributed_bed_test1_X.metadata.npz",fid=fid,iid=iid,father=father,mother=mother,sex=sex,pheno=pheno,chromosome=chromosome,sid=sid,cm_position=cm_position,bp_position=bp_position,allele_1=allele_1,allele_2=allele_2)
     property_dict = np.load(base / "data/distributed_bed_test1_X.metadata.npz")
-    assert np.array_equal(property_dict['fid'],fid)
-    assert np.array_equal(property_dict['iid'],iid)
-    assert np.array_equal(property_dict['father'],father)
-    assert np.array_equal(property_dict['mother'],mother)
-    assert np.array_equal(property_dict['sex'],sex)
-    assert np.array_equal(property_dict['pheno'],pheno)
-    assert np.array_equal(property_dict['chromosome'],chromosome)
-    assert np.array_equal(property_dict['sid'],sid)
-    assert np.array_equal(property_dict['cm_position'],cm_position)
-    assert np.array_equal(property_dict['bp_position'],bp_position)
-    assert np.array_equal(property_dict['allele_1'],allele_1)
-    assert np.array_equal(property_dict['allele_2'],allele_2)
+    assert np.array_equal(property_dict["fid"], fid)
+    assert np.array_equal(property_dict["iid"], iid)
+    assert np.array_equal(property_dict["father"], father)
+    assert np.array_equal(property_dict["mother"], mother)
+    assert np.array_equal(property_dict["sex"], sex)
+    assert np.array_equal(property_dict["pheno"], pheno)
+    assert np.array_equal(property_dict["chromosome"], chromosome)
+    assert np.array_equal(property_dict["sid"], sid)
+    assert np.array_equal(property_dict["cm_position"], cm_position)
+    assert np.array_equal(property_dict["bp_position"], bp_position)
+    assert np.array_equal(property_dict["allele_1"], allele_1)
+    assert np.array_equal(property_dict["allele_2"], allele_2)
 
     with pytest.raises(KeyError):
-        open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"unknown":[3,4,4]})
-    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"iid":None}) as bed1:
-        assert np.array_equal(bed1.iid,property_dict['iid'])
-    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"iid":[]}) as bed1:
+        open_bed(
+            base / "data/distributed_bed_test1_X.bed", overrides={"unknown": [3, 4, 4]}
+        )
+    with open_bed(
+        base / "data/distributed_bed_test1_X.bed", overrides={"iid": None}
+    ) as bed1:
+        assert np.array_equal(bed1.iid, property_dict["iid"])
+    with open_bed(
+        base / "data/distributed_bed_test1_X.bed", overrides={"iid": []}
+    ) as bed1:
         assert bed1.iid.dtype.type is np.str_
-        assert len(bed1.iid)==0
+        assert len(bed1.iid) == 0
         with pytest.raises(ValueError):
             bed1.father
 
-    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":[i for i in range(len(sid))]}) as bed1:
-        assert bed1.sid.dtype.type is np.str_
-        assert bed1.sid[0] == "0"
-    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":np.array([i for i in range(len(sid))])}) as bed1:
+    with open_bed(
+        base / "data/distributed_bed_test1_X.bed",
+        overrides={"sid": [i for i in range(len(sid))]},
+    ) as bed1:
         assert bed1.sid.dtype.type is np.str_
         assert bed1.sid[0] == "0"
     with pytest.raises(ValueError):
-        open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":np.array([(i,i) for i in range(len(sid))])})
-    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":[1,2,3]}) as bed1:
+        open_bed(
+            base / "data/distributed_bed_test1_X.bed",
+            overrides={"sex": ["F" for i in range(len(sex))]},
+        )  # Sex must be coded as a number
+    with open_bed(
+        base / "data/distributed_bed_test1_X.bed",
+        overrides={"sid": np.array([i for i in range(len(sid))])},
+    ) as bed1:
+        assert bed1.sid.dtype.type is np.str_
+        assert bed1.sid[0] == "0"
+    with pytest.raises(ValueError):
+        open_bed(
+            base / "data/distributed_bed_test1_X.bed",
+            overrides={"sid": np.array([(i, i) for i in range(len(sid))])},
+        )
+    with open_bed(
+        base / "data/distributed_bed_test1_X.bed", overrides={"sid": [1, 2, 3]}
+    ) as bed1:
         with pytest.raises(ValueError):
             bed1.chromosome
-    
+
+
+def test_str():
+    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+        assert "open_bed(" in str(bed)
+
+
+def test_bad_bed():
+    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+    with pytest.raises(ValueError):
+        open_bed(base / "data/badfile.bed")
+
+
+# def test_read_empty_metafiles():
+#    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+#    #!!!need to generate empty bed file with zero length fam and bim files for testing and then test it
+#    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
 
 
 #!!!cmk rather slow
@@ -182,59 +223,68 @@ def test_properties():
 
 
 def test_c_reader_bed():
-    for force_python_only in [False,True]:
+    for force_python_only in [False, True]:
         base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-        bed = open_bed(base / "data/distributed_bed_test1_X.bed",count_A1=False) # !!!cmk improve the name of this test file (it contains missing)
+        bed = open_bed(
+            base / "data/distributed_bed_test1_X.bed", count_A1=False
+        )  # !!!cmk improve the name of this test file (it contains missing)
 
-        val = bed.read(order='F',dtype='float64',force_python_only=force_python_only)
+        val = bed.read(order="F", dtype="float64", force_python_only=force_python_only)
         assert val.dtype.type == np.float64
         ref_val = reference_val()
-        ref_val = ref_val*-1+2
-        assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05,equal_nan=True)
+        ref_val = ref_val * -1 + 2
+        assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05, equal_nan=True)
 
-
-        val = bed.read(order='F',force_python_only=False)
+        val = bed.read(order="F", force_python_only=False)
         assert val.dtype.type == np.int8
-        ref_val[ref_val!=ref_val]=-127
-        ref_val = ref_val.astype('int8')
-        ref_val = ref_val.astype('int8')
-        assert np.all(ref_val==val)
+        ref_val[ref_val != ref_val] = -127
+        ref_val = ref_val.astype("int8")
+        ref_val = ref_val.astype("int8")
+        assert np.all(ref_val == val)
 
         bed.close()
 
         base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
         with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
-            val = bed.read(order='F',dtype='float64',force_python_only=force_python_only)
+            val = bed.read(
+                order="F", dtype="float64", force_python_only=force_python_only
+            )
             ref_val = reference_val()
-            assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05,equal_nan=True)
+            assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05, equal_nan=True)
 
 
-def reference_val(): #!!!cmk fix this so not loading over and over again
+def reference_val():  #!!!cmk fix this so not loading over and over again
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     val = np.load(base / "data/distributed_bed_test1_X.val.npy")
     return val
 
+
 def test_bed_int8():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
-        for force_python_only in [False,True]:
-            for order in ['F','C']:
-                val = bed.read(dtype='int8',force_python_only=force_python_only,order=order)
-                assert val.dtype == 'int8'
-                assert (val.flags['C_CONTIGUOUS'] and order=='C') or (val.flags['F_CONTIGUOUS'] and order=='F')
+        for force_python_only in [False, True]:
+            for order in ["F", "C"]:
+                val = bed.read(
+                    dtype="int8", force_python_only=force_python_only, order=order
+                )
+                assert val.dtype == "int8"
+                assert (val.flags["C_CONTIGUOUS"] and order == "C") or (
+                    val.flags["F_CONTIGUOUS"] and order == "F"
+                )
                 ref_val = reference_val()
-                ref_val[ref_val!=ref_val]=-127
-                ref_val = ref_val.astype('int8')
+                ref_val[ref_val != ref_val] = -127
+                ref_val = ref_val.astype("int8")
                 assert np.array_equal(ref_val, val)
                 #!!!cmk add write test later
-                #output = "tempdir/snpreader/int8.bed" #!!!cmk where does output go?
-                #create_directory_if_necessary(output)
-                #for count_A1 in [False,True]:
+                # output = "tempdir/snpreader/int8.bed" #!!!cmk where does output go?
+                # create_directory_if_necessary(output)
+                # for count_A1 in [False,True]:
                 #    bed2 = Bed.write(output,snpdata,count_A1=count_A1,_require_float32_64=False,force_python_only=force_python_only)
                 #    assert np.allclose(bed2.read(dtype='int8',_require_float32_64=False,force_python_only=force_python_only).val, ref.val, equal_nan=True)
 
+
 # !!!cmk put this test back in?
-#def test_too_slow_write_bedbig():
+# def test_too_slow_write_bedbig():
 #    iid_count = 100000
 #    sid_count = 50000
 #    from pysnptools.snpreader import SnpData
@@ -249,22 +299,29 @@ def test_bed_int8():
 #    snpdata2 = Bed(output,count_A1=False).read()
 #    np.testing.assert_array_almost_equal(snpdata.val, snpdata2.val, decimal=10)
 
+
 def test_write_bed_f64cpp():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
-        for iid_index in [0,1,5]:
-            for force_python_only in [False,True]:
-                val = bed.read(np.s_[0:iid_index,:],order='F',dtype=np.float64)
-                assert val.shape == (iid_index,100)
+        for iid_index in [0, 1, 5]:
+            for force_python_only in [False, True]:
+                val = bed.read(
+                    np.s_[0:iid_index, :],
+                    order="F",
+                    dtype=np.float64,
+                    force_python_only=force_python_only,
+                )
+                assert val.shape == (iid_index, 100)
                 #!!!cmk add write test later
-                #output = "tempdir/toydata.F64cpp.{0}".format(iid_index)
-                #create_directory_if_necessary(output)
-                #Bed.write(output, snpdata ,count_A1=False)
-                #snpdata2 = Bed(output,count_A1=False).read()
-                #np.testing.assert_array_almost_equal(snpdata.val, snpdata2.val, decimal=10)
+                # output = "tempdir/toydata.F64cpp.{0}".format(iid_index)
+                # create_directory_if_necessary(output)
+                # Bed.write(output, snpdata ,count_A1=False)
+                # snpdata2 = Bed(output,count_A1=False).read()
+                # np.testing.assert_array_almost_equal(snpdata.val, snpdata2.val, decimal=10)
+
 
 #!!!cmk write test
-#def test_write_x_x_cpp():
+# def test_write_x_x_cpp():
 #    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
 #    for count_A1 in [False, True]:
 #        snpreader = Bed(self.currentFolder + "/examples/toydata.5chrom.bed",count_A1=count_A1)
@@ -278,38 +335,49 @@ def test_write_bed_f64cpp():
 #                snpdata2 = Bed(output,count_A1=count_A1).read()
 #                np.testing.assert_array_almost_equal(snpdata.val, snpdata2.val, decimal=10)
 
+
 def test_respect_read_inputs():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     ref_val_float = reference_val()
 
-    ref_val_int8 = ref_val_float.astype('int8')
-    ref_val_int8[ref_val_float!=ref_val_float]=-127
+    ref_val_int8 = ref_val_float.astype("int8")
+    ref_val_int8[ref_val_float != ref_val_float] = -127
 
     with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
-        for order in ['F','C','A']:
-            for dtype in [np.int8,np.float32,np.float64]:
-                for force_python_only in [True,False]:
-                    val = bed.read(order=order,dtype=dtype,force_python_only=force_python_only)
-                    has_right_order = order=="A" or (order=="C" and val.flags["C_CONTIGUOUS"]) or (order=="F" and val.flags["F_CONTIGUOUS"])
+        for order in ["F", "C", "A"]:
+            for dtype in [np.int8, np.float32, np.float64]:
+                for force_python_only in [True, False]:
+                    val = bed.read(
+                        order=order, dtype=dtype, force_python_only=force_python_only
+                    )
+                    has_right_order = (
+                        order == "A"
+                        or (order == "C" and val.flags["C_CONTIGUOUS"])
+                        or (order == "F" and val.flags["F_CONTIGUOUS"])
+                    )
                     assert val.dtype == dtype and has_right_order
-                    ref_val = ref_val_int8 if dtype==np.int8 else ref_val_float
+                    ref_val = ref_val_int8 if dtype == np.int8 else ref_val_float
                     assert np.allclose(ref_val, val, equal_nan=True)
+
 
 def test_threads():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     ref_val_float = reference_val()
 
     ref_val_float = reference_val()
-    ref_val_int8 = ref_val_float.astype('int8')
-    ref_val_int8[ref_val_float!=ref_val_float]=-127
+    ref_val_int8 = ref_val_float.astype("int8")
+    ref_val_int8[ref_val_float != ref_val_float] = -127
 
-    for num_threads in [1,4]:
-        with open_bed(base / "data/distributed_bed_test1_X.bed",num_threads=num_threads) as bed:
+    for num_threads in [1, 4]:
+        with open_bed(
+            base / "data/distributed_bed_test1_X.bed", num_threads=num_threads
+        ) as bed:
             val = bed.read()
             assert np.allclose(ref_val_int8, val, equal_nan=True)
 
+
 #!!!cmk add write tests
-#def test_writes():
+# def test_writes():
 #    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
 #    from pysnptools.snpreader import SnpData, SnpHdf5, SnpNpz, SnpMemMap
 
@@ -325,7 +393,7 @@ def test_threads():
 #    ignore_pos_set = {'dense','pheno'}
 #    erase_any_write_dir = {'distributed_bed'}
 
-        
+
 #    #===================================
 #    #    Starting main function
 #    #===================================
@@ -393,68 +461,69 @@ def test_threads():
 #                        pass
 #    logging.info("done with 'test_writes'")
 
+
 def test_index():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     ref_val_float = reference_val()
 
     ref_val_float = reference_val()
-    ref_val_int8 = ref_val_float.astype('int8')
-    ref_val_int8[ref_val_float!=ref_val_float]=-127
+    ref_val_int8 = ref_val_float.astype("int8")
+    ref_val_int8[ref_val_float != ref_val_float] = -127
 
-    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:#!!!cmk maybe repeat with a 2nd file that doesn't have so many 2's in it and isn't square
+    with open_bed(
+        base / "data/distributed_bed_test1_X.bed"
+    ) as bed:  #!!!cmk maybe repeat with a 2nd file that doesn't have so many 2's in it and isn't square
         val = bed.read()
         assert np.allclose(ref_val_int8, val, equal_nan=True)
 
         val = bed.read(2)
-        assert np.allclose(ref_val_int8[:,[2]], val, equal_nan=True)
+        assert np.allclose(ref_val_int8[:, [2]], val, equal_nan=True)
 
         val = bed.read((2))
-        assert np.allclose(ref_val_int8[:,[2]], val, equal_nan=True)
+        assert np.allclose(ref_val_int8[:, [2]], val, equal_nan=True)
 
-        val = bed.read((None,2))
-        assert np.allclose(ref_val_int8[:,[2]], val, equal_nan=True)
+        val = bed.read((None, 2))
+        assert np.allclose(ref_val_int8[:, [2]], val, equal_nan=True)
 
-        val = bed.read((1,2))
-        assert np.allclose(ref_val_int8[[1],[2]], val, equal_nan=True)
+        val = bed.read((1, 2))
+        assert np.allclose(ref_val_int8[[1], [2]], val, equal_nan=True)
 
-        val = bed.read([2,-2])
-        assert np.allclose(ref_val_int8[:,[2,-2]], val, equal_nan=True)
+        val = bed.read([2, -2])
+        assert np.allclose(ref_val_int8[:, [2, -2]], val, equal_nan=True)
 
-        val = bed.read(([1,-1],[2,-2]))
-        assert np.allclose(ref_val_int8[[1,-1],:][:,[2,-2]], val, equal_nan=True)
+        val = bed.read(([1, -1], [2, -2]))
+        assert np.allclose(ref_val_int8[[1, -1], :][:, [2, -2]], val, equal_nan=True)
 
-        iid_bool = ([False, False, True]*bed.iid_count)[:bed.iid_count]
-        sid_bool = ([True, False, True]*bed.sid_count)[:bed.sid_count]
+        iid_bool = ([False, False, True] * bed.iid_count)[: bed.iid_count]
+        sid_bool = ([True, False, True] * bed.sid_count)[: bed.sid_count]
         val = bed.read(sid_bool)
-        assert np.allclose(ref_val_int8[:,sid_bool], val, equal_nan=True)
+        assert np.allclose(ref_val_int8[:, sid_bool], val, equal_nan=True)
 
-        val = bed.read((iid_bool,sid_bool))
-        assert np.allclose(ref_val_int8[iid_bool,:][:,sid_bool], val, equal_nan=True)
+        val = bed.read((iid_bool, sid_bool))
+        assert np.allclose(ref_val_int8[iid_bool, :][:, sid_bool], val, equal_nan=True)
 
-        val = bed.read((1,sid_bool))
-        assert np.allclose(ref_val_int8[[1],:][:,sid_bool], val, equal_nan=True)
+        val = bed.read((1, sid_bool))
+        assert np.allclose(ref_val_int8[[1], :][:, sid_bool], val, equal_nan=True)
 
-        slicer = np.s_[::2,::3]
+        slicer = np.s_[::2, ::3]
         val = bed.read(slicer[1])
-        assert np.allclose(ref_val_int8[:,slicer[1]], val, equal_nan=True)
+        assert np.allclose(ref_val_int8[:, slicer[1]], val, equal_nan=True)
 
         val = bed.read(slicer)
         assert np.allclose(ref_val_int8[slicer], val, equal_nan=True)
 
-        val = bed.read((1,slicer[1]))
-        assert np.allclose(ref_val_int8[[1],slicer[1]], val, equal_nan=True)
+        val = bed.read((1, slicer[1]))
+        assert np.allclose(ref_val_int8[[1], slicer[1]], val, equal_nan=True)
 
 
 def test_shape():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    with open_bed(
-        base / "data/plink_sim_10s_100v_10pmiss.bed"
-    ) as bed:
+    with open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed") as bed:
         assert bed.shape == (10, 100)
 
 
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_overrides()
+    test_bad_bed()
     pytest.main([__file__])
