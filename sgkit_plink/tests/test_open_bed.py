@@ -58,6 +58,59 @@ def test_read1():
 #                force_python_only=force_python_only,
 #            )
 
+def test_overrides():
+    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+        fid = bed.fid
+        iid = bed.iid
+        father = bed.father
+        mother = bed.mother
+        sex = bed.sex
+        pheno = bed.pheno
+        chromosome = bed.chromosome
+        sid = bed.sid
+        cm_position = bed.cm_position
+        bp_position = bed.bp_position
+        allele_1 = bed.allele_1
+        allele_2 = bed.allele_2
+    # lock in the expected results: np.savez(base / "data/distributed_bed_test1_X.metadata.npz",fid=fid,iid=iid,father=father,mother=mother,sex=sex,pheno=pheno,chromosome=chromosome,sid=sid,cm_position=cm_position,bp_position=bp_position,allele_1=allele_1,allele_2=allele_2)
+    property_dict = np.load(base / "data/distributed_bed_test1_X.metadata.npz")
+    assert np.array_equal(property_dict['fid'],fid)
+    assert np.array_equal(property_dict['iid'],iid)
+    assert np.array_equal(property_dict['father'],father)
+    assert np.array_equal(property_dict['mother'],mother)
+    assert np.array_equal(property_dict['sex'],sex)
+    assert np.array_equal(property_dict['pheno'],pheno)
+    assert np.array_equal(property_dict['chromosome'],chromosome)
+    assert np.array_equal(property_dict['sid'],sid)
+    assert np.array_equal(property_dict['cm_position'],cm_position)
+    assert np.array_equal(property_dict['bp_position'],bp_position)
+    assert np.array_equal(property_dict['allele_1'],allele_1)
+    assert np.array_equal(property_dict['allele_2'],allele_2)
+
+    with pytest.raises(KeyError):
+        open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"unknown":[3,4,4]})
+    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"iid":None}) as bed1:
+        assert np.array_equal(bed1.iid,property_dict['iid'])
+    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"iid":[]}) as bed1:
+        assert bed1.iid.dtype.type is np.str_
+        assert len(bed1.iid)==0
+        with pytest.raises(ValueError):
+            bed1.father
+
+    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":[i for i in range(len(sid))]}) as bed1:
+        assert bed1.sid.dtype.type is np.str_
+        assert bed1.sid[0] == "0"
+    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":np.array([i for i in range(len(sid))])}) as bed1:
+        assert bed1.sid.dtype.type is np.str_
+        assert bed1.sid[0] == "0"
+    with pytest.raises(ValueError):
+        open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":np.array([(i,i) for i in range(len(sid))])})
+    with open_bed(base / "data/distributed_bed_test1_X.bed",overrides={"sid":[1,2,3]}) as bed1:
+        with pytest.raises(ValueError):
+            bed1.chromosome
+    
+
 
 #!!!cmk rather slow
 def test_properties():
@@ -403,5 +456,5 @@ def test_shape():
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_shape()
+    test_overrides()
     pytest.main([__file__])

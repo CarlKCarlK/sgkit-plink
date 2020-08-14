@@ -2,7 +2,6 @@
 #!!!cmk todo: fix up write
 #!!!cmk it must be an error to give an override for a property that doesn't exist
 #!!!cmk would be nice if the "counts don't match" errors were more specific
-#!!!cmk fix C++ warnings on Ubuntu
 
 #!!!cmk add typing info
 #!!!cmk run flake8, isort, etc
@@ -26,13 +25,6 @@ def rawincount(filename):
     bufgen = takewhile(lambda x: x, (f.raw.read(1024 * 1024) for _ in repeat(None)))
     return sum(buf.count(b"\n") for buf in bufgen)
 
-
-def _default_empty_creator(count):  #!!!cmk make a static member function?
-    return np.empty([count or 0, 0], dtype="str")
-
-
-#!!!cmk tell (and test of possible) under what conditions is thread-safe
-
 #!!!cmk test that it works on files with no rows and/or cols (it did before)
 class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
@@ -40,7 +32,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         filename,
         iid_count=None,
         sid_count=None,
-        overrides=None,
+        overrides={},
         count_A1=True,
         num_threads=None,
         skip_format_check=False,
@@ -51,9 +43,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self.count_A1 = count_A1
         self._num_threads = num_threads
         self.skip_format_check = skip_format_check
-        #!!!cmk read the PLINK docs and switch to using their names for iid and sid and pos, etc
 
-        self._fixup_fam_bim(overrides, iid_count, sid_count)
+        self._fixup_overrides(overrides, iid_count, sid_count)
         self._iid_range = None
         self._sid_range = None
 
@@ -80,65 +71,38 @@ class open_bed:  #!!!cmk need doc strings everywhere
     _delimiters = {"fam": r"\s+", "bim": "\t"}
     _count_name = {"fam": "iid_count", "bim": "sid_count"}
 
-    def _fixup_fam_bim(self, overrides, iid_count, sid_count):
-        self._property_dict = {}
+    def _fixup(self, input):
+        pass
+
+    def _fixup_overrides(self, overrides, iid_count, sid_count):
+
+        self._property_dict = {key:None for key in self._meta}
         self._counts = {"fam": iid_count, "bim": sid_count}
 
-        for key, (suffix, _, dtype, _) in self._meta.items():
-            input = self._property_dict.get(key)
+        for key, input in overrides.items():
+            if key not in self._meta:
+                raise KeyError(f"Overrides key '{key}' not known")
+            if input is None:
+                continue
+            suffix, _, dtype, _ = self._meta[key]
             count = self._counts[suffix]
 
-            if input is None:
-                output = input
-            elif len(input) == 0:  #!!!cmk Test this
+            if len(input) == 0:
                 output = np.zeros([0], dtype=dtype)
-                if count is None:  #!!!cmk similar code elsewhere
-                    self._counts[suffix] = len(output)
-                else:
-                    assert count == len(
-                        output
-                    ), f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
-            elif (
-                not isinstance(input, np.ndarray) or input.dtype.type is not dtype
-            ):  #!!!cmk get this right including shape
-                output = np.array(input, dtype=dtype)
-                if count is None:
-                    self._counts[suffix] = len(output)
-                else:
-                    assert count == len(
-                        output
-                    ), f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
             else:
+                if not isinstance(input, np.ndarray) or input.dtype.type is not dtype:
+                    input = np.array(input, dtype=dtype)
+                if len(input.shape) != 1:
+                    raise ValueError(f"Override {key} should be one dimensional")
                 output = input
-                #!!!cmk test that shape is OK
-                assert (
-                    output.dtype.type is dtype and len(output.shape) == 1
-                ), f"{key} should be of dtype of {dtype} and one dimensional"
 
-                if count is None:
-                    self._counts[suffix] = len(output)
-                else:
-                    assert count == len(
-                        output
-                    ), f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
+            if count is None:
+                self._counts[suffix] = len(output)
+            else:
+                if count != len(output):
+                    raise ValueError(f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}")
+
             self._property_dict[key] = output
-
-    # !!!cmk this isn't getting used anymore. Why not and remove it
-    # def _assert_iid_sid_pos(self):  #!!!cmk why wasn't pos getting check here?
-
-    #    assert (  #!!!cmk replace every assert with a message with a raised exception?
-    #        self.iid.dtype.type is np.str_
-    #        and len(self.iid.shape) == 2
-    #        and self.iid.shape[1] == 2
-    #    ), "iid should be dtype str, have two dimensions, and the second dimension should be size 2"
-    #    assert (
-    #        self.sid.dtype.type is np.str_ and len(self.sid.shape) == 1
-    #    ), "sid should be of dtype of str and one dimensional"
-    #    assert (
-    #        self.pos.dtype.type is np.float64
-    #        and len(self.pos.shape) == 2
-    #        and self.pos.shape[1] == 3  #!!!cmk remove
-    #    ), "pos should be of dtype of float, have two dimensions, and second dimenson should be size 3"
 
     def _read_fam_or_bim(self, suffix):
         metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
@@ -157,9 +121,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
             if count is None:
                 self._counts[suffix] = 0
             else:
-                assert (
-                    count == 0
-                ), f"The number of lines in the *.{suffix} file, {0}, should not be different from the current {self._count_name[suffix]}, {count}"
+                if count != 0:
+                    raise ValueError(f"The number of lines in the *.{suffix} file, {0}, should not be different from the current {self._count_name[suffix]}, {count}")
         else:
             delimiter = self._delimiters[suffix]
             if delimiter in {r"\s+"}:
@@ -178,9 +141,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
             if count is None:
                 self._counts[suffix] = len(fields)
             else:
-                assert count == len(
-                    fields
-                ), f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {self._count_name[suffix]}, {count}"
+                if count != len(fields):
+                    raise ValueError(f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {self._count_name[suffix]}, {count}")
 
             for key, (suffix_x, column, dtype, missing) in self._meta.items():
                 if suffix_x is not suffix:
@@ -193,25 +155,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         self._property_dict[key] = np.array(
                             fields[column].fillna(missing), dtype=dtype
                         )
-                    # self._bim[key] = np.array(
-                    #    fields[column].tolist(), dtype=dtype
-                    # )  #!!!cmk would .values sometimes be faster or have better memory use?
 
-    # remove
-    # @staticmethod
-    # def _read_fam(basefilename, remove_suffix, add_suffix="fam"):
-    #    famfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
-
-    #    logging.info("Loading {0} file {1}".format(add_suffix, famfile))
-    #    if os.path.getsize(famfile) > 0:
-    #        iid = np.loadtxt(famfile, dtype="str", usecols=(0, 1), comments=None)
-    #    else:
-    #        iid = np.empty((0, 2), dtype="str")
-    #    if (
-    #        len(iid.shape) == 1
-    #    ):  # When empty or just one item, make sure the result is (x,2)
-    #        iid = iid.reshape((len(iid) // 2, 2))
-    #    return iid
 
     @staticmethod
     def _name_of_other_file(filename, remove_suffix, add_suffix):
@@ -247,7 +191,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return self._property("pheno")
 
     def _property(self, key):
-        val = self._property_dict.get(key)  #!!!cmk overrides is a bad name
+        val = self._property_dict.get(key)
         if val is None:
             suffix, _, _, _ = self._meta[key]
             self._read_fam_or_bim(suffix=suffix)
@@ -299,7 +243,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def _check_file(filepointer):
         mode = filepointer.read(2)
         if mode != b"l\x1b":
-            raise Exception("No valid binary BED file")
+            raise Exception("No valid binary BED file") #!!!cmk make all and any "Exception" more specific
         mode = filepointer.read(1)  # \x01 = SNP major \x00 = individual major
         if mode != b"\x01":
             raise Exception(
@@ -544,7 +488,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     else:
                         raise Exception(
-                            "order '{0}' not known, only 'F' and 'C'".format(order)
+                            "order '{0}' not known, only 'F' and 'C'".format(order) #!!!cmk or A
                         )
                 elif dtype == np.float32:
                     if order == "F":
@@ -685,27 +629,28 @@ class open_bed:  #!!!cmk need doc strings everywhere
             pass
         return index
 
-    @staticmethod
-    def _fixup_input(
-        input,
-        count=None,
-        empty_creator=_default_empty_creator,
-        dtype=None,
-        none_num_ok=False,
-    ):
-        if none_num_ok and input is None:
-            return input
+    #!!!cmk kill
+    #@staticmethod
+    #def _fixup_input(
+    #    input,
+    #    count=None,
+    #    empty_creator=_default_empty_creator,
+    #    dtype=None,
+    #    none_num_ok=False,
+    #):
+    #    if none_num_ok and input is None:
+    #        return input
 
-        if input is None or len(input) == 0:
-            input = empty_creator(count)
-        elif not isinstance(input, np.ndarray):
-            input = np.array(input, dtype=dtype)
+    #    if input is None or len(input) == 0:
+    #        input = empty_creator(count)
+    #    elif not isinstance(input, np.ndarray):
+    #        input = np.array(input, dtype=dtype)
 
-        assert (
-            count is None or len(input) == count
-        ), "Expect length of {0} for input {1}".format(count, input)
+    #    assert (
+    #        count is None or len(input) == count
+    #    ), "Expect length of {0} for input {1}".format(count, input)
 
-        return input
+    #    return input
 
     #!!!cmk put the methods in a good order
     @staticmethod
