@@ -92,14 +92,14 @@ def test_overrides():
 
     with pytest.raises(KeyError):
         open_bed(
-            base / "data/distributed_bed_test1_X.bed", overrides={"unknown": [3, 4, 4]}
+            base / "data/distributed_bed_test1_X.bed", metadata={"unknown": [3, 4, 4]}
         )
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed", overrides={"iid": None}
+        base / "data/distributed_bed_test1_X.bed", metadata={"iid": None}
     ) as bed1:
         assert np.array_equal(bed1.iid, property_dict["iid"])
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed", overrides={"iid": []}
+        base / "data/distributed_bed_test1_X.bed", metadata={"iid": []}
     ) as bed1:
         assert bed1.iid.dtype.type is np.str_
         assert len(bed1.iid) == 0
@@ -108,28 +108,28 @@ def test_overrides():
 
     with open_bed(
         base / "data/distributed_bed_test1_X.bed",
-        overrides={"sid": [i for i in range(len(sid))]},
+        metadata={"sid": [i for i in range(len(sid))]},
     ) as bed1:
         assert bed1.sid.dtype.type is np.str_
         assert bed1.sid[0] == "0"
     with pytest.raises(ValueError):
         open_bed(
             base / "data/distributed_bed_test1_X.bed",
-            overrides={"sex": ["F" for i in range(len(sex))]},
+            metadata={"sex": ["F" for i in range(len(sex))]},
         )  # Sex must be coded as a number
     with open_bed(
         base / "data/distributed_bed_test1_X.bed",
-        overrides={"sid": np.array([i for i in range(len(sid))])},
+        metadata={"sid": np.array([i for i in range(len(sid))])},
     ) as bed1:
         assert bed1.sid.dtype.type is np.str_
         assert bed1.sid[0] == "0"
     with pytest.raises(ValueError):
         open_bed(
             base / "data/distributed_bed_test1_X.bed",
-            overrides={"sid": np.array([(i, i) for i in range(len(sid))])},
+            metadata={"sid": np.array([(i, i) for i in range(len(sid))])},
         )
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed", overrides={"sid": [1, 2, 3]}
+        base / "data/distributed_bed_test1_X.bed", metadata={"sid": [1, 2, 3]}
     ) as bed1:
         with pytest.raises(ValueError):
             bed1.chromosome
@@ -180,7 +180,7 @@ def test_properties():
                                                     file,
                                                     iid_count=iid_count,
                                                     sid_count=sid_count,
-                                                    overrides={
+                                                    metadata={
                                                         "iid": iid,
                                                         "sid": sid,
                                                         "chromosome": chromosome,
@@ -525,5 +525,5 @@ def test_shape():
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_bad_bed()
+    test_read1()
     pytest.main([__file__])

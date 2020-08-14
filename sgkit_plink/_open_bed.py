@@ -33,7 +33,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         filename,
         iid_count=None,
         sid_count=None,
-        overrides={},
+        metadata={},
         count_A1=True,
         num_threads=None,
         skip_format_check=False,
@@ -45,7 +45,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self._num_threads = num_threads
         self.skip_format_check = skip_format_check
 
-        self._fixup_overrides(overrides, iid_count, sid_count)
+        self.metadata_dict, self._counts = open_bed._fixup_metadata(
+            metadata, iid_count, sid_count, use_fill_sequence=False
+        )
         self._iid_range = None
         self._sid_range = None
 
@@ -54,19 +56,28 @@ class open_bed:  #!!!cmk need doc strings everywhere
             with open(bedfile, "rb") as filepointer:
                 self._check_file(filepointer)
 
-    _meta = {
-        "fid": ("fam", 0, np.str_, "0"),
-        "iid": ("fam", 1, np.str_, None),
-        "father": ("fam", 2, np.str_, "0"),
-        "mother": ("fam", 3, np.str_, "0"),
-        "sex": ("fam", 4, "int32", 0),
-        "pheno": ("fam", 5, np.str_, "0"),
-        "chromosome": ("bim", 0, np.str_, "0"),
-        "sid": ("bim", 1, np.str_, None),
-        "cm_position": ("bim", 2, "float32", 0),
-        "bp_position": ("bim", 3, "int32", 0),
-        "allele_1": ("bim", 4, np.str_, None),
-        "allele_2": ("bim", 5, np.str_, None),
+    @staticmethod
+    def _all_same(key, length, missing, dtype):
+        return np.fill(length, missing, dtype=dtype)
+
+    @staticmethod
+    def _sequence(key, length, missing, dtype):
+        result = np.zeros(length, dtype=dtype)
+        result[:] = (f"{key}{i+1}" for i in range(length))
+
+    _meta_meta = {
+        "fid": ("fam", 0, np.str_, "0", _all_same),
+        "iid": ("fam", 1, np.str_, None, _sequence),
+        "father": ("fam", 2, np.str_, "0", _all_same),
+        "mother": ("fam", 3, np.str_, "0", _all_same),
+        "sex": ("fam", 4, "int32", 0, _all_same),
+        "pheno": ("fam", 5, np.str_, "0", _sequence),
+        "chromosome": ("bim", 0, np.str_, "0", _all_same),
+        "sid": ("bim", 1, np.str_, None, _sequence),
+        "cm_position": ("bim", 2, "float32", 0, _all_same),
+        "bp_position": ("bim", 3, "int32", 0, _all_same),
+        "allele_1": ("bim", 4, np.str_, "A1", _all_same),
+        "allele_2": ("bim", 5, np.str_, "A2", _all_same),
     }
 
     _delimiters = {"fam": r"\s+", "bim": "\t"}
@@ -75,20 +86,29 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def _fixup(self, input):
         pass
 
-    def _fixup_overrides(self, overrides, iid_count, sid_count):
+    @staticmethod
+    def _fixup_metadata(metadata, iid_count, sid_count, use_fill_sequence):
 
-        self._property_dict = {key: None for key in self._meta}
-        self._counts = {"fam": iid_count, "bim": sid_count}
+        metadata_dict = {key: None for key in open_bed._meta_meta}
+        count_dict = {"fam": iid_count, "bim": sid_count}
 
-        for key, input in overrides.items():
-            if key not in self._meta:
-                raise KeyError(f"Overrides key '{key}' not known")
+        for key, input in metadata.items():
+            if key not in open_bed._meta_meta:
+                raise KeyError(f"metadata key '{key}' not known")
+
+        for (
+            key,
+            (suffix, _, dtype, missing_value, fill_sequence),
+        ) in open_bed._meta_meta.items():
+            count = count_dict[suffix]
+
+            input = metadata.get(key)
             if input is None:
-                continue
-            suffix, _, dtype, _ = self._meta[key]
-            count = self._counts[suffix]
-
-            if len(input) == 0:
+                if use_fill_sequence:
+                    input = fill_sequence(key, count, missing_value, dtype)
+                else:
+                    continue
+            elif len(input) == 0:
                 output = np.zeros([0], dtype=dtype)
             else:
                 if not isinstance(input, np.ndarray) or input.dtype.type is not dtype:
@@ -98,14 +118,14 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 output = input
 
             if count is None:
-                self._counts[suffix] = len(output)
+                count_dict[suffix] = len(output)
             else:
                 if count != len(output):
                     raise ValueError(
-                        f"The length of override {key}, {len(output)}, should not be different from the current {self._count_name[suffix]}, {count}"
+                        f"The length of override {key}, {len(output)}, should not be different from the current {open_bed._count_name[suffix]}, {count}"
                     )
-
-            self._property_dict[key] = output
+            metadata_dict[key] = output
+        return metadata_dict, count_dict
 
     def _read_fam_or_bim(self, suffix):
         metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
@@ -140,10 +160,10 @@ class open_bed:  #!!!cmk need doc strings everywhere
                     f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {self._count_name[suffix]}, {count}"
                 )
         #!!!cmk rename suffix_x and other *x variables
-        for key, (suffix_x, column, dtype, missing) in self._meta.items():
+        for key, (suffix_x, column, dtype, missing, _) in self._meta_meta.items():
             if suffix_x is not suffix:
                 continue
-            val = self._property_dict[key]
+            val = self.metadata_dict[key]
             if val is None:
                 if len(fields) == 0:
                     output = np.array([], dtype=dtype)
@@ -151,7 +171,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                     output = np.array(fields[column], dtype=dtype)
                 else:
                     output = np.array(fields[column].fillna(missing), dtype=dtype)
-                self._property_dict[key] = output
+                self.metadata_dict[key] = output
 
     @staticmethod
     def _name_of_other_file(filename, remove_suffix, add_suffix):
@@ -164,60 +184,66 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @property
     def fid(self):
-        return self._property("fid")
+        return self.metadata_item("fid")
 
     @property
     def iid(self):
-        return self._property("iid")
+        return self.metadata_item("iid")
 
     @property
     def father(self):
-        return self._property("father")
+        return self.metadata_item("father")
 
     @property
     def mother(self):
-        return self._property("mother")
+        return self.metadata_item("mother")
 
     @property
     def sex(self):
-        return self._property("sex")
+        return self.metadata_item("sex")
 
     @property
     def pheno(self):
-        return self._property("pheno")
+        return self.metadata_item("pheno")
 
-    def _property(self, key):
-        val = self._property_dict.get(key)
+    @property
+    def metadata(self):
+        for key in self._meta_meta:
+            self.metadata_item(key)
+        return self.metadata_dict
+
+    def metadata_item(self, key):
+        val = self.metadata_dict.get(key)
         if val is None:
-            suffix, _, _, _ = self._meta[key]
+            suffix, _, _, _, _ = self._meta_meta[key]
             self._read_fam_or_bim(suffix=suffix)
-            return self._property_dict[key]
+            return self.metadata_dict[key]
         else:
             return val
 
     @property
     def chromosome(self):
-        return self._property("chromosome")
+        return self.metadata_item("chromosome")
 
     @property
     def sid(self):
-        return self._property("sid")
+        return self.metadata_item("sid")
 
     @property
     def cm_position(self):
-        return self._property("cm_position")
+        return self.metadata_item("cm_position")
 
     @property
     def bp_position(self):
-        return self._property("bp_position")
+        return self.metadata_item("bp_position")
 
     @property
     def allele_1(self):
-        return self._property("allele_1")
+        return self.metadata_item("allele_1")
 
     @property
     def allele_2(self):
-        return self._property("allele_2")
+        return self.metadata_item("allele_2")
 
     @property
     def iid_count(self):
@@ -266,32 +292,17 @@ class open_bed:  #!!!cmk need doc strings everywhere
     #!!!cmk say something about support for snp-minor vs major
     @staticmethod
     def write(
-        filename,
-        val,
-        iid,
-        sid,
-        pos,  #!!!cmk0 need to update this
-        count_A1=True,
-        force_python_only=False,
+        filename, val, metadata, count_A1=True, force_python_only=False,
     ):
-        iid = open_bed._fixup_input(
-            iid,  #!!!what to do with write
-            empty_creator=lambda ignore: np.empty([0, 2], dtype="str"),
-            dtype="str",
-        )
-        sid = open_bed._fixup_input(
-            sid, empty_creator=lambda ignore: np.empty([0], dtype="str"), dtype="str",
-        )
-        pos = open_bed._fixup_input(
-            pos,
-            count=len(sid),
-            empty_creator=lambda count: np.array([[np.nan, np.nan, np.nan]] * count),
+        iid_count = val.shape[0]
+        sid_count = val.shape[1]
+
+        metadata, _ = open_bed._fixup_metadata(
+            metadata, iid_count=iid_count, sid_count=sid_count, use_fill_sequence=False,
         )
 
-        open_bed._write_fam(iid, filename, remove_suffix="bed")
-        open_bed._write_map_or_bim(
-            sid, pos, filename, remove_suffix="bed", add_suffix="bim"
-        )
+        open_bed._write_fam_or_bim(filename, metadata, "fam")
+        open_bed._write_fam_or_bim(filename, metadata, "bim")
 
         bedfile = open_bed._name_of_other_file(
             filename, remove_suffix="bed", add_suffix="bed"
@@ -356,7 +367,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 bed_filepointer.write(bytes(bytearray([0b00011011])))  # magic numbers
                 bed_filepointer.write(bytes(bytearray([0b00000001])))  # snp major
 
-                for sid_index in range(len(sid)):
+                for sid_index in range(sid_count):
                     if sid_index % 1 == 0:
                         logging.info(
                             "Writing snp # {0} to file '{1}'".format(
@@ -650,26 +661,25 @@ class open_bed:  #!!!cmk need doc strings everywhere
     #    return input
 
     #!!!cmk put the methods in a good order
-    @staticmethod
-    def _write_fam(iid, basefilename, remove_suffix, add_suffix="fam"):
-        famfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
-
-        with open(famfile, "w") as fam_filepointer:
-            for iid_row in iid:
-                fam_filepointer.write(
-                    "{0} {1} 0 0 0 0\n".format(iid_row[0], iid_row[1])
-                )
 
     @staticmethod
-    def _write_map_or_bim(sid, pos, basefilename, remove_suffix, add_suffix):
-        mapfile = open_bed._name_of_other_file(basefilename, remove_suffix, add_suffix)
+    def _write_fam_bim(basefilename, metadata, suffix_of_interest):
+        filename = open_bed._name_of_other_file(basefilename, "bed", suffix_of_interest)
 
-        with open(mapfile, "w") as map_filepointer:
-            for sid_index, sid in enumerate(sid):
-                posrow = pos[sid_index]
-                map_filepointer.write(
-                    "%r\t%s\t%r\t%r\tA\tC\n" % (posrow[0], sid, posrow[1], posrow[2])
-                )
+        fam_bim_list = []
+        for (key, (suffix, position, _, _, _),) in open_bed._meta_meta:
+            if suffix == suffix_of_interest:
+                assert len(fam_bim_list) == position, "real assert"
+                fam_bim_list.append(metadata[key])
+
+        if suffix_of_interest == "fam":
+            sep = " "
+        else:
+            sep = "\t"
+
+        with open(filename, "w") as filepointer:
+            for index in range(len(fam_bim_list[0])):
+                filepointer.write(sep.join(seq[index] for seq in fam_bim_list) + "\n")
 
 
 if __name__ == "__main__":
