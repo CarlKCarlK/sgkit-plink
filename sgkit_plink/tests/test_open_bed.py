@@ -101,7 +101,7 @@ def test_overrides():
     with open_bed(
         base / "data/distributed_bed_test1_X.bed", metadata={"iid": []}
     ) as bed1:
-        assert bed1.iid.dtype.type is np.str_
+        assert np.issubdtype(bed1.iid.dtype, np.str_)
         assert len(bed1.iid) == 0
         with pytest.raises(ValueError):
             bed1.father
@@ -110,7 +110,7 @@ def test_overrides():
         base / "data/distributed_bed_test1_X.bed",
         metadata={"sid": [i for i in range(len(sid))]},
     ) as bed1:
-        assert bed1.sid.dtype.type is np.str_
+        assert np.issubdtype(bed1.sid.dtype, np.str_)
         assert bed1.sid[0] == "0"
     with pytest.raises(ValueError):
         open_bed(
@@ -121,7 +121,7 @@ def test_overrides():
         base / "data/distributed_bed_test1_X.bed",
         metadata={"sid": np.array([i for i in range(len(sid))])},
     ) as bed1:
-        assert bed1.sid.dtype.type is np.str_
+        assert np.issubdtype(bed1.sid.dtype, np.str_)
         assert bed1.sid[0] == "0"
     with pytest.raises(ValueError):
         open_bed(
@@ -145,6 +145,7 @@ def test_bad_bed():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with pytest.raises(ValueError):
         open_bed(base / "data/badfile.bed")
+    open_bed(base / "data/badfile.bed", skip_format_check=True)
 
 
 # def test_read_empty_metafiles():
@@ -239,13 +240,13 @@ def test_c_reader_bed():
         )  # !!!cmk improve the name of this test file (it contains missing)
 
         val = bed.read(order="F", dtype="float64", force_python_only=force_python_only)
-        assert val.dtype.type == np.float64
+        assert val.dtype == np.float64
         ref_val = reference_val()
         ref_val = ref_val * -1 + 2
         assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05, equal_nan=True)
 
         val = bed.read(order="F", force_python_only=False)
-        assert val.dtype.type == np.int8
+        assert val.dtype == np.int8
         ref_val[ref_val != ref_val] = -127
         ref_val = ref_val.astype("int8")
         ref_val = ref_val.astype("int8")
@@ -276,7 +277,7 @@ def test_bed_int8():
                 val = bed.read(
                     dtype="int8", force_python_only=force_python_only, order=order
                 )
-                assert val.dtype == "int8"
+                assert val.dtype == np.int8
                 assert (val.flags["C_CONTIGUOUS"] and order == "C") or (
                     val.flags["F_CONTIGUOUS"] and order == "F"
                 )
@@ -533,11 +534,11 @@ def test_shape():
 def test_zero_files(tmp_path):
     for iid_count in [3,0]:
         for sid_count in [5,0]:
-            for dtype in ['int8','float32','float64']:
+            for dtype in [np.int8,np.float32,np.float64]:
                 val = np.zeros((iid_count,sid_count),dtype=dtype)
                 if iid_count * sid_count > 0:
                     val[0,0]=2
-                    val[0,1] = -127 if dtype == 'int8' else np.nan
+                    val[0,1] = -127 if np.dtype(dtype) == np.int8 else np.nan
                 filename = str(tmp_path / 'zero_files.bed')
 
                 # Write
@@ -566,6 +567,13 @@ def test_zero_files(tmp_path):
                     for key2,value_list2 in metadata2.items():
                         value_list3 = metadata3[key2]
                         assert np.array_equal(value_list2,value_list3)
+
+def test_iid_sid_count():
+    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+    iid_count_ref, sid_count_ref = open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed").shape
+    assert (iid_count_ref, sid_count_ref) == open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",iid_count=iid_count_ref).shape
+    assert (iid_count_ref, sid_count_ref) == open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",sid_count=sid_count_ref).shape
+    assert (iid_count_ref, sid_count_ref) == open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",iid_count=iid_count_ref,sid_count=sid_count_ref).shape
 
 
 if __name__ == "__main__":  #!!cmk is this wanted?

@@ -58,13 +58,13 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @staticmethod
     def _all_same(key, length, missing, dtype):
-        if dtype is np.str_:
+        if np.issubdtype(dtype, np.str_):
             dtype = f"<U{len(missing)}"
         return np.full(length, missing, dtype=dtype)
 
     @staticmethod
     def _sequence(key, length, missing, dtype):
-        if dtype is np.str_:
+        if np.issubdtype(dtype, np.str_):
             longest = len(f"{key}{length}")
             dtype = f"<U{longest}"
         return np.fromiter((f"{key}{i+1}" for i in range(length)),dtype=dtype,count=length)
@@ -76,12 +76,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
         "iid": ("fam", 1, np.str_, None, _sequence.__get__(object)),
         "father": ("fam", 2, np.str_, "0", _all_same.__get__(object)),
         "mother": ("fam", 3, np.str_, "0", _all_same.__get__(object)),
-        "sex": ("fam", 4, "int32", 0, _all_same.__get__(object)),
+        "sex": ("fam", 4, np.int32, 0, _all_same.__get__(object)),
         "pheno": ("fam", 5, np.str_, "0", _all_same.__get__(object)),
         "chromosome": ("bim", 0, np.str_, "0", _all_same.__get__(object)),
         "sid": ("bim", 1, np.str_, None, _sequence.__get__(object)),
-        "cm_position": ("bim", 2, "float32", 0, _all_same.__get__(object)),
-        "bp_position": ("bim", 3, "int32", 0, _all_same.__get__(object)),
+        "cm_position": ("bim", 2, np.float32, 0, _all_same.__get__(object)),
+        "bp_position": ("bim", 3, np.int32, 0, _all_same.__get__(object)),
         "allele_1": ("bim", 4, np.str_, "A1", _all_same.__get__(object)),
         "allele_2": ("bim", 5, np.str_, "A2", _all_same.__get__(object)),
     }
@@ -117,7 +117,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
             elif len(input) == 0:
                 output = np.zeros([0], dtype=dtype)
             else:
-                if not isinstance(input, np.ndarray) or input.dtype.type is not dtype:
+                if not isinstance(input, np.ndarray) or not np.issubdtype(input.dtype, dtype):
                     input = np.array(input, dtype=dtype)
                 if len(input.shape) != 1:
                     raise ValueError(f"Override {key} should be one dimensional")
@@ -384,7 +384,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         vals_for_this_byte = colx[iid_by_four : iid_by_four + 4]
                         byte = 0b00000000
                         for val_index in range(len(vals_for_this_byte)):
-                            valx = vals_for_this_byte[
+                            valx = vals_for_this_byte[ #!!!cmk rename valx
                                 val_index
                             ]  #!!!cmk rename valx and the other *x
                             if valx == 0:
