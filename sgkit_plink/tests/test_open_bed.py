@@ -530,9 +530,46 @@ def test_shape():
     with open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed") as bed:
         assert bed.shape == (10, 100)
 
+def test_zero_files(tmp_path):
+    for iid_count in [3,0]:
+        for sid_count in [5,0]:
+            for dtype in ['int8','float32','float64']:
+                val = np.zeros((iid_count,sid_count),dtype=dtype)
+                if iid_count * sid_count > 0:
+                    val[0,0]=2
+                    val[0,1] = -127 if dtype == 'int8' else np.nan
+                filename = str(tmp_path / 'zero_files.bed')
+
+                # Write
+                open_bed.write(filename, val)
+
+                # Read
+                with open_bed(filename) as bed2:
+                    val2 = bed2.read(dtype=dtype)
+                    assert np.allclose(val,val2,equal_nan=True)
+                    metadata2 = bed2.metadata
+                    for prop in metadata2.values():
+                        assert len(prop) in {iid_count,sid_count}
+
+                # Change metdata and write again
+                if iid_count > 0:
+                    metadata2['iid'][0] = 'iidx'
+                if sid_count > 0:
+                    metadata2['sid'][0] = 'sidx'
+                open_bed.write(filename, val2, metadata=metadata2)
+
+                # Read again
+                with open_bed(filename) as bed3:
+                    val3 = bed3.read(dtype=dtype)
+                    assert np.allclose(val,val3,equal_nan=True)
+                    metadata3 = bed3.metadata
+                    for key2,value_list2 in metadata2.items():
+                        value_list3 = metadata3[key2]
+                        assert np.array_equal(value_list2,value_list3)
+
 
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_properties()
+    test_zero_files(Path(r'm:/deldir/tests'))
     pytest.main([__file__])
