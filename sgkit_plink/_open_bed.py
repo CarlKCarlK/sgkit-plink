@@ -67,7 +67,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
         if np.issubdtype(dtype, np.str_):
             longest = len(f"{key}{length}")
             dtype = f"<U{longest}"
-        return np.fromiter((f"{key}{i+1}" for i in range(length)),dtype=dtype,count=length)
+        return np.fromiter(
+            (f"{key}{i+1}" for i in range(length)), dtype=dtype, count=length
+        )
 
     # !!!cmk use a dataclass
     _meta_meta = {
@@ -114,7 +116,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
             elif len(input) == 0:
                 output = np.zeros([0], dtype=dtype)
             else:
-                if not isinstance(input, np.ndarray) or not np.issubdtype(input.dtype, dtype):
+                if not isinstance(input, np.ndarray) or not np.issubdtype(
+                    input.dtype, dtype
+                ):
                     input = np.array(input, dtype=dtype)
                 if len(input.shape) != 1:
                     raise ValueError(f"Override {key} should be one dimensional")
@@ -300,7 +304,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
         iid_count = val.shape[0]
         sid_count = val.shape[1]
 
-        metadata, _ = open_bed._fixup_metadata(metadata, iid_count=iid_count, sid_count=sid_count, use_fill_sequence=True)
+        metadata, _ = open_bed._fixup_metadata(
+            metadata, iid_count=iid_count, sid_count=sid_count, use_fill_sequence=True
+        )
 
         open_bed._write_fam_or_bim(filename, metadata, "fam")
         open_bed._write_fam_or_bim(filename, metadata, "bim")
@@ -320,36 +326,64 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 raise ValueError(f"val must be contiguous.")
 
             iid_count, sid_count = val.shape
-            if val.dtype == np.float64:
-                if order == "F":
-                    wrap_plink_parser.writePlinkBedFile2doubleFAAA(
-                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
-                    )
+            try:
+                if val.dtype == np.float64:
+                    if order == "F":
+                        wrap_plink_parser.writePlinkBedFile2doubleFAAA(
+                            bedfile.encode("ascii"),
+                            iid_count,
+                            sid_count,
+                            count_A1,
+                            val,
+                        )
+                    else:
+                        wrap_plink_parser.writePlinkBedFile2doubleCAAA(
+                            bedfile.encode("ascii"),
+                            iid_count,
+                            sid_count,
+                            count_A1,
+                            val,
+                        )
+                elif val.dtype == np.float32:
+                    if order == "F":
+                        wrap_plink_parser.writePlinkBedFile2floatFAAA(
+                            bedfile.encode("ascii"),
+                            iid_count,
+                            sid_count,
+                            count_A1,
+                            val,
+                        )
+                    else:
+                        wrap_plink_parser.writePlinkBedFile2floatCAAA(
+                            bedfile.encode("ascii"),
+                            iid_count,
+                            sid_count,
+                            count_A1,
+                            val,
+                        )
+                elif val.dtype == np.int8:  #!!!cmk move this up
+                    if order == "F":
+                        wrap_plink_parser.writePlinkBedFile2int8FAAA(
+                            bedfile.encode("ascii"),
+                            iid_count,
+                            sid_count,
+                            count_A1,
+                            val,
+                        )
+                    else:
+                        wrap_plink_parser.writePlinkBedFile2int8CAAA(
+                            bedfile.encode("ascii"),
+                            iid_count,
+                            sid_count,
+                            count_A1,
+                            val,
+                        )
                 else:
-                    wrap_plink_parser.writePlinkBedFile2doubleCAAA(
-                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
+                    raise ValueError(
+                        f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed."
                     )
-            elif val.dtype == np.float32:
-                if order == "F":
-                    wrap_plink_parser.writePlinkBedFile2floatFAAA(
-                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
-                    )
-                else:
-                    wrap_plink_parser.writePlinkBedFile2floatCAAA(
-                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
-                    )
-            elif val.dtype == np.int8:  #!!!cmk move this up
-                if order == "F":
-                    wrap_plink_parser.writePlinkBedFile2int8FAAA(
-                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
-                    )
-                else:
-                    wrap_plink_parser.writePlinkBedFile2int8CAAA(
-                        bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
-                    )
-            else:
-                raise ValueError(f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed.")
-
+            except SystemError as system_error:
+                raise system_error.__cause__
         else:
             if not count_A1:
                 zero_code = 0b00
@@ -377,7 +411,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         vals_for_this_byte = colx[iid_by_four : iid_by_four + 4]
                         byte = 0b00000000
                         for val_index in range(len(vals_for_this_byte)):
-                            valx = vals_for_this_byte[ #!!!cmk rename valx
+                            valx = vals_for_this_byte[  #!!!cmk rename valx
                                 val_index
                             ]  #!!!cmk rename valx and the other *x
                             if valx == 0:
@@ -391,11 +425,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             ):  #!!!cmk find a better way to tell int types from float types
                                 code = 0b01  # backwards on purpose
                             else:
-                                raise ValueError(
-                                    "Can't convert value '{0}' to BED format (only 0,1,2,NAN [or sometimes -127] allowed)".format(
-                                        valx
+                                raise ValueError("Attempt to write illegal value to BED file. Only 0,1,2,missing allowed."
                                     )
-                                )
                             byte |= code << (val_index * 2)
                         bed_filepointer.write(bytes(bytearray([byte])))
         logging.info("Done writing " + filename)
@@ -436,7 +467,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         if order == "A":
             order = "F"
-        if order not in {'F', 'C'}:
+        if order not in {"F", "C"}:
             raise ValueError(f"order '{order}' not known, only 'F', 'C', and 'A")
         dtype = np.dtype(dtype)
 
@@ -546,7 +577,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         assert False, "real assert"
 
                 else:
-                    raise ValueError(f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed.")
+                    raise ValueError(
+                        f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed."
+                    )
 
         else:
             if not self.count_A1:
@@ -652,7 +685,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @staticmethod
     def _write_fam_or_bim(basefilename, metadata, suffix_of_interest):
-        assert suffix_of_interest in {'fam','bim'}, "real assert"
+        assert suffix_of_interest in {"fam", "bim"}, "real assert"
 
         filename = open_bed._name_of_other_file(basefilename, "bed", suffix_of_interest)
 
@@ -666,7 +699,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         with open(filename, "w") as filepointer:
             for index in range(len(fam_bim_list[0])):
-                filepointer.write(sep.join(str(seq[index]) for seq in fam_bim_list) + "\n")
+                filepointer.write(
+                    sep.join(str(seq[index]) for seq in fam_bim_list) + "\n"
+                )
 
 
 if __name__ == "__main__":

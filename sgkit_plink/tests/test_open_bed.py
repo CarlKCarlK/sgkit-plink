@@ -21,36 +21,47 @@ def test_read1():
         #!!!cmk test reading into other dtypes
 
 
-def test_write(tmp_path):
+def test_write1(tmp_path):
     in_file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
     out_file = str(tmp_path / "out.bed")
     with open_bed(in_file) as bed:
         val0 = bed.read()
         metadata0 = {
-        'fid':bed.fid,
-        'iid':bed.iid,
-        'sid':bed.sid,
-        'chromosome':bed.chromosome,
-        'cm_position':bed.cm_position,
-        'bp_position':bed.bp_position,
+            "fid": bed.fid,
+            "iid": bed.iid,
+            "sid": bed.sid,
+            "chromosome": bed.chromosome,
+            "cm_position": bed.cm_position,
+            "bp_position": bed.bp_position,
         }
         open_bed.write(out_file, val0, metadata=metadata0)
         with open_bed(out_file) as bed1:
-            assert np.allclose(val0,bed1.read())
-            assert np.array_equal(bed.fid, metadata0['fid'])
-            assert np.array_equal(bed.iid, metadata0['iid'])
-            assert np.array_equal(bed.sid, metadata0['sid'])
-            assert np.array_equal(bed.chromosome, metadata0['chromosome'])
-            assert np.allclose(bed.cm_position, metadata0['cm_position'])
-            assert np.allclose(bed.bp_position, metadata0['bp_position'])
+            assert np.allclose(val0, bed1.read())
+            assert np.array_equal(bed.fid, metadata0["fid"])
+            assert np.array_equal(bed.iid, metadata0["iid"])
+            assert np.array_equal(bed.sid, metadata0["sid"])
+            assert np.array_equal(bed.chromosome, metadata0["chromosome"])
+            assert np.allclose(bed.cm_position, metadata0["cm_position"])
+            assert np.allclose(bed.bp_position, metadata0["bp_position"])
 
     val_float = val0.astype("float")
     val_float[0, 0] = 0.5
-    for force_python_only in [True]: #!!!cmk fix c++, False]:
+
+    for force_python_only in [False, True]:
         with pytest.raises(ValueError):
             open_bed.write(
                 out_file,
                 val_float,
+                metadata=metadata0,
+                force_python_only=force_python_only,
+            )
+    val_int8 = val0.astype("int8")
+    val_int8[0, 0] = -1
+    for force_python_only in [False, True]:
+        with pytest.raises(ValueError):
+            open_bed.write(
+                out_file,
+                val_int8,
                 metadata=metadata0,
                 force_python_only=force_python_only,
             )
@@ -143,12 +154,14 @@ def test_bad_bed():
         open_bed(base / "data/badfile.bed")
     open_bed(base / "data/badfile.bed", skip_format_check=True)
 
+
 def test_bad_dtype_or_order():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with pytest.raises(ValueError):
         open_bed(base / "data/distributed_bed_test1_X.bed").read(dtype=np.int32)
     with pytest.raises(ValueError):
-        open_bed(base / "data/distributed_bed_test1_X.bed").read(order='X')
+        open_bed(base / "data/distributed_bed_test1_X.bed").read(order="X")
+
 
 def setting_generator(seq_dict, seed=9392):
     import itertools
@@ -282,15 +295,23 @@ def test_bed_int8(tmp_path):
                 ref_val = ref_val.astype("int8")
                 assert np.array_equal(ref_val, val)
                 output = str(tmp_path / "int8.bed")
-                for count_A1 in [False,True]:
-                    open_bed.write(output,ref_val,count_A1=count_A1,force_python_only=force_python_only)
-                    with open_bed(output,count_A1=count_A1) as bed2:
-                        assert np.array_equal(bed2.read(dtype='int8',force_python_only=force_python_only), ref_val)
+                for count_A1 in [False, True]:
+                    open_bed.write(
+                        output,
+                        ref_val,
+                        count_A1=count_A1,
+                        force_python_only=force_python_only,
+                    )
+                    with open_bed(output, count_A1=count_A1) as bed2:
+                        assert np.array_equal(
+                            bed2.read(
+                                dtype="int8", force_python_only=force_python_only
+                            ),
+                            ref_val,
+                        )
 
 
-
-
-def test_write_bed_f64cpp(tmp_path):
+def test_write1_bed_f64cpp(tmp_path):
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
         for iid_index in [0, 1, 5]:
@@ -304,22 +325,29 @@ def test_write_bed_f64cpp(tmp_path):
                 assert val.shape == (iid_index, 100)
                 output = str(tmp_path / f"toydata.F64cpp.{iid_index}")
                 open_bed.write(output, val, count_A1=False)
-                val2 = open_bed(output,count_A1=False).read(dtype='float64')
+                val2 = open_bed(output, count_A1=False).read(dtype="float64")
                 assert np.allclose(val, val2, equal_nan=True)
 
 
-def test_write_x_x_cpp(tmp_path):
+def test_write1_x_x_cpp(tmp_path):
     base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
     for count_A1 in [False, True]:
-        with open_bed(base + "/data/distributed_bed_test1_X.bed",count_A1=count_A1) as bed:
-            for order in ['C','F','A']:
-                for dtype in [np.float32,np.float64]:
-                    val = bed.read(order=order,dtype=dtype)
+        with open_bed(
+            base + "/data/distributed_bed_test1_X.bed", count_A1=count_A1
+        ) as bed:
+            for order in ["C", "F", "A"]:
+                for dtype in [np.float32, np.float64]:
+                    val = bed.read(order=order, dtype=dtype)
                     metadata = bed.metadata
-                    val[-1,0] = float("NAN")
-                    output = str(tmp_path / "toydata.{0}{1}.cpp".format(order,"32" if dtype==np.float32 else "64"))
+                    val[-1, 0] = float("NAN")
+                    output = str(
+                        tmp_path
+                        / "toydata.{0}{1}.cpp".format(
+                            order, "32" if dtype == np.float32 else "64"
+                        )
+                    )
                     open_bed.write(output, val, metadata=metadata, count_A1=count_A1)
-                    val2 = open_bed(output,count_A1=count_A1).read(dtype=dtype)
+                    val2 = open_bed(output, count_A1=count_A1).read(dtype=dtype)
                     assert np.allclose(val, val2, equal_nan=True)
 
 
@@ -363,52 +391,60 @@ def test_threads():
             assert np.allclose(ref_val_int8, val, equal_nan=True)
 
 
-def test_writes(tmp_path):
-    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
-
-    #===================================
+def test_write12(tmp_path):
+    # ===================================
     #    Starting main function
-    #===================================
+    # ===================================
     logging.info("starting 'test_writes'")
     np.random.seed(0)
     output_template = str(tmp_path / "writes.{0}.bed")
     i = 0
-    for row_count in [0,5,2,1]:
-        for col_count in [4,2,1,0]:
-            val = np.random.randint(0,4,size=(row_count,col_count))*1.0
-            val[val==3]=np.NaN
-            row0 = ['0','1','2','3','4'][:row_count]
-            row1 = ['0','1','2','3','4'][:row_count]
-            col = ['s0','s1','s2','s3','s4'][:col_count]
-            for is_none in [True,False]:
-                metadata = {'fid':row0,'iid':row1,'sid':col}
+    for row_count in [0, 5, 2, 1]:
+        for col_count in [4, 2, 1, 0]:
+            val = np.random.randint(0, 4, size=(row_count, col_count)) * 1.0
+            val[val == 3] = np.NaN
+            row0 = ["0", "1", "2", "3", "4"][:row_count]
+            row1 = ["0", "1", "2", "3", "4"][:row_count]
+            col = ["s0", "s1", "s2", "s3", "s4"][:col_count]
+            for is_none in [True, False]:
+                metadata = {"fid": row0, "iid": row1, "sid": col}
                 if is_none:
                     col_prop012 = [x for x in range(5)][:col_count]
-                    metadata['chromosome'] = col_prop012
-                    metadata['bp_position'] = col_prop012
-                    metadata['cm_position'] = col_prop012
+                    metadata["chromosome"] = col_prop012
+                    metadata["bp_position"] = col_prop012
+                    metadata["cm_position"] = col_prop012
                 else:
                     col_prop012 = None
 
                 filename = output_template.format(i)
                 logging.info(filename)
                 i += 1
-                open_bed.write(filename,val,metadata=metadata) #!!!cmk is it weird to "open_bed.write"?
-                for subsetter in [None, np.s_[::2,::3]]:
+                open_bed.write(
+                    filename, val, metadata=metadata
+                )  #!!!cmk is it weird to "open_bed.write"?
+                for subsetter in [None, np.s_[::2, ::3]]:
                     with open_bed(filename) as bed:
-                        val2 = bed.read(index=subsetter,order='C',dtype='float32') #!!!cmk should float32 be the default so that NaN is better?
+                        val2 = bed.read(
+                            index=subsetter, order="C", dtype="float32"
+                        )  #!!!cmk should float32 be the default so that NaN is better?
                         if subsetter is None:
                             expected = val
                         else:
-                            expected = val[subsetter[0],:][:,subsetter[1]]
-                        assert np.allclose(val2,expected,equal_nan=True)
-                        assert np.array_equal(bed.fid,np.array(row0,dtype='str'))
-                        assert np.array_equal(bed.iid,np.array(row1,dtype='str'))
-                        assert np.array_equal(bed.sid,np.array(col,dtype='str'))
+                            expected = val[subsetter[0], :][:, subsetter[1]]
+                        assert np.allclose(val2, expected, equal_nan=True)
+                        assert np.array_equal(bed.fid, np.array(row0, dtype="str"))
+                        assert np.array_equal(bed.iid, np.array(row1, dtype="str"))
+                        assert np.array_equal(bed.sid, np.array(col, dtype="str"))
                         if col_prop012 is not None:
-                            assert np.array_equal(bed.chromosome,np.array(col_prop012,dtype='str'))
-                            assert np.array_equal(bed.bp_position,np.array(col_prop012))
-                            assert np.array_equal(bed.cm_position,np.array(col_prop012))
+                            assert np.array_equal(
+                                bed.chromosome, np.array(col_prop012, dtype="str")
+                            )
+                            assert np.array_equal(
+                                bed.bp_position, np.array(col_prop012)
+                            )
+                            assert np.array_equal(
+                                bed.cm_position, np.array(col_prop012)
+                            )
                     try:
                         os.remove(filename)
                     except:
@@ -475,16 +511,17 @@ def test_shape():
     with open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed") as bed:
         assert bed.shape == (10, 100)
 
+
 def test_zero_files(tmp_path):
     for force_python_only in [False, True]:
-        for iid_count in [3,0]:
-            for sid_count in [5,0]:
-                for dtype in [np.int8,np.float32,np.float64]:
-                    val = np.zeros((iid_count,sid_count),dtype=dtype)
+        for iid_count in [3, 0]:
+            for sid_count in [5, 0]:
+                for dtype in [np.int8, np.float32, np.float64]:
+                    val = np.zeros((iid_count, sid_count), dtype=dtype)
                     if iid_count * sid_count > 0:
-                        val[0,0]=2
-                        val[0,1] = -127 if np.dtype(dtype) == np.int8 else np.nan
-                    filename = str(tmp_path / 'zero_files.bed')
+                        val[0, 0] = 2
+                        val[0, 1] = -127 if np.dtype(dtype) == np.int8 else np.nan
+                    filename = str(tmp_path / "zero_files.bed")
 
                     # Write
                     open_bed.write(filename, val, force_python_only=force_python_only)
@@ -492,50 +529,74 @@ def test_zero_files(tmp_path):
                     # Read
                     with open_bed(filename) as bed2:
                         val2 = bed2.read(dtype=dtype)
-                        assert np.allclose(val,val2,equal_nan=True)
+                        assert np.allclose(val, val2, equal_nan=True)
                         metadata2 = bed2.metadata
                         for prop in metadata2.values():
-                            assert len(prop) in {iid_count,sid_count}
+                            assert len(prop) in {iid_count, sid_count}
 
                     # Change metdata and write again
                     if iid_count > 0:
-                        metadata2['iid'][0] = 'iidx'
+                        metadata2["iid"][0] = "iidx"
                     if sid_count > 0:
-                        metadata2['sid'][0] = 'sidx'
-                    open_bed.write(filename, val2, metadata=metadata2, force_python_only=force_python_only)
+                        metadata2["sid"][0] = "sidx"
+                    open_bed.write(
+                        filename,
+                        val2,
+                        metadata=metadata2,
+                        force_python_only=force_python_only,
+                    )
 
                     # Read again
                     with open_bed(filename) as bed3:
                         val3 = bed3.read(dtype=dtype)
-                        assert np.allclose(val,val3,equal_nan=True)
+                        assert np.allclose(val, val3, equal_nan=True)
                         metadata3 = bed3.metadata
-                        for key2,value_list2 in metadata2.items():
+                        for key2, value_list2 in metadata2.items():
                             value_list3 = metadata3[key2]
-                            assert np.array_equal(value_list2,value_list3)
+                            assert np.array_equal(value_list2, value_list3)
+
 
 def test_iid_sid_count():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    iid_count_ref, sid_count_ref = open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed").shape
-    assert (iid_count_ref, sid_count_ref) == open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",iid_count=iid_count_ref).shape
-    assert (iid_count_ref, sid_count_ref) == open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",sid_count=sid_count_ref).shape
-    assert (iid_count_ref, sid_count_ref) == open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",iid_count=iid_count_ref,sid_count=sid_count_ref).shape
+    iid_count_ref, sid_count_ref = open_bed(
+        base / "data/plink_sim_10s_100v_10pmiss.bed"
+    ).shape
+    assert (iid_count_ref, sid_count_ref) == open_bed(
+        base / "data/plink_sim_10s_100v_10pmiss.bed", iid_count=iid_count_ref
+    ).shape
+    assert (iid_count_ref, sid_count_ref) == open_bed(
+        base / "data/plink_sim_10s_100v_10pmiss.bed", sid_count=sid_count_ref
+    ).shape
+    assert (iid_count_ref, sid_count_ref) == open_bed(
+        base / "data/plink_sim_10s_100v_10pmiss.bed",
+        iid_count=iid_count_ref,
+        sid_count=sid_count_ref,
+    ).shape
+
 
 def test_coverage2():
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    with open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",metadata={'iid':None}) as bed:
-        assert len(bed.iid)>1
+    with open_bed(
+        base / "data/plink_sim_10s_100v_10pmiss.bed", metadata={"iid": None}
+    ) as bed:
+        assert len(bed.iid) > 1
     with pytest.raises(ValueError):
-        open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed",metadata={'iid':[1,2,3],'mother':[1,2]})
-    val = np.zeros((3,5))[::2]
-    assert not val.flags['C_CONTIGUOUS'] and not val.flags['F_CONTIGUOUS']
+        open_bed(
+            base / "data/plink_sim_10s_100v_10pmiss.bed",
+            metadata={"iid": [1, 2, 3], "mother": [1, 2]},
+        )
+    val = np.zeros((3, 5))[::2]
+    assert not val.flags["C_CONTIGUOUS"] and not val.flags["F_CONTIGUOUS"]
     with pytest.raises(ValueError):
-        open_bed.write("ignore",val)
-    val = np.zeros((3,5),dtype=np.str)
+        open_bed.write("ignore", val)
+    val = np.zeros((3, 5), dtype=np.str)
     with pytest.raises(ValueError):
-        open_bed.write("ignore",val)
+        open_bed.write("ignore", val)
+
 
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_writes(Path(r'm:/deldir/tests'))
-    pytest.main([__file__])
+    test_write1(Path(r"m:/deldir/tests"))
+    #cmk pytest.main([__file__])
+

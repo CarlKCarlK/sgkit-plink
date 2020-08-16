@@ -15,6 +15,7 @@
 /*
 * Include Files
 */
+#include "Python.h"
 #include "CPlinkBedFileT.h"
 #include <iostream>
 #include <stdio.h>
@@ -278,26 +279,36 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 
 			for (int val_index = 0; val_index < end; ++val_index)
 			{
-				//printf("f %d and %d\n", startpos, sid_index * iid_count + iid_by_four + val_index);
+				//printf("f %d and %d\n", startpos, sid_index * iid_count + iid_by_four + val_index);//cmk
 				//printf("g %d of %d\n", val_index, end);
 				REAL val = in[startpos];
+				//printf("val is %f\n", (float)val);//cmk
 				unsigned char code;
 				if (val == 0)
+				{
 					code = zeroCode;
+				}
 				else if (val == 1)
+				{
 					code = 2; //0b10 backwards on purpose
+				}
 				else if (val == 2)
+				{
 					code = twoCode;
+				}
 #ifdef MISSING_VALUE
 				else if (val == MISSING_VALUE)
+				{
 #else
 				else if (val != val)
+				{
 #endif
 					code = 1; //0b01 #backwards on purpose
+				}
 				else
 				{
-					//printf("Can't convert value '%s' to BED format (only 0,1,2,NAN[-1] allowed)", val);
 					fclose(bed_filepointer);
+					PyErr_SetString(PyExc_ValueError, "Attempt to write illegal value to BED file. Only 0,1,2,missing allowed.");
 					return;
 				}
 
