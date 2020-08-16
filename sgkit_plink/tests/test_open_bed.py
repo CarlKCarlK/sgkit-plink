@@ -5,8 +5,8 @@ from sgkit_plink._open_bed import open_bed
 import logging  #!!!cmk how does sgkit do logging messages?
 
 
-def test_read1():
-    file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+def test_read1(shared_datadir):
+    file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"
     with open_bed(file) as bed:
         assert bed.iid_count == 10
         assert bed.fid[-1] == "0"
@@ -21,9 +21,9 @@ def test_read1():
         #!!!cmk test reading into other dtypes
 
 
-def test_write1(tmp_path):
-    in_file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
-    out_file = str(tmp_path / "out.bed")
+def test_write1(tmp_path, shared_datadir):
+    in_file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+    out_file = tmp_path / "out.bed"
     with open_bed(in_file) as bed:
         val0 = bed.read()
         metadata0 = {
@@ -67,9 +67,8 @@ def test_write1(tmp_path):
             )
 
 
-def test_overrides():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+def test_overrides(shared_datadir):
+    with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
         fid = bed.fid
         iid = bed.iid
         father = bed.father
@@ -82,8 +81,8 @@ def test_overrides():
         bp_position = bed.bp_position
         allele_1 = bed.allele_1
         allele_2 = bed.allele_2
-    # lock in the expected results: np.savez(base / "data/distributed_bed_test1_X.metadata.npz",fid=fid,iid=iid,father=father,mother=mother,sex=sex,pheno=pheno,chromosome=chromosome,sid=sid,cm_position=cm_position,bp_position=bp_position,allele_1=allele_1,allele_2=allele_2)
-    property_dict = np.load(base / "data/distributed_bed_test1_X.metadata.npz")
+    # lock in the expected results: np.savez(shared_datadir / "distributed_bed_test1_X.metadata.npz",fid=fid,iid=iid,father=father,mother=mother,sex=sex,pheno=pheno,chromosome=chromosome,sid=sid,cm_position=cm_position,bp_position=bp_position,allele_1=allele_1,allele_2=allele_2)
+    property_dict = np.load(shared_datadir / "distributed_bed_test1_X.metadata.npz")
     assert np.array_equal(property_dict["fid"], fid)
     assert np.array_equal(property_dict["iid"], iid)
     assert np.array_equal(property_dict["father"], father)
@@ -99,14 +98,14 @@ def test_overrides():
 
     with pytest.raises(KeyError):
         open_bed(
-            base / "data/distributed_bed_test1_X.bed", metadata={"unknown": [3, 4, 4]}
+            shared_datadir / "distributed_bed_test1_X.bed", metadata={"unknown": [3, 4, 4]}
         )
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed", metadata={"iid": None}
+        shared_datadir / "distributed_bed_test1_X.bed", metadata={"iid": None}
     ) as bed1:
         assert np.array_equal(bed1.iid, property_dict["iid"])
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed", metadata={"iid": []}
+        shared_datadir / "distributed_bed_test1_X.bed", metadata={"iid": []}
     ) as bed1:
         assert np.issubdtype(bed1.iid.dtype, np.str_)
         assert len(bed1.iid) == 0
@@ -114,53 +113,50 @@ def test_overrides():
             bed1.father
 
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed",
+        shared_datadir / "distributed_bed_test1_X.bed",
         metadata={"sid": [i for i in range(len(sid))]},
     ) as bed1:
         assert np.issubdtype(bed1.sid.dtype, np.str_)
         assert bed1.sid[0] == "0"
     with pytest.raises(ValueError):
         open_bed(
-            base / "data/distributed_bed_test1_X.bed",
+            shared_datadir / "distributed_bed_test1_X.bed",
             metadata={"sex": ["F" for i in range(len(sex))]},
         )  # Sex must be coded as a number
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed",
+        shared_datadir / "distributed_bed_test1_X.bed",
         metadata={"sid": np.array([i for i in range(len(sid))])},
     ) as bed1:
         assert np.issubdtype(bed1.sid.dtype, np.str_)
         assert bed1.sid[0] == "0"
     with pytest.raises(ValueError):
         open_bed(
-            base / "data/distributed_bed_test1_X.bed",
+            shared_datadir / "distributed_bed_test1_X.bed",
             metadata={"sid": np.array([(i, i) for i in range(len(sid))])},
         )
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed", metadata={"sid": [1, 2, 3]}
+        shared_datadir / "distributed_bed_test1_X.bed", metadata={"sid": [1, 2, 3]}
     ) as bed1:
         with pytest.raises(ValueError):
             bed1.chromosome
 
 
-def test_str():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+def test_str(shared_datadir):
+    with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
         assert "open_bed(" in str(bed)
 
 
-def test_bad_bed():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+def test_bad_bed(shared_datadir):
     with pytest.raises(ValueError):
-        open_bed(base / "data/badfile.bed")
-    open_bed(base / "data/badfile.bed", skip_format_check=True)
+        open_bed(shared_datadir / "badfile.bed")
+    open_bed(shared_datadir / "badfile.bed", skip_format_check=True)
 
 
-def test_bad_dtype_or_order():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+def test_bad_dtype_or_order(shared_datadir):
     with pytest.raises(ValueError):
-        open_bed(base / "data/distributed_bed_test1_X.bed").read(dtype=np.int32)
+        open_bed(shared_datadir / "distributed_bed_test1_X.bed").read(dtype=np.int32)
     with pytest.raises(ValueError):
-        open_bed(base / "data/distributed_bed_test1_X.bed").read(order="X")
+        open_bed(shared_datadir / "distributed_bed_test1_X.bed").read(order="X")
 
 
 def setting_generator(seq_dict, seed=9392):
@@ -187,8 +183,8 @@ def setting_generator(seq_dict, seed=9392):
         yield setting
 
 
-def test_properties():
-    file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+def test_properties(shared_datadir):
+    file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
     with open_bed(file) as bed:
         iid_list = bed.iid.tolist()
         sid_list = bed.sid.tolist()
@@ -241,16 +237,15 @@ def test_properties():
             # bed._assert_iid_sid_chromosome()
 
 
-def test_c_reader_bed():
+def test_c_reader_bed(shared_datadir):
     for force_python_only in [False, True]:
-        base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
         bed = open_bed(
-            base / "data/distributed_bed_test1_X.bed", count_A1=False
+            shared_datadir / "distributed_bed_test1_X.bed", count_A1=False
         )  # !!!cmk improve the name of this test file (it contains missing)
 
         val = bed.read(order="F", dtype="float64", force_python_only=force_python_only)
         assert val.dtype == np.float64
-        ref_val = reference_val()
+        ref_val = reference_val(shared_datadir)
         ref_val = ref_val * -1 + 2
         assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05, equal_nan=True)
 
@@ -263,24 +258,21 @@ def test_c_reader_bed():
 
         bed.close()
 
-        base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-        with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+        with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
             val = bed.read(
                 order="F", dtype="float64", force_python_only=force_python_only
             )
-            ref_val = reference_val()
+            ref_val = reference_val(shared_datadir)
             assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05, equal_nan=True)
 
 
-def reference_val():  #!!!cmk fix this so not loading over and over again
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    val = np.load(base / "data/distributed_bed_test1_X.val.npy")
+def reference_val(shared_datadir):  #!!!cmk fix this so not loading over and over again
+    val = np.load(shared_datadir / "distributed_bed_test1_X.val.npy")
     return val
 
 
-def test_bed_int8(tmp_path):
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+def test_bed_int8(tmp_path, shared_datadir):
+    with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
         for force_python_only in [False, True]:
             for order in ["F", "C"]:
                 val = bed.read(
@@ -290,7 +282,7 @@ def test_bed_int8(tmp_path):
                 assert (val.flags["C_CONTIGUOUS"] and order == "C") or (
                     val.flags["F_CONTIGUOUS"] and order == "F"
                 )
-                ref_val = reference_val()
+                ref_val = reference_val(shared_datadir)
                 ref_val[ref_val != ref_val] = -127
                 ref_val = ref_val.astype("int8")
                 assert np.array_equal(ref_val, val)
@@ -311,9 +303,8 @@ def test_bed_int8(tmp_path):
                         )
 
 
-def test_write1_bed_f64cpp(tmp_path):
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+def test_write1_bed_f64cpp(tmp_path, shared_datadir):
+    with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
         for iid_index in [0, 1, 5]:
             for force_python_only in [False, True]:
                 val = bed.read(
@@ -329,11 +320,10 @@ def test_write1_bed_f64cpp(tmp_path):
                 assert np.allclose(val, val2, equal_nan=True)
 
 
-def test_write1_x_x_cpp(tmp_path):
-    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
+def test_write1_x_x_cpp(tmp_path, shared_datadir):
     for count_A1 in [False, True]:
         with open_bed(
-            base + "/data/distributed_bed_test1_X.bed", count_A1=count_A1
+            shared_datadir / "distributed_bed_test1_X.bed", count_A1=count_A1
         ) as bed:
             for order in ["C", "F", "A"]:
                 for dtype in [np.float32, np.float64]:
@@ -351,14 +341,13 @@ def test_write1_x_x_cpp(tmp_path):
                     assert np.allclose(val, val2, equal_nan=True)
 
 
-def test_respect_read_inputs():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    ref_val_float = reference_val()
+def test_respect_read_inputs(shared_datadir):
+    ref_val_float = reference_val(shared_datadir)
 
     ref_val_int8 = ref_val_float.astype("int8")
     ref_val_int8[ref_val_float != ref_val_float] = -127
 
-    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
+    with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
         for order in ["F", "C", "A"]:
             for dtype in [np.int8, np.float32, np.float64]:
                 for force_python_only in [True, False]:
@@ -375,17 +364,14 @@ def test_respect_read_inputs():
                     assert np.allclose(ref_val, val, equal_nan=True)
 
 
-def test_threads():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    ref_val_float = reference_val()
-
-    ref_val_float = reference_val()
+def test_threads(shared_datadir):
+    ref_val_float = reference_val(shared_datadir)
     ref_val_int8 = ref_val_float.astype("int8")
     ref_val_int8[ref_val_float != ref_val_float] = -127
 
     for num_threads in [1, 4]:
         with open_bed(
-            base / "data/distributed_bed_test1_X.bed", num_threads=num_threads
+            shared_datadir / "distributed_bed_test1_X.bed", num_threads=num_threads
         ) as bed:
             val = bed.read()
             assert np.allclose(ref_val_int8, val, equal_nan=True)
@@ -452,16 +438,15 @@ def test_write12(tmp_path):
     logging.info("done with 'test_writes'")
 
 
-def test_index():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    ref_val_float = reference_val()
+def test_index(shared_datadir):
+    ref_val_float = reference_val(shared_datadir)
 
-    ref_val_float = reference_val()
+    ref_val_float = reference_val(shared_datadir)
     ref_val_int8 = ref_val_float.astype("int8")
     ref_val_int8[ref_val_float != ref_val_float] = -127
 
     with open_bed(
-        base / "data/distributed_bed_test1_X.bed"
+        shared_datadir / "distributed_bed_test1_X.bed"
     ) as bed:  #!!!cmk maybe repeat with a 2nd file that doesn't have so many 2's in it and isn't square
         val = bed.read()
         assert np.allclose(ref_val_int8, val, equal_nan=True)
@@ -506,9 +491,8 @@ def test_index():
         assert np.allclose(ref_val_int8[[1], slicer[1]], val, equal_nan=True)
 
 
-def test_shape():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-    with open_bed(base / "data/plink_sim_10s_100v_10pmiss.bed") as bed:
+def test_shape(shared_datadir):
+    with open_bed(shared_datadir / "plink_sim_10s_100v_10pmiss.bed") as bed:
         assert bed.shape == (10, 100)
 
 
@@ -556,33 +540,31 @@ def test_zero_files(tmp_path):
                             assert np.array_equal(value_list2, value_list3)
 
 
-def test_iid_sid_count():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+def test_iid_sid_count(shared_datadir):
     iid_count_ref, sid_count_ref = open_bed(
-        base / "data/plink_sim_10s_100v_10pmiss.bed"
+        shared_datadir / "plink_sim_10s_100v_10pmiss.bed"
     ).shape
     assert (iid_count_ref, sid_count_ref) == open_bed(
-        base / "data/plink_sim_10s_100v_10pmiss.bed", iid_count=iid_count_ref
+        shared_datadir / "plink_sim_10s_100v_10pmiss.bed", iid_count=iid_count_ref
     ).shape
     assert (iid_count_ref, sid_count_ref) == open_bed(
-        base / "data/plink_sim_10s_100v_10pmiss.bed", sid_count=sid_count_ref
+        shared_datadir / "plink_sim_10s_100v_10pmiss.bed", sid_count=sid_count_ref
     ).shape
     assert (iid_count_ref, sid_count_ref) == open_bed(
-        base / "data/plink_sim_10s_100v_10pmiss.bed",
+        shared_datadir / "plink_sim_10s_100v_10pmiss.bed",
         iid_count=iid_count_ref,
         sid_count=sid_count_ref,
     ).shape
 
 
-def test_coverage2():
-    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
+def test_coverage2(shared_datadir):
     with open_bed(
-        base / "data/plink_sim_10s_100v_10pmiss.bed", metadata={"iid": None}
+        shared_datadir / "plink_sim_10s_100v_10pmiss.bed", metadata={"iid": None}
     ) as bed:
         assert len(bed.iid) > 1
     with pytest.raises(ValueError):
         open_bed(
-            base / "data/plink_sim_10s_100v_10pmiss.bed",
+            shared_datadir / "plink_sim_10s_100v_10pmiss.bed",
             metadata={"iid": [1, 2, 3], "mother": [1, 2]},
         )
     val = np.zeros((3, 5))[::2]
@@ -597,6 +579,6 @@ def test_coverage2():
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_write1(Path(r"m:/deldir/tests"))
-    #cmk pytest.main([__file__])
+    #test_write1(Path(r"m:/deldir/tests"))
+    pytest.main([__file__])
 
