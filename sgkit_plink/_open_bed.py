@@ -89,9 +89,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
     _delimiters = {"fam": r"\s+", "bim": "\t"}
     _count_name = {"fam": "iid_count", "bim": "sid_count"}
 
-    def _fixup(self, input):
-        pass
-
     @staticmethod
     def _fixup_metadata(metadata, iid_count, sid_count, use_fill_sequence):
 
@@ -320,7 +317,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
             elif val.flags["F_CONTIGUOUS"]:
                 order = "F"
             else:
-                raise Exception("order not known (not 'F' or 'C')")
+                raise ValueError(f"val must be contiguous.")
 
             iid_count, sid_count = val.shape
             if val.dtype == np.float64:
@@ -351,11 +348,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         bedfile.encode("ascii"), iid_count, sid_count, count_A1, val,
                     )
             else:
-                raise Exception(
-                    "dtype '{0}' not known, only float64 and float32 (and sometimes int8)".format(
-                        val.dtype
-                    )
-                )
+                raise ValueError(f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed.")
 
         else:
             if not count_A1:
@@ -380,7 +373,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
 
                     colx = val[:, sid_index]
-                    for iid_by_four in range(0, len(iid), 4):
+                    for iid_by_four in range(0, iid_count, 4):
                         vals_for_this_byte = colx[iid_by_four : iid_by_four + 4]
                         byte = 0b00000000
                         for val_index in range(len(vals_for_this_byte)):
@@ -443,6 +436,8 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         if order == "A":
             order = "F"
+        if order not in {'F', 'C'}:
+            raise ValueError(f"order '{order}' not known, only 'F', 'C', and 'A")
         dtype = np.dtype(dtype)
 
         assert not hasattr(
@@ -498,9 +493,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             num_threads,
                         )
                     else:
-                        raise Exception(
-                            "order '{0}' not known, only 'F' and 'C'".format(order)
-                        )
+                        assert False, "real assert"
                 elif dtype == np.float64:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2doubleFAAA(  #!!!cmk double check that these check the format.If they don't, be sure checkformat is called sometime
@@ -525,11 +518,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             num_threads,
                         )
                     else:
-                        raise Exception(
-                            "order '{0}' not known, only 'F' and 'C'".format(
-                                order
-                            )  #!!!cmk or A
-                        )
+                        assert False, "real assert"
                 elif dtype == np.float32:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2floatFAAA(
@@ -554,15 +543,10 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             num_threads,
                         )
                     else:
-                        raise Exception(
-                            "order '{0}' not known, only 'F' and 'C'".format(order)
-                        )
+                        assert False, "real assert"
+
                 else:
-                    raise Exception(
-                        "dtype '{0}' not known, only float64 and float32 (and sometimes int8)".format(
-                            dtype
-                        )
-                    )
+                    raise ValueError(f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed.")
 
         else:
             if not self.count_A1:
