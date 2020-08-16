@@ -20,17 +20,16 @@ from typing import Any, List, Optional, Tuple, Union
 from itertools import takewhile, repeat
 
 # https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
-def rawincount(filename):
-    f = open(filename, "rb")
-    bufgen = takewhile(lambda x: x, (f.raw.read(1024 * 1024) for _ in repeat(None)))
-    return sum(buf.count(b"\n") for buf in bufgen)
+def rawincount(filepath):
+    with open(filepath, "rb") as f:
+        bufgen = takewhile(lambda x: x, (f.raw.read(1024 * 1024) for _ in repeat(None)))
+        return sum(buf.count(b"\n") for buf in bufgen)
 
 
-#!!!cmk test that it works on files with no rows and/or cols (it did before)
 class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
         self,
-        filename,
+        filepath,
         iid_count=None,
         sid_count=None,
         metadata={},
@@ -38,9 +37,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         num_threads=None,
         skip_format_check=False,
     ):  #!!!document these new optionals. they are here
-        self.filename = str(
-            Path(filename)
-        )  #!!!cmk make it path on the inside, but path or string on the outside
+        self.filepath = Path(filepath)
         self.count_A1 = count_A1
         self._num_threads = num_threads
         self.skip_format_check = skip_format_check
@@ -52,7 +49,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         self._sid_range = None
 
         if not self.skip_format_check:
-            bedfile = self._name_of_other_file(self.filename, "bed", "bed")
+            bedfile = open_bed._name_of_other_file(self.filepath, "bed", "bed")
             with open(bedfile, "rb") as filepointer:
                 self._check_file(filepointer)
 
@@ -135,7 +132,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         return metadata_dict, count_dict
 
     def _read_fam_or_bim(self, suffix):
-        metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
+        metafile = open_bed._name_of_other_file(self.filepath, "bed", suffix)
         logging.info("Loading {0} file {1}".format(suffix, metafile))
 
         count = self._counts[suffix]
@@ -181,13 +178,13 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 self.metadata_dict[key] = output
 
     @staticmethod
-    def _name_of_other_file(filename, remove_suffix, add_suffix):
-        if filename.lower().endswith(remove_suffix.lower()):
-            filename = filename[0 : -1 - len(remove_suffix)]
-        return filename + "." + add_suffix
+    def _name_of_other_file(filepath, remove_suffix, add_suffix):
+        if filepath.suffix.lower() == "." + remove_suffix:
+            filepath = filepath.parent / filepath.stem
+        return filepath.parent / (filepath.name + "." + add_suffix)
 
     def __str__(self):
-        return f"{self.__class__.__name__}('{self.filename}',...)"
+        return f"{self.__class__.__name__}('{self.filepath}',...)"
 
     @property
     def fid(self):
@@ -263,7 +260,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def _count(self, suffix):
         count = self._counts[suffix]
         if count is None:
-            metafile = open_bed._name_of_other_file(self.filename, "bed", suffix)
+            metafile = open_bed._name_of_other_file(self.filepath, "bed", suffix)
             count = rawincount(metafile)
             self._counts[suffix] = count
         return count
@@ -299,8 +296,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
     #!!!cmk say something about support for snp-minor vs major
     @staticmethod
     def write(
-        filename, val, metadata={}, count_A1=True, force_python_only=False,
+        filepath, val, metadata={}, count_A1=True, force_python_only=False,
     ):
+        filepath = Path(filepath)
         iid_count = val.shape[0]
         sid_count = val.shape[1]
 
@@ -308,12 +306,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
             metadata, iid_count=iid_count, sid_count=sid_count, use_fill_sequence=True
         )
 
-        open_bed._write_fam_or_bim(filename, metadata, "fam")
-        open_bed._write_fam_or_bim(filename, metadata, "bim")
+        open_bed._write_fam_or_bim(filepath, metadata, "fam")
+        open_bed._write_fam_or_bim(filepath, metadata, "bim")
 
-        bedfile = open_bed._name_of_other_file(
-            filename, remove_suffix="bed", add_suffix="bed"
-        )
+        bedfile = str(open_bed._name_of_other_file(
+            filepath, remove_suffix="bed", add_suffix="bed"
+        )).encode("ascii")
 
         if not force_python_only:
             from sgkit_plink import wrap_plink_parser
@@ -330,7 +328,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 if val.dtype == np.float64:
                     if order == "F":
                         wrap_plink_parser.writePlinkBedFile2doubleFAAA(
-                            bedfile.encode("ascii"),
+                            bedfile,
                             iid_count,
                             sid_count,
                             count_A1,
@@ -338,7 +336,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     else:
                         wrap_plink_parser.writePlinkBedFile2doubleCAAA(
-                            bedfile.encode("ascii"),
+                            bedfile,
                             iid_count,
                             sid_count,
                             count_A1,
@@ -347,7 +345,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 elif val.dtype == np.float32:
                     if order == "F":
                         wrap_plink_parser.writePlinkBedFile2floatFAAA(
-                            bedfile.encode("ascii"),
+                            bedfile,
                             iid_count,
                             sid_count,
                             count_A1,
@@ -355,7 +353,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     else:
                         wrap_plink_parser.writePlinkBedFile2floatCAAA(
-                            bedfile.encode("ascii"),
+                            bedfile,
                             iid_count,
                             sid_count,
                             count_A1,
@@ -364,7 +362,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 elif val.dtype == np.int8:  #!!!cmk move this up
                     if order == "F":
                         wrap_plink_parser.writePlinkBedFile2int8FAAA(
-                            bedfile.encode("ascii"),
+                            bedfile,
                             iid_count,
                             sid_count,
                             count_A1,
@@ -372,7 +370,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     else:
                         wrap_plink_parser.writePlinkBedFile2int8CAAA(
-                            bedfile.encode("ascii"),
+                            bedfile,
                             iid_count,
                             sid_count,
                             count_A1,
@@ -402,7 +400,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                     if sid_index % 1 == 0:
                         logging.info(
                             "Writing snp # {0} to file '{1}'".format(
-                                sid_index, filename
+                                sid_index, filepath
                             )
                         )
 
@@ -425,11 +423,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             ):  #!!!cmk find a better way to tell int types from float types
                                 code = 0b01  # backwards on purpose
                             else:
-                                raise ValueError("Attempt to write illegal value to BED file. Only 0,1,2,missing allowed."
-                                    )
+                                raise ValueError(
+                                    "Attempt to write illegal value to BED file. Only 0,1,2,missing allowed."
+                                )
                             byte |= code << (val_index * 2)
                         bed_filepointer.write(bytes(bytearray([byte])))
-        logging.info("Done writing " + filename)
+        logging.info(f"Done writing {filepath}")
 
     def _get_num_threads(self):
         if self._num_threads is not None:
@@ -495,7 +494,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
             from sgkit_plink import wrap_plink_parser
 
             val = np.zeros((iid_count_out, sid_count_out), order=order, dtype=dtype)
-            bed_fn = open_bed._name_of_other_file(self.filename, "bed", "bed")
+            bed_fn = str(open_bed._name_of_other_file(self.filepath, "bed", "bed")).encode("ascii")
 
             num_threads = self._get_num_threads()
 
@@ -503,7 +502,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 if dtype == np.int8:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2int8FAAA(
-                            bed_fn.encode("ascii"),
+                            bed_fn,
                             iid_count_in,
                             sid_count_in,
                             self.count_A1,
@@ -514,7 +513,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2int8CAAA(
-                            bed_fn.encode("ascii"),
+                            bed_fn,
                             iid_count_in,
                             sid_count_in,
                             self.count_A1,
@@ -528,7 +527,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 elif dtype == np.float64:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2doubleFAAA(  #!!!cmk double check that these check the format.If they don't, be sure checkformat is called sometime
-                            bed_fn.encode("ascii"),
+                            bed_fn,
                             iid_count_in,
                             sid_count_in,
                             self.count_A1,
@@ -539,7 +538,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2doubleCAAA(
-                            bed_fn.encode("ascii"),
+                            bed_fn,
                             iid_count_in,
                             sid_count_in,
                             self.count_A1,
@@ -553,7 +552,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 elif dtype == np.float32:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2floatFAAA(
-                            bed_fn.encode("ascii"),
+                            bed_fn,
                             iid_count_in,
                             sid_count_in,
                             self.count_A1,
@@ -564,7 +563,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2floatCAAA(
-                            bed_fn.encode("ascii"),
+                            bed_fn,
                             iid_count_in,
                             sid_count_in,
                             self.count_A1,
@@ -602,7 +601,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 dtype=dtype,
             )  # allocate it a little big
 
-            bedfile = self._name_of_other_file(self.filename, "bed", "bed")
+            bedfile = self._name_of_other_file(self.filepath, "bed", "bed")
             with open(bedfile, "rb") as filepointer:
                 for SNPsIndex, bimIndex in enumerate(sid_index):
 
@@ -658,36 +657,13 @@ class open_bed:  #!!!cmk need doc strings everywhere
             pass
         return index
 
-    #!!!cmk kill
-    # @staticmethod
-    # def _fixup_input(
-    #    input,
-    #    count=None,
-    #    empty_creator=_default_empty_creator,
-    #    dtype=None,
-    #    none_num_ok=False,
-    # ):
-    #    if none_num_ok and input is None:
-    #        return input
-
-    #    if input is None or len(input) == 0:
-    #        input = empty_creator(count)
-    #    elif not isinstance(input, np.ndarray):
-    #        input = np.array(input, dtype=dtype)
-
-    #    assert (
-    #        count is None or len(input) == count
-    #    ), "Expect length of {0} for input {1}".format(count, input)
-
-    #    return input
-
     #!!!cmk put the methods in a good order
 
     @staticmethod
-    def _write_fam_or_bim(basefilename, metadata, suffix_of_interest):
+    def _write_fam_or_bim(basefilepath, metadata, suffix_of_interest):
         assert suffix_of_interest in {"fam", "bim"}, "real assert"
 
-        filename = open_bed._name_of_other_file(basefilename, "bed", suffix_of_interest)
+        filepath = open_bed._name_of_other_file(basefilepath, "bed", suffix_of_interest)
 
         fam_bim_list = []
         for (key, (suffix, position, _, _, _),) in open_bed._meta_meta.items():
@@ -697,7 +673,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         sep = " " if suffix_of_interest == "fam" else "\t"
 
-        with open(filename, "w") as filepointer:
+        with open(filepath, "w") as filepointer:
             for index in range(len(fam_bim_list[0])):
                 filepointer.write(
                     sep.join(str(seq[index]) for seq in fam_bim_list) + "\n"
