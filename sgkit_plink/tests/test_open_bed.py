@@ -21,43 +21,39 @@ def test_read1():
         #!!!cmk test reading into other dtypes
 
 
-#!!!cmk write test
-# def test_write():
-#    in_file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
-#    out_file = r"m:/deldir/out.bed"  #!!!cmk remove absolute reference
-#    with open_bed(in_file) as bed:
-#        val0 = bed.read()
-#        old_iid = np.array([bed.fid, bed.iid]).T
-#        pos = np.array(
-#            [bed.chromosome.astype("int"), bed.cm_position, bed.bp_position]
-#        ).T
-#        open_bed.write(
-#            out_file, val0, iid=old_iid, sid=bed.sid, pos=pos,
-#        )
-#        with open_bed(out_file) as bed1:
-#            assert (val0 == bed1.read()).all()  #!!!cmk use array_equal
-#            assert (bed.iid == bed1.iid).all()
-#            assert (bed.sid == bed1.sid).all()
-#            assert (
-#                bed.chromosome.astype("float") == bed1.chromosome.astype("float")
-#            ).all()  #!!!cmk remove the 'astype('float')'
-#            assert (bed.cm_position == bed1.cm_position).all()
-#            assert (bed.bp_position == bed1.bp_position).all()
+def test_write(tmp_path):
+    in_file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+    out_file = str(tmp_path / "out.bed")
+    with open_bed(in_file) as bed:
+        val0 = bed.read()
+        metadata0 = {
+        'fid':bed.fid,
+        'iid':bed.iid,
+        'sid':bed.sid,
+        'chromosome':bed.chromosome,
+        'cm_position':bed.cm_position,
+        'bp_position':bed.bp_position,
+        }
+        open_bed.write(out_file, val0, metadata=metadata0)
+        with open_bed(out_file) as bed1:
+            assert np.allclose(val0,bed1.read())
+            assert np.array_equal(bed.fid, metadata0['fid'])
+            assert np.array_equal(bed.iid, metadata0['iid'])
+            assert np.array_equal(bed.sid, metadata0['sid'])
+            assert np.array_equal(bed.chromosome, metadata0['chromosome'])
+            assert np.allclose(bed.cm_position, metadata0['cm_position'])
+            assert np.allclose(bed.bp_position, metadata0['bp_position'])
 
-#    val_float = val0.astype("float")
-#    val_float[0, 0] = 0.5
-#    for force_python_only in [
-#        True
-#    ]:  #!!!cmk It is a bug that the C++ version doesn't catch e.g. .5 as input
-#        with pytest.raises(ValueError):
-#            open_bed.write(
-#                out_file,
-#                val_float,
-#                iid=old_iid,
-#                sid=bed.sid,
-#                pos=pos,
-#                force_python_only=force_python_only,
-#            )
+    val_float = val0.astype("float")
+    val_float[0, 0] = 0.5
+    for force_python_only in [True]: #!!!cmk fix c++, False]:
+        with pytest.raises(ValueError):
+            open_bed.write(
+                out_file,
+                val_float,
+                metadata=metadata0,
+                force_python_only=force_python_only,
+            )
 
 
 def test_overrides():
@@ -153,13 +149,6 @@ def test_bad_dtype_or_order():
         open_bed(base / "data/distributed_bed_test1_X.bed").read(dtype=np.int32)
     with pytest.raises(ValueError):
         open_bed(base / "data/distributed_bed_test1_X.bed").read(order='X')
-
-
-# def test_read_empty_metafiles():
-#    base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
-#    #!!!need to generate empty bed file with zero length fam and bim files for testing and then test it
-#    with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
-
 
 def setting_generator(seq_dict, seed=9392):
     import itertools
@@ -276,7 +265,7 @@ def reference_val():  #!!!cmk fix this so not loading over and over again
     return val
 
 
-def test_bed_int8():
+def test_bed_int8(tmp_path):
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
         for force_python_only in [False, True]:
@@ -292,32 +281,16 @@ def test_bed_int8():
                 ref_val[ref_val != ref_val] = -127
                 ref_val = ref_val.astype("int8")
                 assert np.array_equal(ref_val, val)
-                #!!!cmk add write test later
-                # output = "tempdir/snpreader/int8.bed" #!!!cmk where does output go?
-                # create_directory_if_necessary(output)
-                # for count_A1 in [False,True]:
-                #    bed2 = Bed.write(output,snpdata,count_A1=count_A1,_require_float32_64=False,force_python_only=force_python_only)
-                #    assert np.allclose(bed2.read(dtype='int8',_require_float32_64=False,force_python_only=force_python_only).val, ref.val, equal_nan=True)
+                output = str(tmp_path / "int8.bed")
+                for count_A1 in [False,True]:
+                    open_bed.write(output,ref_val,count_A1=count_A1,force_python_only=force_python_only)
+                    with open_bed(output,count_A1=count_A1) as bed2:
+                        assert np.array_equal(bed2.read(dtype='int8',force_python_only=force_python_only), ref_val)
 
 
-# !!!cmk put this test back in?
-# def test_too_slow_write_bedbig():
-#    iid_count = 100000
-#    sid_count = 50000
-#    from pysnptools.snpreader import SnpData
-#    iid = np.array([[str(i),str(i)] for i in range(iid_count)])
-#    sid = np.array(["sid_{0}".format(i) for i in range(sid_count)])
-#    pos = np.array([[i,i,i] for i in range(sid_count)])
-#    np.random.seed(0)
-#    snpdata = SnpData(iid,sid,np.zeros((iid_count,sid_count)),pos=pos) #random.choice((0.0,1.0,2.0,float("nan")),size=(iid_count,sid_count)))
-#    output = "tempdir/bedbig.{0}.{1}".format(iid_count,sid_count)
-#    create_directory_if_necessary(output)
-#    Bed.write(output, snpdata, count_A1=False)
-#    snpdata2 = Bed(output,count_A1=False).read()
-#    np.testing.assert_array_almost_equal(snpdata.val, snpdata2.val, decimal=10)
 
 
-def test_write_bed_f64cpp():
+def test_write_bed_f64cpp(tmp_path):
     base = Path(r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests")
     with open_bed(base / "data/distributed_bed_test1_X.bed") as bed:
         for iid_index in [0, 1, 5]:
@@ -329,28 +302,25 @@ def test_write_bed_f64cpp():
                     force_python_only=force_python_only,
                 )
                 assert val.shape == (iid_index, 100)
-                #!!!cmk add write test later
-                # output = "tempdir/toydata.F64cpp.{0}".format(iid_index)
-                # create_directory_if_necessary(output)
-                # Bed.write(output, snpdata ,count_A1=False)
-                # snpdata2 = Bed(output,count_A1=False).read()
-                # np.testing.assert_array_almost_equal(snpdata.val, snpdata2.val, decimal=10)
+                output = str(tmp_path / f"toydata.F64cpp.{iid_index}")
+                open_bed.write(output, val, count_A1=False)
+                val2 = open_bed(output,count_A1=False).read(dtype='float64')
+                assert np.allclose(val, val2, equal_nan=True)
 
 
-#!!!cmk write test
-# def test_write_x_x_cpp():
-#    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
-#    for count_A1 in [False, True]:
-#        snpreader = Bed(self.currentFolder + "/examples/toydata.5chrom.bed",count_A1=count_A1)
-#        for order in ['C','F']:
-#            for dtype in [np.float32,np.float64]:
-#                snpdata = snpreader.read(order=order,dtype=dtype)
-#                snpdata.val[-1,0] = float("NAN")
-#                output = "tempdir/toydata.{0}{1}.cpp".format(order,"32" if dtype==np.float32 else "64")
-#                create_directory_if_necessary(output)
-#                Bed.write(output, snpdata, count_A1=count_A1)
-#                snpdata2 = Bed(output,count_A1=count_A1).read()
-#                np.testing.assert_array_almost_equal(snpdata.val, snpdata2.val, decimal=10)
+def test_write_x_x_cpp(tmp_path):
+    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
+    for count_A1 in [False, True]:
+        with open_bed(base + "/data/distributed_bed_test1_X.bed",count_A1=count_A1) as bed:
+            for order in ['C','F','A']:
+                for dtype in [np.float32,np.float64]:
+                    val = bed.read(order=order,dtype=dtype)
+                    metadata = bed.metadata
+                    val[-1,0] = float("NAN")
+                    output = str(tmp_path / "toydata.{0}{1}.cpp".format(order,"32" if dtype==np.float32 else "64"))
+                    open_bed.write(output, val, metadata=metadata, count_A1=count_A1)
+                    val2 = open_bed(output,count_A1=count_A1).read(dtype=dtype)
+                    assert np.allclose(val, val2, equal_nan=True)
 
 
 def test_respect_read_inputs():
@@ -393,90 +363,57 @@ def test_threads():
             assert np.allclose(ref_val_int8, val, equal_nan=True)
 
 
-#!!!cmk add write tests
-# def test_writes():
-#    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
-#    from pysnptools.snpreader import SnpData, SnpHdf5, SnpNpz, SnpMemMap
+def test_writes(tmp_path):
+    base = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests"
 
-#    the_class_and_suffix_list = [
-#                                    (Bed,"bed",lambda filename:Bed(filename,count_A1=False),None),
-#                                ]
-#    cant_do_col_prop_none_set = {"dense","distributed_bed"}
-#    cant_do_col_len_0_set = {"distributed_bed"}
-#    cant_do_row_count_zero_set = {'dense','ped','pheno'}
-#    can_swap_0_2_set = {'ped'}
-#    can_change_col_names_set = {'pheno'}
-#    ignore_fam_id_set = {'dense'}
-#    ignore_pos_set = {'dense','pheno'}
-#    erase_any_write_dir = {'distributed_bed'}
+    #===================================
+    #    Starting main function
+    #===================================
+    logging.info("starting 'test_writes'")
+    np.random.seed(0)
+    output_template = str(tmp_path / "writes.{0}.bed")
+    i = 0
+    for row_count in [0,5,2,1]:
+        for col_count in [4,2,1,0]:
+            val = np.random.randint(0,4,size=(row_count,col_count))*1.0
+            val[val==3]=np.NaN
+            row0 = ['0','1','2','3','4'][:row_count]
+            row1 = ['0','1','2','3','4'][:row_count]
+            col = ['s0','s1','s2','s3','s4'][:col_count]
+            for is_none in [True,False]:
+                metadata = {'fid':row0,'iid':row1,'sid':col}
+                if is_none:
+                    col_prop012 = [x for x in range(5)][:col_count]
+                    metadata['chromosome'] = col_prop012
+                    metadata['bp_position'] = col_prop012
+                    metadata['cm_position'] = col_prop012
+                else:
+                    col_prop012 = None
 
-
-#    #===================================
-#    #    Starting main function
-#    #===================================
-#    logging.info("starting 'test_writes'")
-#    np.random.seed(0)
-#    output_template = "tempdir/snpreader/writes.{0}.{1}"
-#    create_directory_if_necessary(output_template.format(0,"npz"))
-#    i = 0
-#    for row_count in [0,5,2,1]:
-#        for col_count in [4,2,1,0]:
-#            val = np.random.randint(0,4,size=(row_count,col_count))*1.0
-#            val[val==3]=np.NaN
-#            row = [('0','0'),('1','1'),('2','2'),('3','3'),('4','4')][:row_count]
-#            col = ['s0','s1','s2','s3','s4'][:col_count]
-#            for is_none in [True,False]:
-#                row_prop = None
-#                col_prop = None if is_none else [(x,x,x) for x in range(5)][:col_count]
-#                snpdata = SnpData(iid=row,sid=col,val=val,pos=col_prop,name=str(i))
-#                for the_class,suffix,constructor,writer in the_class_and_suffix_list:
-#                    constructor = constructor or (lambda filename: the_class(filename))
-#                    writer = writer or (lambda filename,_data: the_class.write(filename,_data))
-
-#                    if col_count == 0 and suffix in cant_do_col_len_0_set:
-#                        continue
-#                    if col_prop is None and suffix in cant_do_col_prop_none_set:
-#                        continue
-#                    if row_count==0 and suffix in cant_do_row_count_zero_set:
-#                        continue
-#                    filename = output_template.format(i,suffix)
-#                    logging.info(filename)
-#                    i += 1
-#                    if suffix in erase_any_write_dir and os.path.exists(filename):
-#                        shutil.rmtree(filename)
-#                    ret = writer(filename,snpdata)
-#                    assert ret is not None
-#                    for subsetter in [None, np.s_[::2,::3]]:
-#                        reader = constructor(filename)
-#                        _fortesting_JustCheckExists().input(reader)
-#                        subreader = reader if subsetter is None else reader[subsetter[0],subsetter[1]]
-#                        readdata = subreader.read(order='C')
-#                        expected = snpdata if subsetter is None else snpdata[subsetter[0],subsetter[1]].read()
-#                        if not suffix in can_swap_0_2_set:
-#                            assert np.allclose(readdata.val,expected.val,equal_nan=True)
-#                        else:
-#                            for col_index in range(readdata.col_count):
-#                                assert (np.allclose(readdata.val[:,col_index],expected.val[:,col_index],equal_nan=True) or
-#                                        np.allclose(readdata.val[:,col_index]*-1+2,expected.val[:,col_index],equal_nan=True))
-#                        if not suffix in ignore_fam_id_set:
-#                            assert np.array_equal(readdata.row,expected.row)
-#                        else:
-#                            assert np.array_equal(readdata.row[:,1],expected.row[:,1])
-#                        if not suffix in can_change_col_names_set:
-#                            assert np.array_equal(readdata.col,expected.col)
-#                        else:
-#                            assert readdata.col_count==expected.col_count
-#                        assert np.array_equal(readdata.row_property,expected.row_property) or (readdata.row_property.shape[1]==0 and expected.row_property.shape[1]==0)
-
-#                        if not suffix in ignore_pos_set:
-#                            assert np.allclose(readdata.col_property,expected.col_property,equal_nan=True) or (readdata.col_property.shape[1]==0 and expected.col_property.shape[1]==0)
-#                        else:
-#                            assert len(readdata.col_property)==len(expected.col_property)
-#                    try:
-#                        os.remove(filename)
-#                    except:
-#                        pass
-#    logging.info("done with 'test_writes'")
+                filename = output_template.format(i)
+                logging.info(filename)
+                i += 1
+                open_bed.write(filename,val,metadata=metadata) #!!!cmk is it weird to "open_bed.write"?
+                for subsetter in [None, np.s_[::2,::3]]:
+                    with open_bed(filename) as bed:
+                        val2 = bed.read(index=subsetter,order='C',dtype='float32') #!!!cmk should float32 be the default so that NaN is better?
+                        if subsetter is None:
+                            expected = val
+                        else:
+                            expected = val[subsetter[0],:][:,subsetter[1]]
+                        assert np.allclose(val2,expected,equal_nan=True)
+                        assert np.array_equal(bed.fid,np.array(row0,dtype='str'))
+                        assert np.array_equal(bed.iid,np.array(row1,dtype='str'))
+                        assert np.array_equal(bed.sid,np.array(col,dtype='str'))
+                        if col_prop012 is not None:
+                            assert np.array_equal(bed.chromosome,np.array(col_prop012,dtype='str'))
+                            assert np.array_equal(bed.bp_position,np.array(col_prop012))
+                            assert np.array_equal(bed.cm_position,np.array(col_prop012))
+                    try:
+                        os.remove(filename)
+                    except:
+                        pass
+    logging.info("done with 'test_writes'")
 
 
 def test_index():
@@ -600,5 +537,5 @@ def test_coverage2():
 if __name__ == "__main__":  #!!cmk is this wanted?
     logging.basicConfig(level=logging.INFO)
 
-    test_coverage2()#(Path(r'm:/deldir/tests'))
+    test_writes(Path(r'm:/deldir/tests'))
     pytest.main([__file__])
