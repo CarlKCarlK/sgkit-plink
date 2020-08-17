@@ -240,7 +240,7 @@ def test_c_reader_bed(shared_datadir):
     for force_python_only in [False, True]:
         bed = open_bed(
             shared_datadir / "distributed_bed_test1_X.bed", count_A1=False
-        )  # !!!cmk improve the name of this test file (it contains missing)
+        ) 
 
         val = bed.read(order="F", dtype="float64", force_python_only=force_python_only)
         assert val.dtype == np.float64
@@ -265,7 +265,7 @@ def test_c_reader_bed(shared_datadir):
             assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05, equal_nan=True)
 
 
-def reference_val(shared_datadir):  #!!!cmk fix this so not loading over and over again
+def reference_val(shared_datadir):
     val = np.load(shared_datadir / "distributed_bed_test1_X.val.npy")
     return val
 
@@ -444,9 +444,7 @@ def test_index(shared_datadir):
     ref_val_int8 = ref_val_float.astype("int8")
     ref_val_int8[ref_val_float != ref_val_float] = -127
 
-    with open_bed(
-        shared_datadir / "distributed_bed_test1_X.bed"
-    ) as bed:  #!!!cmk maybe repeat with a 2nd file that doesn't have so many 2's in it and isn't square
+    with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
         val = bed.read()
         assert np.allclose(ref_val_int8, val, equal_nan=True)
 

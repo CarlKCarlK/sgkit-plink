@@ -5,12 +5,11 @@ import os
 import numpy as np
 import numbers
 import pandas as pd
-import logging  #!!!cmk how does sgkit do logging messages?
+import logging
 from pathlib import Path
 import multiprocessing
 from dataclasses import dataclass
 
-# import warnings
 import math
 from typing import Any, List, Optional, Tuple, Union
 
@@ -271,7 +270,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         if mode != b"l\x1b":
             raise ValueError(
                 "No valid binary BED file"
-            )  #!!!cmk make all and any "Exception" more specific
+            )
         mode = filepointer.read(1)  # \x01 = SNP major \x00 = individual major
         if mode != b"\x01":
             raise ValueError(
@@ -359,7 +358,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             count_A1,
                             val,
                         )
-                elif val.dtype == np.int8:  #!!!cmk move this up
+                elif val.dtype == np.int8:
                     if order == "F":
                         wrap_plink_parser.writePlinkBedFile2int8FAAA(
                             bedfile,
@@ -381,7 +380,10 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed."
                     )
             except SystemError as system_error:
-                #!!!cmk unlink the file
+                try:
+                    bedfile.unlink()
+                except Exception:
+                    pass
                 raise system_error.__cause__
         else:
             if not count_A1:
@@ -461,45 +463,38 @@ class open_bed:  #!!!cmk need doc strings everywhere
         force_python_only: bool = False,
     ) -> np.ndarray:
 
-        iid_index_or_none, sid_index_or_none = self._split_index(index)
+        iid_index_or_slice_etc, sid_index_or_slice_etc = self._split_index(index)
 
+        dtype = np.dtype(dtype)
         if order == "A":
             order = "F"
         if order not in {"F", "C"}:
             raise ValueError(f"order '{order}' not known, only 'F', 'C', and 'A")
-        dtype = np.dtype(dtype)
 
-        iid_count_in = (
-            self.iid_count
-        )  #!!!cmk do we really need all six of these values?
-        sid_count_in = self.sid_count
-
-        #!!!cmk happy with _iid_range and _sid_range?
+        # Later happy with _iid_range and _sid_range or could it be done with allocation them?
         if self._iid_range is None:
             self._iid_range = np.arange(self.iid_count)
         if self._sid_range is None:
             self._sid_range = np.arange(self.sid_count)
-        iid_index = self._iid_range[iid_index_or_none]
-        sid_index = self._sid_range[sid_index_or_none]
 
-        iid_count_out = len(iid_index)
-        sid_count_out = len(sid_index)
+        iid_index = self._iid_range[iid_index_or_slice_etc]
+        sid_index = self._sid_range[sid_index_or_slice_etc]
 
         if not force_python_only:
             from sgkit_plink import wrap_plink_parser
 
-            val = np.zeros((iid_count_out, sid_count_out), order=order, dtype=dtype)
-            bed_fn = str(open_bed._name_of_other_file(self.filepath, "bed", "bed")).encode("ascii")
+            val = np.zeros((len(iid_index), len(sid_index)), order=order, dtype=dtype)
+            bed_file_ascii = str(open_bed._name_of_other_file(self.filepath, "bed", "bed")).encode("ascii")
 
             num_threads = self._get_num_threads()
 
-            if iid_count_in > 0 and sid_count_in > 0:
+            if self.iid_count > 0 and self.sid_count > 0:
                 if dtype == np.int8:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2int8FAAA(
-                            bed_fn,
-                            iid_count_in,
-                            sid_count_in,
+                            bed_file_ascii,
+                            self.iid_count,
+                            self.sid_count,
                             self.count_A1,
                             iid_index,
                             sid_index,
@@ -508,9 +503,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2int8CAAA(
-                            bed_fn,
-                            iid_count_in,
-                            sid_count_in,
+                            bed_file_ascii,
+                            self.iid_count,
+                            self.sid_count,
                             self.count_A1,
                             iid_index,
                             sid_index,
@@ -521,10 +516,10 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         assert False, "real assert"
                 elif dtype == np.float64:
                     if order == "F":
-                        wrap_plink_parser.readPlinkBedFile2doubleFAAA(  #!!!cmk double check that these check the format.If they don't, be sure checkformat is called sometime
-                            bed_fn,
-                            iid_count_in,
-                            sid_count_in,
+                        wrap_plink_parser.readPlinkBedFile2doubleFAAA(
+                            bed_file_ascii,
+                            self.iid_count,
+                            self.sid_count,
                             self.count_A1,
                             iid_index,
                             sid_index,
@@ -533,9 +528,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2doubleCAAA(
-                            bed_fn,
-                            iid_count_in,
-                            sid_count_in,
+                            bed_file_ascii,
+                            self.iid_count,
+                            self.sid_count,
                             self.count_A1,
                             iid_index,
                             sid_index,
@@ -547,9 +542,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 elif dtype == np.float32:
                     if order == "F":
                         wrap_plink_parser.readPlinkBedFile2floatFAAA(
-                            bed_fn,
-                            iid_count_in,
-                            sid_count_in,
+                            bed_file_ascii,
+                            self.iid_count,
+                            self.sid_count,
                             self.count_A1,
                             iid_index,
                             sid_index,
@@ -558,9 +553,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         )
                     elif order == "C":
                         wrap_plink_parser.readPlinkBedFile2floatCAAA(
-                            bed_fn,
-                            iid_count_in,
-                            sid_count_in,
+                            bed_file_ascii,
+                            self.iid_count,
+                            self.sid_count,
                             self.count_A1,
                             iid_index,
                             sid_index,
@@ -586,12 +581,12 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 missing = -127
             else:
                 missing = np.nan
-            # An earlier version of this code had a way to read consecutive SNPs of code in one read. May want #!!!cmk understand these messages
+            # An earlier version of this code had a way to read consecutive SNPs of code in one read. May want
             # to add that ability back to the code.
-            # Also, note that reading with python will often result in non-contiguous memory, so the python standardizers will automatically be used, too.
+            # Also, note that reading with python will often result in non-contiguous memory
             # logging.warn("using pure python plink parser (might be much slower!!)")
             val = np.zeros(
-                ((int(np.ceil(0.25 * iid_count_in)) * 4), sid_count_out),
+                ((int(np.ceil(0.25 * self.iid_count)) * 4), len(sid_index)),
                 order=order,
                 dtype=dtype,
             )  # allocate it a little big
@@ -600,11 +595,11 @@ class open_bed:  #!!!cmk need doc strings everywhere
             with open(bedfile, "rb") as filepointer:
                 for SNPsIndex, bimIndex in enumerate(sid_index):
 
-                    startbit = int(np.ceil(0.25 * iid_count_in) * bimIndex + 3)
+                    startbit = int(np.ceil(0.25 * self.iid_count) * bimIndex + 3)
                     filepointer.seek(startbit)
-                    nbyte = int(np.ceil(0.25 * iid_count_in))
+                    nbyte = int(np.ceil(0.25 * self.iid_count))
                     bytes = np.array(bytearray(filepointer.read(nbyte))).reshape(
-                        (int(np.ceil(0.25 * iid_count_in)), 1), order="F"
+                        (int(np.ceil(0.25 * self.iid_count)), 1), order="F"
                     )
 
                     val[3::4, SNPsIndex : SNPsIndex + 1] = byteZero
@@ -652,8 +647,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
             pass
         return index
 
-    #!!!cmk put the methods in a good order
-
     @staticmethod
     def _write_fam_or_bim(basefilepath, metadata, suffix_of_interest):
         assert suffix_of_interest in {"fam", "bim"}, "real assert"
@@ -695,7 +688,7 @@ if __name__ == "__main__":
             print(val.shape)
 
     if False:
-        file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+        file = r"D:\OneDrive\programs\sgkit-plink\sgkit_plink\tests\data/plink_sim_10s_100v_10pmiss.bed"
         with open_bed(file) as bed:
             print(bed.iid)
             print(bed.shape)
@@ -735,7 +728,7 @@ if __name__ == "__main__":
             filename = r"d:\deldir\rand\fakeukC{0}x{1}-{2}.bed".format(
                 iid_count, sid_index_start, sid_index_end
             )
-            if not os.path.exists(filename):  #!!!cmk use pathlib?
+            if not os.path.exists(filename):
                 Bed.write(
                     filename + ".temp", snpgen[:, sid_index_start:sid_index_end].read()
                 )
