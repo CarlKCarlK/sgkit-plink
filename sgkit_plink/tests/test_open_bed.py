@@ -12,7 +12,7 @@ def test_read1(shared_datadir):
         assert bed.fid[-1] == "0"
         assert bed.iid[-1] == "9"
         assert bed.shape == (10, 100)
-        val = bed.read()
+        val = bed.read(dtype='int8')
         assert (
             val.mean() == -13.142
         )  # really shouldn't do mean on data where -127 represents missing
@@ -35,7 +35,7 @@ def test_write1(tmp_path, shared_datadir):
         }
         open_bed.write(out_file, val0, metadata=metadata0)
         with open_bed(out_file) as bed1:
-            assert np.allclose(val0, bed1.read())
+            assert np.allclose(val0, bed1.read(), equal_nan=True)
             assert np.array_equal(bed.fid, metadata0["fid"])
             assert np.array_equal(bed.iid, metadata0["iid"])
             assert np.array_equal(bed.sid, metadata0["sid"])
@@ -182,6 +182,7 @@ def setting_generator(seq_dict, seed=9392):
         yield setting
 
 
+#!!!cmk learn about pytest fixture parameters
 def test_properties(shared_datadir):
     file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"
     with open_bed(file) as bed:
@@ -242,13 +243,13 @@ def test_c_reader_bed(shared_datadir):
             shared_datadir / "distributed_bed_test1_X.bed", count_A1=False
         ) 
 
-        val = bed.read(order="F", dtype="float64", force_python_only=force_python_only)
-        assert val.dtype == np.float64
+        val = bed.read(order="F", force_python_only=force_python_only)
+        assert val.dtype == np.float32
         ref_val = reference_val(shared_datadir)
         ref_val = ref_val * -1 + 2
         assert np.allclose(ref_val, val, rtol=1e-05, atol=1e-05, equal_nan=True)
 
-        val = bed.read(order="F", force_python_only=False)
+        val = bed.read(order="F", dtype='int8', force_python_only=False)
         assert val.dtype == np.int8
         ref_val[ref_val != ref_val] = -127
         ref_val = ref_val.astype("int8")
@@ -372,7 +373,7 @@ def test_threads(shared_datadir):
         with open_bed(
             shared_datadir / "distributed_bed_test1_X.bed", num_threads=num_threads
         ) as bed:
-            val = bed.read()
+            val = bed.read(dtype='int8')
             assert np.allclose(ref_val_int8, val, equal_nan=True)
 
 
@@ -439,53 +440,49 @@ def test_write12(tmp_path):
 
 def test_index(shared_datadir):
     ref_val_float = reference_val(shared_datadir)
-
-    ref_val_float = reference_val(shared_datadir)
-    ref_val_int8 = ref_val_float.astype("int8")
-    ref_val_int8[ref_val_float != ref_val_float] = -127
-
+    
     with open_bed(shared_datadir / "distributed_bed_test1_X.bed") as bed:
         val = bed.read()
-        assert np.allclose(ref_val_int8, val, equal_nan=True)
+        assert np.allclose(ref_val_float, val, equal_nan=True)
 
         val = bed.read(2)
-        assert np.allclose(ref_val_int8[:, [2]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[:, [2]], val, equal_nan=True)
 
         val = bed.read((2))
-        assert np.allclose(ref_val_int8[:, [2]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[:, [2]], val, equal_nan=True)
 
         val = bed.read((None, 2))
-        assert np.allclose(ref_val_int8[:, [2]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[:, [2]], val, equal_nan=True)
 
         val = bed.read((1, 2))
-        assert np.allclose(ref_val_int8[[1], [2]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[[1], [2]], val, equal_nan=True)
 
         val = bed.read([2, -2])
-        assert np.allclose(ref_val_int8[:, [2, -2]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[:, [2, -2]], val, equal_nan=True)
 
         val = bed.read(([1, -1], [2, -2]))
-        assert np.allclose(ref_val_int8[[1, -1], :][:, [2, -2]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[[1, -1], :][:, [2, -2]], val, equal_nan=True)
 
         iid_bool = ([False, False, True] * bed.iid_count)[: bed.iid_count]
         sid_bool = ([True, False, True] * bed.sid_count)[: bed.sid_count]
         val = bed.read(sid_bool)
-        assert np.allclose(ref_val_int8[:, sid_bool], val, equal_nan=True)
+        assert np.allclose(ref_val_float[:, sid_bool], val, equal_nan=True)
 
         val = bed.read((iid_bool, sid_bool))
-        assert np.allclose(ref_val_int8[iid_bool, :][:, sid_bool], val, equal_nan=True)
+        assert np.allclose(ref_val_float[iid_bool, :][:, sid_bool], val, equal_nan=True)
 
         val = bed.read((1, sid_bool))
-        assert np.allclose(ref_val_int8[[1], :][:, sid_bool], val, equal_nan=True)
+        assert np.allclose(ref_val_float[[1], :][:, sid_bool], val, equal_nan=True)
 
         slicer = np.s_[::2, ::3]
         val = bed.read(slicer[1])
-        assert np.allclose(ref_val_int8[:, slicer[1]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[:, slicer[1]], val, equal_nan=True)
 
         val = bed.read(slicer)
-        assert np.allclose(ref_val_int8[slicer], val, equal_nan=True)
+        assert np.allclose(ref_val_float[slicer], val, equal_nan=True)
 
         val = bed.read((1, slicer[1]))
-        assert np.allclose(ref_val_int8[[1], slicer[1]], val, equal_nan=True)
+        assert np.allclose(ref_val_float[[1], slicer[1]], val, equal_nan=True)
 
 
 def test_shape(shared_datadir):

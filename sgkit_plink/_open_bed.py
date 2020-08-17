@@ -458,7 +458,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
     def read(
         self,
         index: Optional[Any] = None,
-        dtype: Optional[Union[type, str]] = np.int8,
+        dtype: Optional[Union[type, str]] = np.float32,
         order: Optional[str] = "F",
         force_python_only: bool = False,
     ) -> np.ndarray:
