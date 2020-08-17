@@ -12,6 +12,7 @@ import pandas as pd
 import logging  #!!!cmk how does sgkit do logging messages?
 from pathlib import Path
 import multiprocessing
+from dataclasses import dataclass
 
 # import warnings
 import math
@@ -25,6 +26,47 @@ def rawincount(filepath):
         bufgen = takewhile(lambda x: x, (f.raw.read(1024 * 1024) for _ in repeat(None)))
         return sum(buf.count(b"\n") for buf in bufgen)
 
+
+@dataclass
+class _MetaMeta:
+    suffix : str
+    column : int
+    dtype: type
+    missing_value: object
+    fill_sequence: object
+
+def _all_same(key, length, missing, dtype):
+    if np.issubdtype(dtype, np.str_):
+        dtype = f"<U{len(missing)}"
+    return np.full(length, missing, dtype=dtype)
+
+def _sequence(key, length, missing, dtype):
+    if np.issubdtype(dtype, np.str_):
+        longest = len(f"{key}{length}")
+        dtype = f"<U{longest}"
+    return np.fromiter(
+        (f"{key}{i+1}" for i in range(length)), dtype=dtype, count=length
+    )
+
+_delimiters = {"fam": r"\s+", "bim": "\t"}
+_count_name = {"fam": "iid_count", "bim": "sid_count"}
+
+
+_meta_meta = {
+    # https://stackoverflow.com/questions/41921255/staticmethod-object-is-not-callable
+    "fid": _MetaMeta("fam", 0, np.str_, "0", _all_same),
+    "iid": _MetaMeta("fam", 1, np.str_, None, _sequence),
+    "father": _MetaMeta("fam", 2, np.str_, "0", _all_same),
+    "mother": _MetaMeta("fam", 3, np.str_, "0", _all_same),
+    "sex": _MetaMeta("fam", 4, np.int32, 0, _all_same),
+    "pheno": _MetaMeta("fam", 5, np.str_, "0", _all_same),
+    "chromosome": _MetaMeta("bim", 0, np.str_, "0", _all_same),
+    "sid": _MetaMeta("bim", 1, np.str_, None, _sequence),
+    "cm_position": _MetaMeta("bim", 2, np.float32, 0, _all_same),
+    "bp_position": _MetaMeta("bim", 3, np.int32, 0, _all_same),
+    "allele_1": _MetaMeta("bim", 4, np.str_, "A1", _all_same),
+    "allele_2": _MetaMeta("bim", 5, np.str_, "A2", _all_same),
+    }
 
 class open_bed:  #!!!cmk need doc strings everywhere
     def __init__(
@@ -53,83 +95,46 @@ class open_bed:  #!!!cmk need doc strings everywhere
             with open(bedfile, "rb") as filepointer:
                 self._check_file(filepointer)
 
-    @staticmethod
-    def _all_same(key, length, missing, dtype):
-        if np.issubdtype(dtype, np.str_):
-            dtype = f"<U{len(missing)}"
-        return np.full(length, missing, dtype=dtype)
-
-    @staticmethod
-    def _sequence(key, length, missing, dtype):
-        if np.issubdtype(dtype, np.str_):
-            longest = len(f"{key}{length}")
-            dtype = f"<U{longest}"
-        return np.fromiter(
-            (f"{key}{i+1}" for i in range(length)), dtype=dtype, count=length
-        )
-
-    # !!!cmk use a dataclass
-    _meta_meta = {
-        # https://stackoverflow.com/questions/41921255/staticmethod-object-is-not-callable
-        "fid": ("fam", 0, np.str_, "0", _all_same.__get__(object)),
-        "iid": ("fam", 1, np.str_, None, _sequence.__get__(object)),
-        "father": ("fam", 2, np.str_, "0", _all_same.__get__(object)),
-        "mother": ("fam", 3, np.str_, "0", _all_same.__get__(object)),
-        "sex": ("fam", 4, np.int32, 0, _all_same.__get__(object)),
-        "pheno": ("fam", 5, np.str_, "0", _all_same.__get__(object)),
-        "chromosome": ("bim", 0, np.str_, "0", _all_same.__get__(object)),
-        "sid": ("bim", 1, np.str_, None, _sequence.__get__(object)),
-        "cm_position": ("bim", 2, np.float32, 0, _all_same.__get__(object)),
-        "bp_position": ("bim", 3, np.int32, 0, _all_same.__get__(object)),
-        "allele_1": ("bim", 4, np.str_, "A1", _all_same.__get__(object)),
-        "allele_2": ("bim", 5, np.str_, "A2", _all_same.__get__(object)),
-    }
-
-    _delimiters = {"fam": r"\s+", "bim": "\t"}
-    _count_name = {"fam": "iid_count", "bim": "sid_count"}
 
     @staticmethod
     def _fixup_metadata(metadata, iid_count, sid_count, use_fill_sequence):
 
-        metadata_dict = {key: None for key in open_bed._meta_meta}
+        metadata_dict = {key: None for key in _meta_meta}
         count_dict = {"fam": iid_count, "bim": sid_count}
 
         for key, input in metadata.items():
-            if key not in open_bed._meta_meta:
+            if key not in _meta_meta:
                 raise KeyError(f"metadata key '{key}' not known")
 
-        for (
-            key,
-            (suffix, _, dtype, missing_value, fill_sequence),
-        ) in open_bed._meta_meta.items():
-            count = count_dict[suffix]
+        for key, mm in _meta_meta.items():
+            count = count_dict[mm.suffix]
 
             input = metadata.get(key)
             if input is None:
                 if use_fill_sequence:
-                    output = fill_sequence(key, count, missing_value, dtype)
+                    output = mm.fill_sequence(key, count, mm.missing_value, mm.dtype)
                 else:
                     continue
             elif len(input) == 0:
-                output = np.zeros([0], dtype=dtype)
+                output = np.zeros([0], dtype=mm.dtype)
             else:
                 if not isinstance(input, np.ndarray) or not np.issubdtype(
-                    input.dtype, dtype
+                    input.dtype, mm.dtype
                 ):
-                    input = np.array(input, dtype=dtype)
+                    input = np.array(input, dtype=mm.dtype)
                 if len(input.shape) != 1:
                     raise ValueError(f"Override {key} should be one dimensional")
                 output = input
 
             if count is None:
-                count_dict[suffix] = len(output)
+                count_dict[mm.suffix] = len(output)
             else:
                 if count != len(output):
                     raise ValueError(
-                        f"The length of override {key}, {len(output)}, should not be different from the current {open_bed._count_name[suffix]}, {count}"
+                        f"The length of override {key}, {len(output)}, should not be different from the current {_count_name[mm.suffix]}, {count}"
                     )
             metadata_dict[key] = output
-        return metadata_dict, count_dict
+        return metadata_dict, count_dict 
 
     def _read_fam_or_bim(self, suffix):
         metafile = open_bed._name_of_other_file(self.filepath, "bed", suffix)
@@ -137,7 +142,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
         count = self._counts[suffix]
 
-        delimiter = self._delimiters[suffix]
+        delimiter = _delimiters[suffix]
         if delimiter in {r"\s+"}:
             delimiter = None
             delim_whitespace = True
@@ -161,20 +166,20 @@ class open_bed:  #!!!cmk need doc strings everywhere
         else:
             if count != len(fields):
                 raise ValueError(
-                    f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {self._count_name[suffix]}, {count}"
+                    f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {_count_name[suffix]}, {count}"
                 )
-        #!!!cmk rename suffix_x and other *x variables
-        for key, (suffix_x, column, dtype, missing, _) in self._meta_meta.items():
-            if suffix_x is not suffix:
+        #!!!cmk rename  *x variables
+        for key, mm in _meta_meta.items():
+            if mm.suffix is not suffix:
                 continue
             val = self.metadata_dict[key]
             if val is None:
                 if len(fields) == 0:
-                    output = np.array([], dtype=dtype)
-                elif missing is None:
-                    output = np.array(fields[column], dtype=dtype)
+                    output = np.array([], dtype=mm.dtype)
+                elif mm.missing_value is None:
+                    output = np.array(fields[mm.column], dtype=mm.dtype)
                 else:
-                    output = np.array(fields[column].fillna(missing), dtype=dtype)
+                    output = np.array(fields[mm.column].fillna(mm.missing_value), dtype=mm.dtype)
                 self.metadata_dict[key] = output
 
     @staticmethod
@@ -212,15 +217,15 @@ class open_bed:  #!!!cmk need doc strings everywhere
 
     @property
     def metadata(self):
-        for key in self._meta_meta:
+        for key in _meta_meta:
             self.metadata_item(key)
         return self.metadata_dict
 
     def metadata_item(self, key):
         val = self.metadata_dict.get(key)
         if val is None:
-            suffix, _, _, _, _ = self._meta_meta[key]
-            self._read_fam_or_bim(suffix=suffix)
+            mm = _meta_meta[key]
+            self._read_fam_or_bim(suffix=mm.suffix)
             return self.metadata_dict[key]
         else:
             return val
@@ -381,6 +386,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
                         f"dtype '{val.dtype}' not known, only 'int8', 'float32', and 'float64' are allowed."
                     )
             except SystemError as system_error:
+                #!!!cmk unlink the file
                 raise system_error.__cause__
         else:
             if not count_A1:
@@ -469,10 +475,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
         if order not in {"F", "C"}:
             raise ValueError(f"order '{order}' not known, only 'F', 'C', and 'A")
         dtype = np.dtype(dtype)
-
-        assert not hasattr(
-            self, "ind_used"
-        ), "A SnpReader should not have a 'ind_used' attribute"
 
         iid_count_in = (
             self.iid_count
@@ -666,9 +668,9 @@ class open_bed:  #!!!cmk need doc strings everywhere
         filepath = open_bed._name_of_other_file(basefilepath, "bed", suffix_of_interest)
 
         fam_bim_list = []
-        for (key, (suffix, position, _, _, _),) in open_bed._meta_meta.items():
-            if suffix == suffix_of_interest:
-                assert len(fam_bim_list) == position, "real assert"
+        for key, mm in _meta_meta.items():
+            if mm.suffix == suffix_of_interest:
+                assert len(fam_bim_list) == mm.column, "real assert"
                 fam_bim_list.append(metadata[key])
 
         sep = " " if suffix_of_interest == "fam" else "\t"
