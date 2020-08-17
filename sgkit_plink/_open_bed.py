@@ -16,7 +16,7 @@ from typing import Any, List, Optional, Tuple, Union
 from itertools import takewhile, repeat
 
 # https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
-def rawincount(filepath):
+def _rawincount(filepath):
     with open(filepath, "rb") as f:
         bufgen = takewhile(lambda x: x, (f.raw.read(1024 * 1024) for _ in repeat(None)))
         return sum(buf.count(b"\n") for buf in bufgen)
@@ -260,7 +260,7 @@ class open_bed:  #!!!cmk need doc strings everywhere
         count = self._counts[suffix]
         if count is None:
             metafile = open_bed._name_of_other_file(self.filepath, "bed", suffix)
-            count = rawincount(metafile)
+            count = _rawincount(metafile)
             self._counts[suffix] = count
         return count
 
