@@ -18,11 +18,10 @@ def test_read1(shared_datadir):
         )  # really shouldn't do mean on data where -127 represents missing
         assert bed.chromosome[-1] == "1"
         assert bed.bp_position[-1] == 100
-        #!!!cmk test reading into other dtypes
 
 
 def test_write1(tmp_path, shared_datadir):
-    in_file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+    in_file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"
     out_file = tmp_path / "out.bed"
     with open_bed(in_file) as bed:
         val0 = bed.read()
@@ -184,7 +183,7 @@ def setting_generator(seq_dict, seed=9392):
 
 
 def test_properties(shared_datadir):
-    file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"  #!!!cmk remove absolute reference
+    file = shared_datadir / "plink_sim_10s_100v_10pmiss.bed"
     with open_bed(file) as bed:
         iid_list = bed.iid.tolist()
         sid_list = bed.sid.tolist()

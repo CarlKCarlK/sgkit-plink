@@ -1,8 +1,4 @@
 #!!!cmk todo: Offer to ignore some or all fam bim fields
-#!!!cmk todo: fix up write
-#!!!cmk it must be an error to give an override for a property that doesn't exist
-#!!!cmk would be nice if the "counts don't match" errors were more specific
-
 #!!!cmk add typing info
 #!!!cmk run flake8, isort, etc
 import os
@@ -168,7 +164,6 @@ class open_bed:  #!!!cmk need doc strings everywhere
                 raise ValueError(
                     f"The number of lines in the *.{suffix} file, {len(fields)}, should not be different from the current {_count_name[suffix]}, {count}"
                 )
-        #!!!cmk rename  *x variables
         for key, mm in _meta_meta.items():
             if mm.suffix is not suffix:
                 continue
@@ -410,23 +405,21 @@ class open_bed:  #!!!cmk need doc strings everywhere
                             )
                         )
 
-                    colx = val[:, sid_index]
+                    col = val[:, sid_index]
                     for iid_by_four in range(0, iid_count, 4):
-                        vals_for_this_byte = colx[iid_by_four : iid_by_four + 4]
+                        vals_for_this_byte = col[iid_by_four : iid_by_four + 4]
                         byte = 0b00000000
                         for val_index in range(len(vals_for_this_byte)):
-                            valx = vals_for_this_byte[  #!!!cmk rename valx
-                                val_index
-                            ]  #!!!cmk rename valx and the other *x
-                            if valx == 0:
+                            val_for_byte = vals_for_this_byte[val_index]
+                            if val_for_byte == 0:
                                 code = zero_code
-                            elif valx == 1:
+                            elif val_for_byte == 1:
                                 code = 0b10  # backwards on purpose
-                            elif valx == 2:
+                            elif val_for_byte == 2:
                                 code = two_code
-                            elif (val.dtype == np.int8 and valx == -127) or np.isnan(
-                                valx
-                            ):  #!!!cmk find a better way to tell int types from float types
+                            elif (val.dtype == np.int8 and val_for_byte == -127) or np.isnan(
+                                val_for_byte
+                            ): 
                                 code = 0b01  # backwards on purpose
                             else:
                                 raise ValueError(

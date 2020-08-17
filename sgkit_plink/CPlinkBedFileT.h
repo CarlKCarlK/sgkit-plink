@@ -96,7 +96,6 @@ private:
 
 
 #ifdef MISSING_VALUE
-	//!!!cmk constexpr may be slowing things down, especially on Windows
 	const REAL SUFFIX(unknownOrMissing) = MISSING_VALUE;
 #else
 	const REAL SUFFIX(unknownOrMissing) = std::numeric_limits<REAL>::quiet_NaN();  // now used by SnpInfo

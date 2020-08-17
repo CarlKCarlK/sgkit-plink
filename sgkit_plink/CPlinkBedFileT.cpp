@@ -205,7 +205,6 @@ void SUFFIX(CBedFile)::ReadGenotypes(size_t iSnp, bool count_A1, const vector<si
 // wrapper to be used from cython
 void SUFFIX(readPlinkBedFile)(std::string bed_fn, int inputNumIndividuals, int inputNumSNPs,
 							  bool count_A1, std::vector<size_t> individuals_idx, std::vector<int> snpIdxList, REAL *out, int num_threads)
-//!!!cmk int num_threads)
 {
 	omp_set_num_threads(num_threads);
 
@@ -279,10 +278,10 @@ void SUFFIX(writePlinkBedFile)(std::string bed_fn, int iid_count, int sid_count,
 
 			for (int val_index = 0; val_index < end; ++val_index)
 			{
-				//printf("f %d and %d\n", startpos, sid_index * iid_count + iid_by_four + val_index);//cmk
+				//printf("f %d and %d\n", startpos, sid_index * iid_count + iid_by_four + val_index);
 				//printf("g %d of %d\n", val_index, end);
 				REAL val = in[startpos];
-				//printf("val is %f\n", (float)val);//cmk
+				//printf("val is %f\n", (float)val);
 				unsigned char code;
 				if (val == 0)
 				{
